@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aloka Quest |烛光Aloka内外求索</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --apple-black: #1d1d1f;
+            --apple-gray: #86868b;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+            background-color: #ffffff;
+            color: var(--apple-black);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 统一的滚动渐现动画 */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1.2s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 统一中心轴容器 */
+        .v-container {
+            max-width: 680px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 24px;
+        }
+
+        .section-gap { padding: 160px 0; }
+        .hero-title { font-size: clamp(2.5rem, 8vw, 5rem); line-height: 1.1; letter-spacing: -0.04em; }
+        .gray-text { color: var(--apple-gray); }
+        .leading-apple { line-height: 2.2; }
+    </style>
+</head>
+<body class="selection:bg-black selection:text-white">
+
+    <section class="min-h-screen flex flex-col justify-center items-center text-center px-6">
+        <div class="reveal">
+            <div class="mb-24">
+                <a href="https://aloka.top" class="text-[10px] font-bold tracking-[0.3em] gray-text hover:text-black transition-colors uppercase">
+                    &larr; Aloka
+                </a>
+            </div>
+            
+            <p class="text-[10px] font-bold tracking-[0.4em] mb-12 uppercase gray-text">Aloka Quest</p>
+            <h1 class="hero-title font-bold mb-12">进化。<br>内外求索。</h1>
+            <p class="text-xl md:text-2xl gray-text font-light tracking-tight leading-apple">蜕变，是灵魂与习惯的同频。<br>我们协助你，定义全新的自己。</p>
+        </div>
+    </section>
+
+    <section class="section-gap">
+        <div class="v-container reveal">
+            <h2 class="text-3xl md:text-4xl font-medium tracking-tight mb-16">双向的生命工程。</h2>
+            <div class="space-y-10 text-xl md:text-2xl gray-text font-light leading-apple">
+                <p>向内，我们梳理混乱的意识体系；</p>
+                <p>向外，我们矫正失效的行为惯性。</p>
+                <p class="text-black font-normal">
+                    唯有内在洞见清晰，<br>
+                    外在的努力才具备进化的力量。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-gap">
+        <div class="v-container reveal">
+            <h2 class="text-4xl md:text-7xl font-bold tracking-tighter mb-16 text-black">习惯改造。<br>底层系统的全面重构。</h2>
+            <div class="space-y-8 text-xl gray-text font-light leading-apple">
+                <p>习惯不是枷锁，而是你的操作系统。</p>
+                <p>自律不是苦行，而是内在秩序的自然流动。</p>
+                <div class="h-px w-12 bg-gray-200 mx-auto my-12"></div>
+                <p>在 Aloka Quest，我们通过“内外兼修”的路径，<br>
+                   助你拨开人生方向的迷雾，实现系统性的自我升级。</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-gap">
+        <div class="v-container">
+            <div class="space-y-48">
+                <div class="reveal">
+                    <p class="text-[10px] font-bold gray-text mb-6 uppercase tracking-widest">01 / Internal Exploration</p>
+                    <h4 class="text-3xl font-medium mb-6">内在探索</h4>
+                    <p class="gray-text text-lg font-light leading-apple">梳理人生的底层逻辑与核心愿景。<br>在繁杂的执念中，找回驱动生长的原动力。</p>
+                </div>
+                <div class="reveal">
+                    <p class="text-[10px] font-bold gray-text mb-6 uppercase tracking-widest">02 / External Modification</p>
+                    <h4 class="text-3xl font-medium mb-6">习惯塑造</h4>
+                    <p class="gray-text text-lg font-light leading-apple">精准重塑作息、饮食与行为节奏。<br>将内在的意图，转化为可见的生命足迹。</p>
+                </div>
+                <div class="reveal">
+                    <p class="text-[10px] font-bold gray-text mb-6 uppercase tracking-widest">03 / Mindset Discipline</p>
+                    <h4 class="text-3xl font-medium mb-6">心智自律</h4>
+                    <p class="gray-text text-lg font-light leading-apple">告别反复无常的情绪内耗。<br>构筑稳定的心智防线，确保行动的持续与严谨。</p>
+                </div>
+                <div class="reveal">
+                    <p class="text-[10px] font-bold gray-text mb-6 uppercase tracking-widest">04 / Future Navigation</p>
+                    <h4 class="text-3xl font-medium mb-6">方向导航</h4>
+                    <p class="gray-text text-lg font-light leading-apple">不只是停留在当下的修补。<br>而是在高维视角下，设计未来的生命轨迹。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-gap border-t border-gray-50">
+        <div class="v-container reveal">
+            <h3 class="text-xs font-bold tracking-[0.5em] gray-text mb-20 uppercase">向阳而生</h3>
+            <div class="space-y-12 text-xl md:text-3xl font-light leading-apple mb-24">
+                <p>生命，不应是简单的存续。</p>
+                <p class="gray-text">而是一场永不停歇的进化。</p>
+                <p class="text-black font-medium">我们在内在深处播种清晰，<br>在外在现实中收获自由。</p>
+            </div>
+            <div class="pt-12">
+                <p class="text-2xl font-medium mb-12">定义你的进化之路。</p>
+                <a href="http://alokasupport.top" class="text-sm font-semibold border-b-2 border-black pb-1 hover:text-gray-400 hover:border-gray-400 transition-all">
+                    开始自我蜕变计划 &rsaquo;
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-32 border-t border-gray-50">
+        <div class="v-container reveal">
+            <div class="mb-20">
+                <p class="text-[10px] font-bold tracking-[0.4em] gray-text mb-8 uppercase">Explore the Matrix</p>
+                <a href="https://aloka.top" class="text-xl md:text-2xl font-light hover:text-gray-400 transition-colors">
+                    返回 ALOKA 主站 &rsaquo;
+                </a>
+            </div>
+            
+            <div class="flex justify-center space-x-12 text-[10px] gray-text uppercase tracking-[0.2em] font-bold pt-12 border-t border-gray-50">
+                <a href="http://alokasupport.top" class="hover:text-black transition-colors">Get Support</a>
+                <a href="#" class="hover:text-black transition-colors">Inner</a>
+                <a href="#" class="hover:text-black transition-colors">Outer</a>
+            </div>
+            <p class="text-[10px] gray-text uppercase tracking-widest opacity-40 mt-12">© 2026 ALOKA QUEST.</p>
+        </div>
+    </footer>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
