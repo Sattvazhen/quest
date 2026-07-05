@@ -323,7 +323,9 @@
                     </button>
                 </div>
 
-                <input type="range" class="temp-slider" id="temp-slider" min="-10" max="45" value="20" oninput="triggerHaptic(10); updateTemp()">
+                <!-- Incremental Update: Changed slider range from -10~45 to -50~50 -->
+                <!-- <input type="range" class="temp-slider" id="temp-slider" min="-10" max="45" value="20" oninput="triggerHaptic(10); updateTemp()"> -->
+                <input type="range" class="temp-slider" id="temp-slider" min="-50" max="50" value="20" oninput="triggerHaptic(10); updateTemp()">
                 
                 <input type="text" id="custom-temp-input" class="form-input view-hidden" style="margin-top:24px;" placeholder="Override feeling / 自定義感受">
                 
@@ -865,6 +867,19 @@
                 document.getElementById('btn-save-story').innerText = "Save / 儲存";
             });
         }
+
+        // Incremental Update: Add global listeners for comprehensive haptic feedback across all actions
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('button, .auth-switch, .entry-card, .option-btn')) {
+                triggerHaptic(15);
+            }
+        });
+        
+        document.addEventListener('input', (e) => {
+            if (e.target.matches('input[type="text"], input[type="email"], input[type="password"], textarea')) {
+                triggerHaptic(5);
+            }
+        });
     </script>
 </body>
 </html>
