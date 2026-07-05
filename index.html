@@ -21,11 +21,10 @@
             --apple-blue-light: #E5F1FF;
             --error-color: #ff3b30;
             --success-color: #34c759;
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
             --radius: 20px;
             --safe-bottom: env(safe-area-inset-bottom, 20px);
             --safe-top: env(safe-area-inset-top, 40px); 
-            --ease-curve: cubic-bezier(0.25, 1, 0.5, 1); 
+            --ease-curve: cubic-bezier(0.32, 0.72, 0, 1); 
             --font-en: 'Inter', -apple-system, sans-serif;
             --font-tc: 'Noto Sans TC', 'PingFang TC', sans-serif;
             --glass-bg: rgba(245, 245, 247, 0.85);
@@ -33,14 +32,15 @@
         [data-theme="dark"] {
             --bg-paper: #000000; --bg-sub: #1c1c1e; --text-dark: #f5f5f7; --text-muted: #8e8e93;
             --line-light: rgba(255, 255, 255, 0.1); --apple-blue-light: #0A2948;
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.5); --glass-bg: rgba(28, 28, 30, 0.85);
+            --glass-bg: rgba(28, 28, 30, 0.85);
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        
         body {
             font-family: var(--font-en); background-color: var(--bg-paper); color: var(--text-dark);
             -webkit-font-smoothing: antialiased; text-align: left; height: 100vh; overflow: hidden;
-            letter-spacing: 0.01em; transition: background-color 0.3s, color 0.3s;
+            letter-spacing: 0.01em; transition: background-color 0.4s var(--ease-curve), color 0.4s var(--ease-curve);
         }
 
         .view-hidden { display: none !important; }
@@ -57,91 +57,79 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
+        svg path, svg circle, svg rect {
+            stroke-dasharray: 1.05;
+            stroke-dashoffset: 0;
+        }
+
         .auth-container {
-            width: 100%; 
-            min-height: 100dvh; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            padding: calc(var(--safe-top) + 2rem) 2rem calc(var(--safe-bottom) + 2rem); 
-            background: var(--bg-paper); 
-            z-index: 200; 
-            position: absolute; 
-            inset: 0;
-            transition: background-color 0.3s;
-            overflow-y: auto;
+            width: 100%; min-height: 100dvh; display: flex; align-items: center; justify-content: flex-start;
+            padding: calc(var(--safe-top) + 2rem) 32px calc(var(--safe-bottom) + 2rem); 
+            background: var(--bg-paper); z-index: 200; position: absolute; inset: 0;
+            transition: background-color 0.4s var(--ease-curve); overflow-y: auto;
         }
-        .auth-wrapper { 
-            width: 100%; 
-            max-width: 320px; 
-            position: relative; 
-            text-align: left; 
-            margin: auto; 
-        }
+        .auth-wrapper { width: 100%; max-width: 380px; position: relative; text-align: left; margin: 0 auto; }
         
-        .brand-title { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
-        .brand-subtitle { font-family: var(--font-tc); font-size: 14px; color: var(--text-muted); margin-bottom: 3rem; line-height: 1.5; }
+        .brand-title { font-size: 34px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
+        .brand-subtitle { font-family: var(--font-tc); font-size: 15px; color: var(--text-muted); margin-bottom: 3.5rem; line-height: 1.5; }
         
         .form-input {
-            width: 100%; background: var(--bg-sub); border: 1px solid transparent; padding: 16px;
-            border-radius: 12px; font-size: 15px; outline: none; color: var(--text-dark);
-            margin-bottom: 16px; transition: all 0.3s var(--ease-curve);
+            width: 100%; background: var(--bg-sub); border: 1px solid transparent; padding: 18px 20px;
+            border-radius: 16px; font-size: 16px; outline: none; color: var(--text-dark);
+            margin-bottom: 20px; transition: all 0.4s var(--ease-curve);
         }
-        .form-input:focus { border-color: var(--apple-blue); background: var(--bg-paper); box-shadow: 0 4px 12px rgba(0,122,255,0.08); }
+        
+        .form-input:focus { 
+            border-color: var(--apple-blue); 
+            background: var(--bg-paper); 
+        }
         
         .btn-primary, .btn-secondary {
-            width: 100%; font-size: 15px; font-weight: 600; padding: 16px; border-radius: 12px;
-            cursor: pointer; transition: all 0.3s var(--ease-curve); display: inline-flex;
+            width: 100%; font-size: 16px; font-weight: 600; padding: 18px; border-radius: 16px;
+            cursor: pointer; transition: all 0.4s var(--ease-curve); display: inline-flex;
             justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px;
         }
         .btn-primary { color: #ffffff; background: var(--apple-blue); border: none; }
         .btn-secondary { color: var(--text-dark); background: transparent; border: 1px solid var(--line-light); }
-        .btn-primary:active, .btn-secondary:active { transform: scale(0.97); }
-        .auth-switch { font-size: 14px; font-weight: 500; color: var(--apple-blue); cursor: pointer; margin-top: 1rem; display: inline-block; }
+        .btn-primary:active, .btn-secondary:active { transform: scale(0.95); }
+        .auth-switch { font-size: 15px; font-weight: 500; color: var(--apple-blue); cursor: pointer; margin-top: 1.5rem; display: inline-block; }
 
         #app-section {
             display: flex; flex-direction: column; height: 100%; max-width: 100%; 
             margin: 0 auto; background: var(--bg-sub); position: relative; overflow: hidden;
             animation: appStageIn 0.8s var(--ease-curve);
         }
-        @media (min-width: 500px) { #app-section { max-width: 500px; border-left: 1px solid var(--line-light); border-right: 1px solid var(--line-light); } }
+        @media (min-width: 600px) { #app-section { max-width: 600px; border-left: 1px solid var(--line-light); border-right: 1px solid var(--line-light); } }
 
-        @keyframes appStageIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes appStageIn { from { opacity: 0; transform: scale(0.98) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 
         .app-header {
             display: flex; align-items: flex-start; justify-content: space-between;
             padding: calc(var(--safe-top) + 32px) 32px 32px; background: var(--bg-sub); flex-shrink: 0;
         }
         .app-header-left { text-align: left; }
-        .app-header h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.1; margin-bottom: 4px; }
-        .live-clock { font-family: var(--font-en); font-size: 14px; color: var(--text-muted); margin-top: 6px; font-variant-numeric: tabular-nums; font-weight: 500; letter-spacing: 0.5px; }
+        .app-header h1 { font-size: 34px; font-weight: 700; letter-spacing: -0.8px; line-height: 1.1; margin-bottom: 6px; }
+        .live-clock { font-family: var(--font-en); font-size: 14px; color: var(--text-muted); font-variant-numeric: tabular-nums; font-weight: 500; letter-spacing: 0.5px; }
         
         .main-view { flex: 1; overflow-y: auto; padding: 0 32px 32px; scroll-behavior: smooth; }
         .main-view::-webkit-scrollbar { display: none; }
-        .view { display: none; animation: fadeUp 0.5s var(--ease-curve); }
+        .view { display: none; animation: fadeUp 0.6s var(--ease-curve); }
         .view.active { display: block; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        .section-title { font-size: 20px; font-weight: 600; margin-bottom: 24px; border-bottom: 1px solid var(--line-light); padding-bottom: 16px; text-align: left; letter-spacing: -0.3px;}
+        .section-title { font-size: 22px; font-weight: 600; margin-bottom: 24px; border-bottom: 1px solid var(--line-light); padding-bottom: 16px; text-align: left; letter-spacing: -0.3px;}
 
         .entry-card {
-            background: var(--bg-paper); border-radius: var(--radius); padding: 24px;
-            margin-bottom: 20px; box-shadow: var(--shadow); cursor: pointer; transition: transform 0.3s var(--ease-curve), box-shadow 0.3s var(--ease-curve);
-            text-align: left;
+            background: var(--bg-paper); border-radius: var(--radius); padding: 28px;
+            margin-bottom: 24px; 
+            border: 1px solid var(--line-light);
+            cursor: pointer; transition: transform 0.4s var(--ease-curve), border-color 0.4s var(--ease-curve);
+            text-align: left; position: relative;
         }
-        .entry-card:active { transform: scale(0.96); box-shadow: 0 4px 16px rgba(0,0,0,0.04); }
-
-        .bottom-tab {
-            display: flex; align-items: center; justify-content: space-around;
-            background: var(--glass-bg); backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px); border-top: 1px solid var(--line-light);
-            padding: 16px 0 calc(var(--safe-bottom) + 8px); flex-shrink: 0; z-index: 50;
+        .entry-card:active { 
+            transform: scale(0.95); 
+            border-color: var(--text-muted);
         }
-        .tab-item {
-            display: flex; flex-direction: column; align-items: center; gap: 6px;
-            background: none; border: none; cursor: pointer; color: var(--text-muted); width: 64px;
-        }
-        .tab-item.active { color: var(--apple-blue); }
 
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(12px);
@@ -151,66 +139,83 @@
         .modal-overlay.open { display: flex; opacity: 1; }
         
         .modal-sheet {
-            background: var(--bg-paper); border-radius: 36px 36px 0 0; width: 100%; max-width: 500px;
-            height: 65dvh; 
-            padding: 40px 32px 48px; overflow-y: auto; margin: 0 auto;
+            background: var(--bg-paper); border-radius: 0; width: 100%; max-width: 600px;
+            height: 100dvh; 
+            padding: calc(var(--safe-top) + 64px) 32px 48px; overflow-y: auto; margin: 0 auto;
             transform: translateY(100%); transition: transform 0.6s var(--ease-curve); position: relative;
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.08);
-            scroll-behavior: smooth;
+            scroll-behavior: smooth; text-align: left;
         }
         .modal-sheet::-webkit-scrollbar { display: none; }
         .modal-overlay.open .modal-sheet { transform: translateY(0); }
-        .modal-handle { width: 48px; height: 5px; border-radius: 3px; background: var(--line-light); position: absolute; top: 16px; left: 50%; transform: translateX(-50%); }
 
-        /* [OLD] .wizard-step { height: 100%; ... } */
-        /* [NEW] Updated height logic to prevent "Next" button from being pushed out of bound */
-        .wizard-step { display: none; animation: fadeUp 0.5s var(--ease-curve); min-height: 100%; height: max-content; flex-direction: column; text-align: left;}
+        #detail-modal .modal-sheet { padding: calc(var(--safe-top) + 64px) 40px 64px; }
+        .detail-date { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 16px; letter-spacing: 1px; text-transform: uppercase; }
+        .detail-content { font-size: 18px; line-height: 1.8; color: var(--text-dark); margin-bottom: 16px; white-space: pre-wrap; font-weight: 400; }
+        .detail-meta-row { display: flex; gap: 24px; border-top: 1px solid var(--line-light); padding-top: 24px; }
+        .detail-meta-item { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--text-muted); }
+
+        .wizard-step { display: none; animation: fadeUp 0.6s var(--ease-curve); min-height: 100%; height: max-content; flex-direction: column; text-align: left;}
         .wizard-step.active { display: flex; }
         
-        .wizard-header { margin-bottom: 32px; }
-        .wizard-meta { font-size: 12px; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; font-weight: 600;}
-        .wizard-title { font-size: 28px; font-weight: 700; line-height: 1.3; letter-spacing: -0.5px; }
-        .wizard-title small { font-family: var(--font-tc); display: block; font-size: 16px; color: var(--text-muted); margin-top: 6px; font-weight: 400; letter-spacing: 0; }
+        .wizard-header { margin-bottom: 40px; }
+        .wizard-meta { font-size: 13px; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; font-weight: 600;}
+        .wizard-title { font-size: 32px; font-weight: 700; line-height: 1.3; letter-spacing: -0.5px; }
+        .wizard-title small { font-family: var(--font-tc); display: block; font-size: 16px; color: var(--text-muted); margin-top: 8px; font-weight: 400; letter-spacing: 0; }
 
         .selector-grid { display: flex; flex-wrap: wrap; gap: 16px; }
         .option-btn {
-            background: var(--bg-sub); border: 1px solid transparent; padding: 16px 20px; border-radius: 16px;
+            background: var(--bg-sub); border: 1px solid transparent; padding: 20px; border-radius: 20px;
             cursor: pointer; color: var(--text-dark); display: flex; flex-direction: column; align-items: flex-start;
-            gap: 12px; font-size: 15px; font-weight: 500; transition: all 0.3s var(--ease-curve); width: calc(50% - 8px); text-align: left;
+            gap: 16px; font-size: 16px; font-weight: 500; transition: all 0.4s var(--ease-curve); width: calc(50% - 8px); text-align: left;
         }
-        .option-btn svg { width: 24px; height: 24px; stroke: var(--text-muted); transition: all 0.3s var(--ease-curve); }
-        button:hover svg { transform: scale(1.1); }
-        button:active svg { transform: scale(0.95); }
+        .option-btn svg { width: 28px; height: 28px; stroke: var(--text-muted); transition: all 0.4s var(--ease-curve); }
+        button:hover svg { transform: scale(1.05); }
+        button:active svg { transform: scale(0.9); }
         
-        .option-btn.selected { background: var(--apple-blue-light); border-color: var(--apple-blue); color: var(--apple-blue); }
+        .option-btn.selected { 
+            background: var(--apple-blue-light); border-color: var(--apple-blue); color: var(--apple-blue); 
+        }
         .option-btn.selected svg { 
             stroke: var(--apple-blue); 
             stroke-dasharray: 1.05;
             stroke-dashoffset: 1.05;
-            animation: iconSpring 0.6s var(--ease-curve) forwards, drawLine 0.9s cubic-bezier(0.25, 1, 0.5, 1) forwards; 
+            animation: iconSpring 0.8s var(--ease-curve) forwards, drawLine 1.2s var(--ease-curve) forwards; 
         }
 
-        .temp-slider { -webkit-appearance: none; width: 100%; height: 8px; border-radius: 4px; background: var(--line-light); outline: none; margin: 32px 0; }
-        .temp-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 32px; height: 32px; border-radius: 50%; background: var(--bg-paper); box-shadow: 0 4px 16px rgba(0,0,0,0.15); cursor: pointer; transition: transform 0.2s var(--ease-curve); }
-        .temp-slider::-webkit-slider-thumb:active { transform: scale(0.9); }
+        .temp-slider { -webkit-appearance: none; width: 100%; height: 8px; border-radius: 4px; background: var(--line-light); outline: none; margin: 40px 0; }
+        .temp-slider::-webkit-slider-thumb { 
+            -webkit-appearance: none; appearance: none; width: 36px; height: 36px; border-radius: 50%; 
+            background: var(--bg-paper); 
+            border: 1px solid var(--line-light);
+            cursor: pointer; transition: transform 0.3s var(--ease-curve); 
+        }
+        .temp-slider::-webkit-slider-thumb:active { transform: scale(0.85); }
         
-        .temp-display { font-size: 56px; font-weight: 700; margin-bottom: 8px; font-variant-numeric: tabular-nums; letter-spacing: -2.5px;}
+        .temp-display { font-size: 64px; font-weight: 700; margin-bottom: 8px; font-variant-numeric: tabular-nums; letter-spacing: -3px;}
         .temp-feeling { font-size: 16px; color: var(--text-muted); font-family: var(--font-tc); display: flex; align-items: center; gap: 8px; font-weight: 500;}
 
-        .wizard-footer { margin-top: auto; padding-top: 24px; display: flex; gap: 16px; }
+        .wizard-footer { margin-top: auto; padding-top: 32px; display: flex; gap: 16px; }
 
         #export-render-card {
             position: fixed; left: -9999px; top: 0; width: 800px; background: #FFFFFF;
-            padding: 64px; color: #1D1D1F; font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            padding: 80px; color: #1D1D1F; font-family: 'Inter', 'Noto Sans TC', sans-serif;
             text-align: left; box-sizing: border-box; z-index: -1;
         }
-        .export-header { border-bottom: 2px solid #000; padding-bottom: 16px; margin-bottom: 32px; display: flex; justify-content: space-between; align-items: flex-end; }
-        .export-brand { font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
-        .export-date { font-size: 14px; color: #86868B; }
-        .export-meta-row { display: flex; gap: 24px; margin-bottom: 32px; }
-        .export-meta-item { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: #86868B; }
-        .export-story { font-size: 20px; line-height: 1.8; margin-bottom: 48px; color: #1D1D1F; font-weight: 400; text-align: justify; }
-        .export-footer { margin-top: 48px; font-size: 12px; color: #86868B; text-align: left; letter-spacing: 0.5px;}
+        .export-header { border-bottom: 2px solid #000; padding-bottom: 24px; margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .export-brand { font-size: 16px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+        .export-date { font-size: 16px; color: #86868B; font-weight: 500; }
+        .export-meta-row { display: flex; gap: 32px; margin-bottom: 40px; }
+        .export-meta-item { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 500; color: #86868B; }
+        .export-story { font-size: 22px; line-height: 1.8; margin-bottom: 64px; color: #1D1D1F; font-weight: 400; text-align: justify; white-space: pre-wrap; }
+        .export-footer { margin-top: 48px; font-size: 14px; color: #86868B; text-align: left; letter-spacing: 0.5px;}
+
+        .download-icon-btn {
+            background: var(--bg-sub); border: none; color: var(--text-muted); cursor: pointer; 
+            width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            transition: all 0.3s var(--ease-curve);
+        }
+        .download-icon-btn:hover { background: var(--apple-blue-light); color: var(--apple-blue); }
+        .download-icon-btn:active { transform: scale(0.85); }
     </style>
 </head>
 <body>
@@ -229,6 +234,8 @@
             <g id="icon-book"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" fill="none" stroke-width="2" stroke-linecap="round" pathLength="1"/></g>
             <g id="icon-cal"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" fill="none" stroke-width="2" pathLength="1"/><path d="M16 2v4M8 2v4M3 10h18" fill="none" stroke-width="2" stroke-linecap="round" pathLength="1"/></g>
             <g id="icon-pen"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" fill="none" stroke-width="2" stroke-linecap="round" pathLength="1"/></g>
+            <g id="icon-close"><path d="M18 6L6 18M6 6l12 12" fill="none" stroke-width="2" stroke-linecap="round" pathLength="1"/></g>
+            <g id="icon-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/></g>
         </defs>
     </svg>
 
@@ -239,9 +246,9 @@
             <div class="brand-subtitle">Sign in to your journal</div>
             <input type="email" class="form-input" id="login-email" placeholder="Email / 郵箱">
             <input type="password" class="form-input" id="login-password" placeholder="Password / 密碼">
-            <button class="btn-primary" onclick="handleAuth('login')" id="btn-login">Sign In / 登入</button>
-            <div class="auth-switch" onclick="switchAuthView('register')">Sign up / 註冊</div>
-            <div id="login-error" style="color:var(--error-color); font-size:13px; margin-top:8px;"></div>
+            <button class="btn-primary" onclick="triggerHaptic(); handleAuth('login')" id="btn-login">Sign In / 登入</button>
+            <div class="auth-switch" onclick="triggerHaptic(); switchAuthView('register')">Sign up / 註冊</div>
+            <div id="login-error" style="color:var(--error-color); font-size:14px; margin-top:12px;"></div>
         </div>
 
         <div class="auth-wrapper view-hidden" id="view-register">
@@ -249,9 +256,9 @@
             <div class="brand-subtitle">Start your Daily Story</div>
             <input type="email" class="form-input" id="reg-email" placeholder="Email / 郵箱">
             <input type="password" class="form-input" id="reg-password" placeholder="Password / 密碼">
-            <button class="btn-primary" onclick="handleAuth('register')" id="btn-register">Sign up / 註冊</button>
-            <div class="auth-switch" onclick="switchAuthView('login')">Sign in / 返回登入</div>
-            <div id="reg-error" style="color:var(--error-color); font-size:13px; margin-top:8px;"></div>
+            <button class="btn-primary" onclick="triggerHaptic(); handleAuth('register')" id="btn-register">Sign up / 註冊</button>
+            <div class="auth-switch" onclick="triggerHaptic(); switchAuthView('login')">Sign in / 返回登入</div>
+            <div id="reg-error" style="color:var(--error-color); font-size:14px; margin-top:12px; line-height: 1.4;"></div>
         </div>
     </div>
 
@@ -263,29 +270,23 @@
                 <div id="live-clock" class="live-clock">加載時間中...</div>
             </div>
             <div class="header-actions">
-                <button onclick="openWizard()" title="New Entry" style="background:var(--apple-blue); color:white; border:none; width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow: 0 8px 24px rgba(0,122,255,0.3); transition: transform 0.3s var(--ease-curve);">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="22" height="22"><use href="#icon-pen"/></svg>
+                <button onclick="triggerHaptic(); openWizard()" title="New Entry" style="background:var(--apple-blue); color:white; border:none; width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; transition: transform 0.4s var(--ease-curve);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="24" height="24"><use href="#icon-pen"/></svg>
                 </button>
             </div>
         </header>
 
         <div class="main-view view active" id="view-timeline">
-            <div class="section-title">Timeline</div>
             <div id="timeline-container"></div>
-        </div>
-
-        <div class="bottom-tab">
-            <button class="tab-item active" data-target="view-timeline" style="width: 100%;">
-                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"><use href="#icon-book"/></svg>
-                <span class="tab-label" style="font-size:11px; font-weight:500;">Timeline</span>
-            </button>
         </div>
     </div>
 
     <!-- WIZARD BOTTOM SHEET -->
     <div class="modal-overlay" id="wizard-modal">
         <div class="modal-sheet">
-            <div class="modal-handle"></div>
+            <button onclick="triggerHaptic(); closeModal('wizard-modal')" style="position:absolute; top:calc(var(--safe-top) + 20px); right: 32px; background:var(--bg-sub); border:none; color:var(--text-muted); cursor:pointer; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; transition: all 0.4s var(--ease-curve);">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor"><use href="#icon-close"/></svg>
+            </button>
             
             <div class="wizard-step active" id="step-1">
                 <div class="wizard-header">
@@ -293,13 +294,13 @@
                     <div class="wizard-title">How is your mood today? <small>今天心情怎麼樣？</small></div>
                 </div>
                 <div class="selector-grid">
-                    <button class="option-btn mood-btn selected" data-val="happy" onclick="selectOption('mood', 'happy', this)"><svg viewBox="0 0 24 24"><use href="#icon-happy"/></svg> Happy</button>
-                    <button class="option-btn mood-btn" data-val="neutral" onclick="selectOption('mood', 'neutral', this)"><svg viewBox="0 0 24 24"><use href="#icon-neutral"/></svg> Neutral</button>
-                    <button class="option-btn mood-btn" data-val="sad" onclick="selectOption('mood', 'sad', this)"><svg viewBox="0 0 24 24"><use href="#icon-sad"/></svg> Sad</button>
-                    <button class="option-btn mood-btn" data-val="custom" onclick="selectOption('mood', 'custom', this)"><svg viewBox="0 0 24 24"><use href="#icon-gear"/></svg> Custom / 自定義</button>
+                    <button class="option-btn mood-btn selected" data-val="happy" onclick="triggerHaptic(); selectOption('mood', 'happy', this)"><svg viewBox="0 0 24 24"><use href="#icon-happy"/></svg> Happy</button>
+                    <button class="option-btn mood-btn" data-val="neutral" onclick="triggerHaptic(); selectOption('mood', 'neutral', this)"><svg viewBox="0 0 24 24"><use href="#icon-neutral"/></svg> Neutral</button>
+                    <button class="option-btn mood-btn" data-val="sad" onclick="triggerHaptic(); selectOption('mood', 'sad', this)"><svg viewBox="0 0 24 24"><use href="#icon-sad"/></svg> Sad</button>
+                    <button class="option-btn mood-btn" data-val="custom" onclick="triggerHaptic(); selectOption('mood', 'custom', this)"><svg viewBox="0 0 24 24"><use href="#icon-gear"/></svg> Custom / 自定義</button>
                 </div>
-                <input type="text" id="custom-mood-input" class="form-input view-hidden" style="margin-top:24px;" placeholder="Describe your mood... / 描述心情">
-                <div class="wizard-footer"><button class="btn-primary" onclick="nextStep(2)">Next / 下一步</button></div>
+                <input type="text" id="custom-mood-input" class="form-input view-hidden" style="margin-top:32px;" placeholder="Describe your mood... / 描述心情">
+                <div class="wizard-footer"><button class="btn-primary" onclick="triggerHaptic(); nextStep(2)">Next / 下一步</button></div>
             </div>
 
             <div class="wizard-step" id="step-2">
@@ -308,27 +309,27 @@
                     <div class="wizard-title">What is the temperature? <small>目前的氣溫如何？</small></div>
                 </div>
                 
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:24px;">
                     <div style="text-align:left;">
                         <div class="temp-display"><span id="temp-val">20</span>°C</div>
                         <div class="temp-feeling" id="temp-desc">
-                            <svg id="dynamic-thermometer" width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" style="color: inherit; transition: color 0.3s ease;"><use href="#icon-thermometer"/></svg>
+                            <svg id="dynamic-thermometer" width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" style="color: inherit; transition: color 0.4s var(--ease-curve);"><use href="#icon-thermometer"/></svg>
                             <span id="temp-text-status">Comfortable / 舒適</span>
                         </div>
                     </div>
                     
-                    <button id="temp-custom-toggle" onclick="toggleCustomTemp()" title="自定義感受" style="background:var(--bg-sub); border:none; color:var(--text-muted); cursor:pointer; width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; transition: all 0.3s var(--ease-curve);">
-                        <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor"><use href="#icon-gear"/></svg>
+                    <button id="temp-custom-toggle" onclick="triggerHaptic(); toggleCustomTemp()" title="自定義感受" style="background:var(--bg-sub); border:none; color:var(--text-muted); cursor:pointer; width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; transition: all 0.4s var(--ease-curve);">
+                        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"><use href="#icon-gear"/></svg>
                     </button>
                 </div>
 
-                <input type="range" class="temp-slider" id="temp-slider" min="-10" max="45" value="20" oninput="updateTemp()">
+                <input type="range" class="temp-slider" id="temp-slider" min="-10" max="45" value="20" oninput="triggerHaptic(10); updateTemp()">
                 
-                <input type="text" id="custom-temp-input" class="form-input view-hidden" style="margin-top:16px;" placeholder="Override feeling / 自定義感受">
+                <input type="text" id="custom-temp-input" class="form-input view-hidden" style="margin-top:24px;" placeholder="Override feeling / 自定義感受">
                 
                 <div class="wizard-footer">
-                    <button class="btn-secondary" onclick="nextStep(1)">Back</button>
-                    <button class="btn-primary" onclick="nextStep(3)">Next</button>
+                    <button class="btn-secondary" onclick="triggerHaptic(); nextStep(1)">Back</button>
+                    <button class="btn-primary" onclick="triggerHaptic(); nextStep(3)">Next</button>
                 </div>
             </div>
 
@@ -338,15 +339,15 @@
                     <div class="wizard-title">How is the weather? <small>天氣如何？</small></div>
                 </div>
                 <div class="selector-grid">
-                    <button class="option-btn weather-btn selected" data-val="Sunny" onclick="selectOption('weather', 'Sunny', this)"><svg viewBox="0 0 24 24"><use href="#icon-sun"/></svg> Sunny</button>
-                    <button class="option-btn weather-btn" data-val="Cloudy" onclick="selectOption('weather', 'Cloudy', this)"><svg viewBox="0 0 24 24"><use href="#icon-cloud"/></svg> Cloudy</button>
-                    <button class="option-btn weather-btn" data-val="Rainy" onclick="selectOption('weather', 'Rainy', this)"><svg viewBox="0 0 24 24"><use href="#icon-rain"/></svg> Rainy</button>
-                    <button class="option-btn weather-btn" data-val="custom" onclick="selectOption('weather', 'custom', this)"><svg viewBox="0 0 24 24"><use href="#icon-gear"/></svg> Custom</button>
+                    <button class="option-btn weather-btn selected" data-val="Sunny" onclick="triggerHaptic(); selectOption('weather', 'Sunny', this)"><svg viewBox="0 0 24 24"><use href="#icon-sun"/></svg> Sunny</button>
+                    <button class="option-btn weather-btn" data-val="Cloudy" onclick="triggerHaptic(); selectOption('weather', 'Cloudy', this)"><svg viewBox="0 0 24 24"><use href="#icon-cloud"/></svg> Cloudy</button>
+                    <button class="option-btn weather-btn" data-val="Rainy" onclick="triggerHaptic(); selectOption('weather', 'Rainy', this)"><svg viewBox="0 0 24 24"><use href="#icon-rain"/></svg> Rainy</button>
+                    <button class="option-btn weather-btn" data-val="custom" onclick="triggerHaptic(); selectOption('weather', 'custom', this)"><svg viewBox="0 0 24 24"><use href="#icon-gear"/></svg> Custom</button>
                 </div>
-                <input type="text" id="custom-weather-input" class="form-input view-hidden" style="margin-top:24px;" placeholder="Enter weather...">
+                <input type="text" id="custom-weather-input" class="form-input view-hidden" style="margin-top:32px;" placeholder="Enter weather...">
                 <div class="wizard-footer">
-                    <button class="btn-secondary" onclick="nextStep(2)">Back</button>
-                    <button class="btn-primary" onclick="nextStep(4)">Next</button>
+                    <button class="btn-secondary" onclick="triggerHaptic(); nextStep(2)">Back</button>
+                    <button class="btn-primary" onclick="triggerHaptic(); nextStep(4)">Next</button>
                 </div>
             </div>
 
@@ -355,21 +356,21 @@
                     <div class="wizard-meta">Step 4 of 5</div>
                     <div class="wizard-title">Where are you? <small>目前的位置？</small></div>
                 </div>
-                <div class="selector-grid" style="margin-bottom:24px;">
-                    <button class="option-btn loc-btn" style="width: 100%; flex-direction: row; align-items: center;" onclick="selectLocation('Outside', this)">
-                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor"><use href="#icon-location"/></svg> Outside / 外面
+                <div class="selector-grid" style="margin-bottom:32px;">
+                    <button class="option-btn loc-btn" style="width: 100%; flex-direction: row; align-items: center;" onclick="triggerHaptic(); selectLocation('Outside', this)">
+                        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"><use href="#icon-location"/></svg> Outside / 外面
                     </button>
-                    <button class="option-btn loc-btn" style="width: 100%; flex-direction: row; align-items: center;" onclick="selectLocation('Home', this)">
-                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke-width="2" stroke-linejoin="round" pathLength="1"/></svg> Home / 家裡
+                    <button class="option-btn loc-btn" style="width: 100%; flex-direction: row; align-items: center;" onclick="triggerHaptic(); selectLocation('Home', this)">
+                        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke-width="2" stroke-linejoin="round" pathLength="1"/></svg> Home / 家裡
                     </button>
-                    <button class="option-btn loc-btn" style="width: 100%; flex-direction: row; align-items: center;" onclick="selectLocation('Custom', this)">
-                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor"><use href="#icon-gear"/></svg> Custom / 自定義
+                    <button class="option-btn loc-btn" style="width: 100%; flex-direction: row; align-items: center;" onclick="triggerHaptic(); selectLocation('Custom', this)">
+                        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"><use href="#icon-gear"/></svg> Custom / 自定義
                     </button>
                 </div>
                 <input type="text" id="location-input" class="form-input view-hidden" placeholder="Enter custom location / 輸入自定義地點">
                 <div class="wizard-footer">
-                    <button class="btn-secondary" onclick="nextStep(3)">Back</button>
-                    <button class="btn-primary" onclick="nextStep(5)">Next</button>
+                    <button class="btn-secondary" onclick="triggerHaptic(); nextStep(3)">Back</button>
+                    <button class="btn-primary" onclick="triggerHaptic(); nextStep(5)">Next</button>
                 </div>
             </div>
 
@@ -378,35 +379,55 @@
                     <div class="wizard-meta">Step 5 of 5</div>
                     <div class="wizard-title">Write your story <small>寫下今天的故事</small></div>
                 </div>
-                <textarea id="story-content" class="form-input" style="height:160px; resize:none; font-size:16px; line-height:1.6;" placeholder="What happened today?..."></textarea>
                 
+                <div id="story-editor-container" style="display:flex; flex-direction:column; gap:16px; margin-bottom: 24px;">
+                    <input type="text" id="story-main-title" class="form-input" style="font-size: 22px; font-weight: 700; padding: 16px 20px;" placeholder="Main Title / 大標題 (僅限一個)">
+                    <div id="story-blocks" style="display:flex; flex-direction:column; gap:16px;">
+                        <textarea class="form-input block-body" style="height:120px; resize:none; font-size:16px; line-height:1.8;" placeholder="Body / 正文"></textarea>
+                    </div>
+                    <div style="display:flex; gap:12px;">
+                        <button class="btn-secondary" onclick="triggerHaptic(); addStoryBlock('subtitle')" style="padding: 12px; font-size:14px; width: auto; border-radius: 12px;">+ Subtitle / 新增小標題</button>
+                        <button class="btn-secondary" onclick="triggerHaptic(); addStoryBlock('body')" style="padding: 12px; font-size:14px; width: auto; border-radius: 12px;">+ Body / 新增正文</button>
+                    </div>
+                </div>
+
                 <div class="wizard-footer">
-                    <button class="btn-secondary" onclick="nextStep(4)">Back</button>
-                    <button class="btn-primary" onclick="finishWizard()" id="btn-save-story">Save & Export / 儲存並導出</button>
+                    <button class="btn-secondary" onclick="triggerHaptic(); nextStep(4)">Back</button>
+                    <button class="btn-primary" onclick="triggerHaptic(); finishWizard()" id="btn-save-story">Save / 儲存</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- ENTRY DETAIL MODAL -->
+    <div class="modal-overlay" id="detail-modal">
+        <div class="modal-sheet">
+            <button onclick="triggerHaptic(); closeModal('detail-modal')" style="position:absolute; top:calc(var(--safe-top) + 20px); right: 32px; background:var(--bg-sub); border:none; color:var(--text-muted); cursor:pointer; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; transition: all 0.4s var(--ease-curve);">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor"><use href="#icon-close"/></svg>
+            </button>
+            <div id="detail-content-area"></div>
         </div>
     </div>
 
     <!-- HIDDEN EDITORIAL EXPORT RENDERER -->
     <div id="export-render-card">
         <div class="export-header">
-            <div class="export-brand">Daily Story <br><span style="font-size:10px; font-weight:400; letter-spacing:0;">CANDLELIGHT ALOKA</span></div>
+            <div class="export-brand">Daily Story <br><span style="font-size:11px; font-weight:400; letter-spacing:0;">CANDLELIGHT ALOKA</span></div>
             <div class="export-date" id="ex-date">2026-07-05</div>
         </div>
         <div class="export-meta-row">
-            <div class="export-meta-item"><svg width="18" height="18" stroke="currentColor"><use href="#icon-happy" id="ex-mood-svg"/></svg> <span id="ex-mood">Happy</span></div>
-            <div class="export-meta-item"><svg width="18" height="18" stroke="currentColor"><use href="#icon-thermometer"/></svg> <span id="ex-temp">20°C</span></div>
-            <div class="export-meta-item"><svg width="18" height="18" stroke="currentColor"><use href="#icon-sun" id="ex-weather-svg"/></svg> <span id="ex-weather">Sunny</span></div>
-            <div class="export-meta-item"><svg width="18" height="18" stroke="currentColor"><use href="#icon-location"/></svg> <span id="ex-loc">Hong Kong</span></div>
+            <div class="export-meta-item"><span id="ex-mood-wrapper"></span> <span id="ex-mood">Happy</span></div>
+            <div class="export-meta-item"><span id="ex-temp-wrapper"></span> <span id="ex-temp">20°C</span></div>
+            <div class="export-meta-item"><span id="ex-weather-wrapper"></span> <span id="ex-weather">Sunny</span></div>
+            <div class="export-meta-item"><span id="ex-loc-wrapper"></span> <span id="ex-loc">Hong Kong</span></div>
         </div>
         <div class="export-story" id="ex-story">Story text goes here...</div>
         <div class="export-footer">Supported by alokaquest.top</div>
     </div>
 
     <script>
-        const SUPABASE_URL = "https://lcrfwsepqzhdxrkxsyqs.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_QAQwjRrorzs5b42PNlTmUg_0Ug3W40H";
+        const SUPABASE_URL = "https://nhjkhtrgehznhdlqyybs.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_BFkX70SHXwbSmNzE_h7AQg_a1OwKkO_";
         
         let currentAccessToken = localStorage.getItem('aloka_sb_token') || null;
         let studentUserId = "";
@@ -420,6 +441,12 @@
             content: '',
             images: []
         };
+
+        function triggerHaptic(duration = 15) {
+            if (navigator.vibrate) {
+                navigator.vibrate(duration);
+            }
+        }
 
         function updateClock() {
             const now = new Date();
@@ -470,8 +497,8 @@
                     showAppSection();
                 } else {
                     errBox.style.color = 'var(--success-color)';
-                    errBox.innerText = 'Registration successful! Please Sign In.';
-                    setTimeout(() => switchAuthView('login'), 1500);
+                    errBox.innerText = 'Registration successful! Please check your email to verify before signing in. / 註冊成功！請查看郵箱進行驗證。';
+                    setTimeout(() => switchAuthView('login'), 3500);
                 }
             } catch (err) {
                 errBox.style.color = 'var(--error-color)';
@@ -497,15 +524,6 @@
             }
         };
 
-        document.querySelectorAll('.tab-item').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.main-view').forEach(v => v.classList.remove('active'));
-                tab.classList.add('active');
-                document.getElementById(tab.dataset.target).classList.add('active');
-            });
-        });
-
         async function fetchDiaries() {
             try {
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/diaries?user_id=eq.${studentUserId}&select=*&order=date.desc`, {
@@ -513,7 +531,8 @@
                 });
                 if (res.ok) {
                     const data = await res.json();
-                    diariesData = {}; data.forEach(d => diariesData[d.date] = d);
+                    diariesData = {}; 
+                    data.forEach(d => diariesData[d.id] = d);
                     renderTimeline(data);
                 }
             } catch (e) { console.warn(e); }
@@ -521,7 +540,8 @@
 
         function renderTimeline(data) {
             const container = document.getElementById('timeline-container');
-            container.innerHTML = data.length === 0 ? `<div style="color:var(--text-muted); font-size:14px; text-align:left; padding: 40px 0;">No entries yet. Start writing!</div>` : '';
+            container.innerHTML = data.length === 0 ? `<div style="color:var(--text-muted); font-size:15px; text-align:left; padding: 40px 0;">No entries yet. Start writing!</div>` : '';
+            
             data.forEach(entry => {
                 const entryDateObj = new Date(entry.date);
                 const dateDisplay = isNaN(entryDateObj) 
@@ -529,38 +549,197 @@
                     : `${entryDateObj.toLocaleDateString('en-US', {month:'long', day:'numeric'})} ${entryDateObj.toLocaleTimeString('en-US', {hour12: false})}`;
 
                 container.innerHTML += `
-                    <div class="entry-card" onclick="openWizard('${entry.date}')">
-                        <div class="entry-meta">
-                            <div class="entry-date" style="font-weight:600; margin-bottom:8px; font-variant-numeric: tabular-nums;">${dateDisplay}</div>
-                        </div>
-                        <div style="font-size:15px; margin-bottom:16px; line-height:1.6; color:var(--text-dark);">${entry.content}</div>
-                        <div style="font-size:13px; color:var(--text-muted); display:flex; align-items:center; gap:12px; font-weight:500;">
-                            <span style="display:flex; align-items:center; gap:4px;"><svg width="16" height="16" stroke="currentColor"><use href="#icon-thermometer"/></svg> ${entry.temp}°C</span>
-                            <span style="display:flex; align-items:center; gap:4px;"><svg width="16" height="16" stroke="currentColor"><use href="#icon-${entry.weather === 'custom' ? 'gear' : 'sun'}"/></svg> ${entry.weather}</span>
+                    <div class="entry-card" style="cursor: default; padding: 20px 28px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div style="font-weight:600; font-variant-numeric: tabular-nums; font-size: 15px;">${dateDisplay}</div>
+                            <div style="display:flex; gap: 12px; align-items:center;">
+                                <button class="download-icon-btn" onclick="event.stopPropagation(); triggerHaptic(); downloadEntry('${entry.id}')" title="Download Image / 下載圖片">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor"><use href="#icon-download"/></svg>
+                                </button>
+                                <button class="download-icon-btn" style="color: var(--error-color);" onclick="event.stopPropagation(); triggerHaptic(); deleteEntry('${entry.id}')" title="Delete Entry / 刪除日記">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor"><use href="#icon-close"/></svg>
+                                </button>
+                            </div>
                         </div>
                     </div>`;
             });
         }
 
-        function openWizard(dateStr = null) {
+        async function deleteEntry(id) {
+            if(!confirm("Are you sure you want to delete this diary? / 確定要刪除這篇日記嗎？")) return;
+            try {
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/diaries?id=eq.${id}`, {
+                    method: 'DELETE',
+                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${currentAccessToken}` }
+                });
+                if(res.ok) {
+                    closeModal('detail-modal');
+                    fetchDiaries();
+                } else {
+                    alert("Delete failed / 刪除失敗");
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function viewEntryDetails(id) {
+            const entry = diariesData[id];
+            if(!entry) return;
+
+            const d = new Date(entry.date);
+            const dateDisplay = isNaN(d) ? entry.date : `${d.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric'})} ${d.toLocaleTimeString('en-US', {hour12: false})}`;
+
+            let detailHTML = '';
+            let exportHTML = ''; 
+
+            try {
+                let parsed = JSON.parse(entry.content);
+                if(parsed.title) {
+                    detailHTML += `<div style="font-size: 26px; font-weight: 700; margin-bottom: 24px; color: var(--text-dark);">${parsed.title}</div>`;
+                    exportHTML += `<div style="font-size: 32px; font-weight: 700; margin-bottom: 24px; color: #1D1D1F; letter-spacing: -0.5px;">${parsed.title}</div>`;
+                }
+                if(parsed.blocks) {
+                    parsed.blocks.forEach(b => {
+                        if(b.type === 'subtitle') {
+                            detailHTML += `<div style="font-size: 18px; font-weight: 600; margin-top: 24px; margin-bottom: 12px; color: var(--text-dark);">${b.text}</div>`;
+                            exportHTML += `<div style="font-size: 22px; font-weight: 600; margin-top: 32px; margin-bottom: 16px; color: #1D1D1F;">${b.text}</div>`;
+                        }
+                        else if(b.type === 'body') {
+                            detailHTML += `<div class="detail-content">${b.text}</div>`;
+                            exportHTML += `<div style="font-size: 20px; line-height: 1.8; margin-bottom: 16px; color: #333333; white-space: pre-wrap;">${b.text}</div>`;
+                        }
+                    });
+                }
+            } catch(e) {
+                detailHTML = `<div class="detail-content">${entry.content}</div>`;
+                exportHTML = `<div style="font-size: 20px; line-height: 1.8; color: #333333; white-space: pre-wrap;">${entry.content}</div>`;
+            }
+            
+            entry._exportHTML = exportHTML;
+
+            const weatherMap = { 'Sunny': 'sun', 'Cloudy': 'cloud', 'Rainy': 'rain', 'custom': 'gear' };
+            const mIcon = entry.mood === 'custom' ? 'gear' : entry.mood;
+            const wIcon = weatherMap[entry.weather] || 'sun';
+
+            document.getElementById('detail-content-area').innerHTML = `
+                <div class="detail-date">${dateDisplay}</div>
+                ${detailHTML}
+                <div class="detail-meta-row">
+                    <div class="detail-meta-item"><svg width="18" height="18" stroke="currentColor"><use href="#icon-${mIcon}"/></svg> <span>${entry.mood}</span></div>
+                    <div class="detail-meta-item"><svg width="18" height="18" stroke="currentColor"><use href="#icon-thermometer"/></svg> <span>${entry.temperature || entry.temp}°C</span></div>
+                    <div class="detail-meta-item"><svg width="18" height="18" stroke="currentColor"><use href="#icon-${wIcon}"/></svg> <span>${entry.weather}</span></div>
+                    ${entry.location ? `<div class="detail-meta-item"><svg width="18" height="18" stroke="currentColor"><use href="#icon-location"/></svg> <span>${entry.location}</span></div>` : ''}
+                </div>
+                <div style="margin-top: 40px; display: flex; justify-content: flex-start;">
+                    <button class="btn-secondary" style="width: auto; padding: 12px 24px; border-radius: 12px; font-size: 14px; color: var(--error-color); border-color: var(--error-color);" onclick="triggerHaptic(); deleteEntry('${entry.id}')">Delete Entry / 刪除日記</button>
+                </div>
+            `;
+            document.getElementById('detail-modal').classList.add('open');
+        }
+
+        // 用於獲取原始 SVG 內容的輔助函數，解決 html2canvas 不支持 <use> 的問題
+        function getSvgContent(id) {
+            const el = document.getElementById('icon-' + id);
+            return el ? el.innerHTML : '';
+        }
+
+        function downloadEntry(id) {
+            const entry = diariesData[id];
+            if(!entry) return;
+            
+            // 為了確保導出排版，如果沒有打開過詳情頁，先生成一次排版 HTML
+            if(!entry._exportHTML) viewEntryDetails(id);
+            closeModal('detail-modal');
+            
+            if(!confirm("Download this diary as an image? / 將這篇日記導出為圖片？")) return;
+            
+            const d = new Date(entry.date);
+            const timeToSecond = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+            
+            document.getElementById('ex-date').innerText = timeToSecond;
+            document.getElementById('ex-mood').innerText = entry.mood;
+            document.getElementById('ex-temp').innerText = `${entry.temperature || entry.temp}°C`;
+            document.getElementById('ex-weather').innerText = entry.weather;
+            document.getElementById('ex-loc').innerText = entry.location || '';
+            
+            // 動態映射圖標並注入 SVG
+            const weatherMap = { 'Sunny': 'sun', 'Cloudy': 'cloud', 'Rainy': 'rain', 'custom': 'gear' };
+            const mIconId = entry.mood === 'custom' ? 'gear' : entry.mood;
+            const wIconId = weatherMap[entry.weather] || 'sun';
+            
+            document.getElementById('ex-mood-wrapper').innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor">${getSvgContent(mIconId)}</svg>`;
+            document.getElementById('ex-temp-wrapper').innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor">${getSvgContent('thermometer')}</svg>`;
+            document.getElementById('ex-weather-wrapper').innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor">${getSvgContent(wIconId)}</svg>`;
+            document.getElementById('ex-loc-wrapper').innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor">${getSvgContent('location')}</svg>`;
+
+            // 寫入渲染好的 HTML 排版內容
+            document.getElementById('ex-story').innerHTML = entry._exportHTML || entry.content;
+
+            html2canvas(document.getElementById('export-render-card'), {
+                scale: 3, backgroundColor: '#FFFFFF', logging: false, useCORS: true
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `Aloka_Story_${timeToSecond.replace(/[: ]/g, '_')}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        function addStoryBlock(type) {
+            const container = document.getElementById('story-blocks');
+            if (type === 'subtitle') {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'form-input block-subtitle';
+                input.style.fontSize = '18px';
+                input.style.fontWeight = '600';
+                input.style.padding = '16px 20px';
+                input.placeholder = 'Subtitle / 小標題';
+                container.appendChild(input);
+            } else if (type === 'body') {
+                const textarea = document.createElement('textarea');
+                textarea.className = 'form-input block-body';
+                textarea.style.height = '120px';
+                textarea.style.resize = 'none';
+                textarea.style.fontSize = '16px';
+                textarea.style.lineHeight = '1.8';
+                textarea.placeholder = 'Body / 正文';
+                container.appendChild(textarea);
+            }
+            setTimeout(() => {
+                const sheet = document.querySelector('.modal-sheet');
+                if(sheet) sheet.scrollTo({ top: sheet.scrollHeight, behavior: 'smooth' });
+            }, 50);
+        }
+
+        function openWizard() {
             entryData.images = [];
             
             document.getElementById('temp-custom-toggle').classList.remove('view-hidden');
             document.getElementById('custom-temp-input').classList.add('view-hidden');
             document.getElementById('custom-temp-input').value = '';
             
+            const mainTitleEl = document.getElementById('story-main-title');
+            if(mainTitleEl) mainTitleEl.value = '';
+            const blocksContainer = document.getElementById('story-blocks');
+            if(blocksContainer) {
+                blocksContainer.innerHTML = '<textarea class="form-input block-body" style="height:120px; resize:none; font-size:16px; line-height:1.8;" placeholder="Body / 正文"></textarea>';
+            }
+
             document.getElementById('wizard-modal').classList.add('open');
             nextStep(1); 
         }
         
-        function closeModal() { document.getElementById('wizard-modal').classList.remove('open'); }
+        function closeModal(modalId) { 
+            document.getElementById(modalId || 'wizard-modal').classList.remove('open'); 
+        }
 
         function nextStep(stepNum) {
             document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
             document.getElementById(`step-${stepNum}`).classList.add('active');
         }
 
-        // [NEW] Helper function to scroll modal safely to bottom when dynamic input appears
         function scrollToBottom() {
             setTimeout(() => {
                 const sheet = document.querySelector('.modal-sheet');
@@ -573,7 +752,7 @@
             const input = document.getElementById('custom-temp-input');
             input.classList.remove('view-hidden');
             input.focus();
-            scrollToBottom(); // [NEW] Keeps button visible
+            scrollToBottom(); 
         }
 
         function selectOption(category, val, btnEl) {
@@ -589,7 +768,7 @@
             if (val === 'custom') {
                 customInput.classList.remove('view-hidden');
                 customInput.focus();
-                scrollToBottom(); // [NEW] Keeps button visible
+                scrollToBottom(); 
             } else {
                 customInput.classList.add('view-hidden');
             }
@@ -607,7 +786,7 @@
                 locInput.classList.remove('view-hidden');
                 locInput.value = '';
                 locInput.focus();
-                scrollToBottom(); // [NEW] Keeps button visible
+                scrollToBottom(); 
             } else {
                 locInput.classList.add('view-hidden');
                 locInput.value = val;
@@ -639,69 +818,52 @@
             const finalTemp = customTemp ? customTemp : entryData.tempDesc;
             const finalWeather = entryData.weather === 'custom' ? document.getElementById('custom-weather-input').value : entryData.weather;
             const finalLoc = document.getElementById('location-input').value;
-            const finalStory = document.getElementById('story-content').value;
+            
+            const mainTitle = document.getElementById('story-main-title').value;
+            const blockEls = document.getElementById('story-blocks').children;
+            let blocks = [];
+            for(let el of blockEls) {
+                if(el.classList.contains('block-subtitle') && el.value.trim()) blocks.push({type: 'subtitle', text: el.value});
+                else if(el.classList.contains('block-body') && el.value.trim()) blocks.push({type: 'body', text: el.value});
+            }
+            const finalStory = JSON.stringify({ title: mainTitle, blocks: blocks });
 
             const d = new Date();
-            const timeToSecond = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
-            
-            document.getElementById('ex-date').innerText = timeToSecond;
-            document.getElementById('ex-mood').innerText = finalMood;
-            document.getElementById('ex-mood-svg').setAttribute('href', `#icon-${entryData.mood === 'custom' ? 'gear' : entryData.mood}`);
-            
-            document.getElementById('ex-temp').innerText = `${entryData.temp}°C (${finalTemp})`;
-            document.getElementById('ex-weather').innerText = finalWeather;
-            document.getElementById('ex-weather-svg').setAttribute('href', `#icon-${entryData.weather === 'custom' ? 'gear' : 'sun'}`);
-            
-            document.getElementById('ex-loc').innerText = finalLoc;
-            document.getElementById('ex-story').innerText = finalStory;
+            const dbDateStr = d.toISOString(); 
 
-            document.getElementById('btn-save-story').innerText = "Exporting & Saving...";
+            document.getElementById('btn-save-story').innerText = "Saving... / 儲存中...";
             
-            setTimeout(() => {
-                html2canvas(document.getElementById('export-render-card'), {
-                    scale: 3, backgroundColor: '#FFFFFF', logging: false
-                }).then(canvas => {
-                    const link = document.createElement('a');
-                    link.download = `Aloka_Story_${timeToSecond.replace(/[: ]/g, '_')}.png`;
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                    
-                    // [NEW] Restored database 'resolution=merge-duplicates' to prevent silent DB rejection
-                    const dbDateStr = d.toISOString(); 
-                    fetch(`${SUPABASE_URL}/rest/v1/diaries`, {
-                        method: 'POST',
-                        headers: { 
-                            'apikey': SUPABASE_ANON_KEY, 
-                            'Authorization': `Bearer ${currentAccessToken}`, 
-                            'Content-Type': 'application/json', 
-                            'Prefer': 'resolution=merge-duplicates' 
-                        },
-                        body: JSON.stringify({ 
-                            user_id: studentUserId, 
-                            date: dbDateStr, 
-                            content: finalStory, 
-                            mood: finalMood, 
-                            weather: finalWeather, 
-                            temperature: entryData.temp, 
-                            location: finalLoc 
-                        })
-                    }).then(async (res) => {
-                        // [NEW] Added explicit Error Check
-                        if (!res.ok) {
-                            const err = await res.json();
-                            console.error("Supabase Save Error:", err);
-                        }
-                        document.getElementById('btn-save-story').innerText = "Save & Export / 儲存並導出";
-                        closeModal(); 
-                        fetchDiaries(); 
-                    }).catch(err => {
-                        console.error("Network Error during save:", err);
-                        document.getElementById('btn-save-story').innerText = "Save & Export / 儲存並導出";
-                        closeModal(); 
-                        fetchDiaries(); 
-                    });
-                });
-            }, 600); 
+            fetch(`${SUPABASE_URL}/rest/v1/diaries`, {
+                method: 'POST',
+                headers: { 
+                    'apikey': SUPABASE_ANON_KEY, 
+                    'Authorization': `Bearer ${currentAccessToken}`, 
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    user_id: studentUserId, 
+                    date: dbDateStr, 
+                    content: finalStory, 
+                    mood: finalMood, 
+                    weather: finalWeather, 
+                    temperature: entryData.temp, 
+                    location: finalLoc 
+                })
+            }).then(async (res) => {
+                if (!res.ok) {
+                    const err = await res.json();
+                    console.error("Save Error:", err);
+                    alert("保存失敗：" + (err.message || "Unknown error"));
+                }
+                
+                document.getElementById('btn-save-story').innerText = "Save / 儲存";
+                closeModal('wizard-modal'); 
+                fetchDiaries(); 
+            }).catch(err => {
+                console.error("Network Error:", err);
+                alert("網路連接錯誤，請重試");
+                document.getElementById('btn-save-story').innerText = "Save / 儲存";
+            });
         }
     </script>
 </body>
