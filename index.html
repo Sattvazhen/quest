@@ -242,7 +242,7 @@
     <div class="auth-container" id="authSection">
         <div class="auth-wrapper" id="view-login">
             <div class="brand-title">Daily Story</div>
-            <div class="brand-subtitle">Sign in to your journal</div>
+            <div class="brand-subtitle">Sign in to your daily life</div>
             <input type="email" class="form-input" id="login-email" placeholder="Email / 郵箱">
             <input type="password" class="form-input" id="login-password" placeholder="Password / 密碼">
             
@@ -707,10 +707,10 @@
                 <div class="detail-date">${dateDisplay}</div>
                 ${detailHTML}
                 <div class="detail-meta-row">
-                    <div class="detail-meta-item"><svg width="18" height="18" stroke="currentColor"><use href="#icon-${mIcon}"/></svg> <span>${entry.mood}</span></div>
-                    <div class="detail-meta-item"><svg width="18" height="18" stroke="currentColor"><use href="#icon-thermometer"/></svg> <span>${entry.temperature || entry.temp}°C</span></div>
-                    <div class="detail-meta-item"><svg width="18" height="18" stroke="currentColor"><use href="#icon-${wIcon}"/></svg> <span>${entry.weather}</span></div>
-                    ${entry.location ? `<div class="detail-meta-item"><svg width="18" height="18" stroke="currentColor"><use href="#icon-location"/></svg> <span>${entry.location}</span></div>` : ''}
+                    <div class="detail-meta-item"><svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor"><use href="#icon-${mIcon}"/></svg> <span>${entry.mood}</span></div>
+                    <div class="detail-meta-item"><svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor"><use href="#icon-thermometer"/></svg> <span>${entry.temperature || entry.temp}°C</span></div>
+                    <div class="detail-meta-item"><svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor"><use href="#icon-${wIcon}"/></svg> <span>${entry.weather}</span></div>
+                    ${entry.location ? `<div class="detail-meta-item"><svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor"><use href="#icon-location"/></svg> <span>${entry.location}</span></div>` : ''}
                 </div>
                 <div style="margin-top: 40px; display: flex; justify-content: flex-start;">
                     <button class="btn-secondary" style="width: auto; padding: 12px 24px; border-radius: 12px; font-size: 14px;" onclick="triggerHaptic(); deleteEntry('${entry.id}')">Delete Entry / 刪除日記</button>
