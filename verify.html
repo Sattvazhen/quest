@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+    <title>Email Verification · Daily Story</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* 沿用你原本的 CSS 變數與核心樣式 */
+        :root {
+            --bg-paper: #ffffff;
+            --bg-sub: #f5f5f7;
+            --text-dark: #1d1d1f; 
+            --text-muted: #86868b; 
+            --apple-blue: #007AFF;
+            --error-color: #ff3b30;
+            --success-color: #34c759;
+            --ease-curve: cubic-bezier(0.32, 0.72, 0, 1); 
+            --font-en: 'Inter', -apple-system, sans-serif;
+            --font-tc: 'Noto Sans TC', 'PingFang TC', sans-serif;
+        }
+        [data-theme="dark"] {
+            --bg-paper: #000000; --bg-sub: #1c1c1e; --text-dark: #f5f5f7; --text-muted: #8e8e93;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: var(--font-en); background-color: var(--bg-paper); color: var(--text-dark);
+            -webkit-font-smoothing: antialiased; text-align: left; height: 100vh; overflow: hidden;
+            letter-spacing: 0.01em; transition: background-color 0.4s var(--ease-curve), color 0.4s var(--ease-curve);
+        }
+        .auth-container {
+            width: 100%; min-height: 100dvh; display: flex; align-items: center; justify-content: flex-start;
+            padding: 40px 32px; background: var(--bg-paper);
+        }
+        .auth-wrapper { width: 100%; max-width: 380px; position: relative; text-align: left; margin: 0 auto; }
+        
+        .brand-title { font-size: 34px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
+        .brand-subtitle { font-family: var(--font-tc); font-size: 15px; color: var(--text-muted); margin-bottom: 3.5rem; line-height: 1.5; }
+        
+        .btn-primary {
+            width: 100%; font-size: 16px; font-weight: 600; padding: 18px; border-radius: 16px;
+            cursor: pointer; transition: all 0.4s var(--ease-curve); display: inline-flex;
+            justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px;
+            color: #ffffff; background: var(--apple-blue); border: none; text-decoration: none;
+        }
+        .btn-primary:active { transform: scale(0.95); }
+        .status-msg { font-size: 16px; margin-bottom: 24px; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-wrapper">
+            <div class="brand-title">Daily Story</div>
+            <div class="brand-subtitle">Email Verification / 信箱驗證</div>
+            
+            <div id="status-message" class="status-msg" style="color: var(--text-muted);">
+                Verifying your email, please wait...<br>正在驗證您的信箱，請稍候...
+            </div>
+            
+            <a href="/" class="btn-primary" id="btn-home" style="display: none;">
+                Go to Sign In / 前往登入
+            </a>
+        </div>
+    </div>
+
+    <script>
+        window.onload = () => {
+            const msgEl = document.getElementById('status-message');
+            const btnEl = document.getElementById('btn-home');
+
+            // 解析 Supabase 網址 Hash (例如: #access_token=...&type=signup)
+            const hash = window.location.hash.substring(1);
+            const params = new URLSearchParams(hash);
+            const accessToken = params.get('access_token');
+            const type = params.get('type');
+
+            if (accessToken) {
+                // 如果抓到了 token，通常代表 Supabase 已經自動驗證成功
+                msgEl.innerHTML = "Verification Successful!<br>驗證成功！您可以開始使用您的帳號了。";
+                msgEl.style.color = "var(--success-color)";
+                
+                // 將 token 存入 localStorage，讓使用者跳轉回主頁時自動登入
+                localStorage.setItem('aloka_sb_token', accessToken);
+                
+                btnEl.style.display = "flex";
+                btnEl.innerText = "Enter Daily Story / 進入日記";
+            } else {
+                // 沒有 token，可能是連結失效或使用者直接開啟此頁面
+                const errorDesc = params.get('error_description');
+                if (errorDesc) {
+                    msgEl.innerHTML = `Verification Failed: ${errorDesc}<br>驗證失敗，請重新獲取驗證信。`;
+                } else {
+                    msgEl.innerHTML = "Invalid link.<br>無效的驗證連結。";
+                }
+                msgEl.style.color = "var(--error-color)";
+                btnEl.style.display = "flex";
+            }
+        };
+    </script>
+</body>
+</html>
