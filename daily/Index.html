@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+    <title>Daily Story · Candlelight Aloka</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-paper: #ffffff;
+            --bg-sub: #f5f5f7;
+            --text-dark: #1d1d1f; 
+            --text-muted: #86868b; 
+            --line-light: rgba(0, 0, 0, 0.06);
+            --apple-blue: #007AFF;
+            --apple-blue-light: #E5F1FF;
+            --error-color: #ff3b30;
+            --success-color: #34c759;
+            --radius: 20px;
+            --safe-bottom: env(safe-area-inset-bottom, 20px);
+            --safe-top: env(safe-area-inset-top, 40px); 
+            --ease-curve: cubic-bezier(0.32, 0.72, 0, 1); 
+            --font-en: 'Inter', -apple-system, sans-serif;
+            --font-tc: 'Noto Sans TC', 'PingFang TC', sans-serif;
+            --glass-bg: rgba(245, 245, 247, 0.85);
+        }
+        [data-theme="dark"] {
+            --bg-paper: #000000; --bg-sub: #1c1c1e; --text-dark: #f5f5f7; --text-muted: #8e8e93;
+            --line-light: rgba(255, 255, 255, 0.1); --apple-blue-light: #0A2948;
+            --glass-bg: rgba(28, 28, 30, 0.85);
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: var(--font-en); background-color: var(--bg-paper); color: var(--text-dark);
+            -webkit-font-smoothing: antialiased; text-align: left; height: 100vh; overflow: hidden;
+            letter-spacing: 0.01em; transition: background-color 0.4s var(--ease-curve), color 0.4s var(--ease-curve);
+        }
+        .view-hidden { display: none !important; }
+        .auth-container {
+            width: 100%; min-height: 100dvh; display: flex; align-items: center; justify-content: flex-start;
+            padding: calc(var(--safe-top) + 2rem) 32px calc(var(--safe-bottom) + 2rem); 
+            background: var(--bg-paper); z-index: 200; position: absolute; inset: 0;
+            transition: background-color 0.4s var(--ease-curve); overflow-y: auto;
+        }
+        .auth-wrapper { width: 100%; max-width: 380px; position: relative; text-align: left; margin: 0 auto; }
+        .brand-title { font-size: 34px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
+        .brand-subtitle { font-family: var(--font-tc); font-size: 15px; color: var(--text-muted); margin-bottom: 3.5rem; line-height: 1.5; }
+        .form-input {
+            width: 100%; background: var(--bg-sub); border: 1px solid transparent; padding: 18px 20px;
+            border-radius: 16px; font-size: 16px; outline: none; color: var(--text-dark);
+            margin-bottom: 20px; transition: all 0.4s var(--ease-curve);
+        }
+        .form-input:focus { 
+            border-color: var(--apple-blue); 
+            background: var(--bg-paper); 
+        }
+        .btn-primary, .btn-secondary {
+            width: 100%; font-size: 16px; font-weight: 600; padding: 18px; border-radius: 16px;
+            cursor: pointer; transition: all 0.4s var(--ease-curve); display: inline-flex;
+            justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px;
+        }
+        .btn-primary { color: #ffffff; background: var(--apple-blue); border: none; }
+        .btn-secondary { color: var(--text-dark); background: transparent; border: 1px solid var(--line-light); }
+        .btn-primary:active, .btn-secondary:active { transform: scale(0.95); }
+        .auth-switch { font-size: 15px; font-weight: 500; color: var(--apple-blue); cursor: pointer; margin-top: 1.5rem; display: inline-block; }
+    </style>
+</head>
+<body>
+    <div class="auth-container" id="authSection">
+        <div class="auth-wrapper" id="view-login">
+            <div class="brand-title">Daily Story</div>
+            <div class="brand-subtitle">Sign in to your daily life</div>
+            <input type="email" class="form-input" id="login-email" placeholder="Email / 郵箱">
+            <input type="password" class="form-input" id="login-password" placeholder="Password / 密碼">
+            <div id="login-slider-wrapper" style="width: 100%; height: 54px; background: var(--bg-sub); border-radius: 16px; position: relative; margin-bottom: 24px; overflow: hidden; user-select: none; display: flex; align-items: center; justify-content: center;">
+                <div id="login-slider-bg" style="position: absolute; left: 0; top: 0; height: 100%; width: 0; background: var(--apple-blue-light); transition: background 0.3s;"></div>
+                <span id="login-slider-text" style="font-size: 14px; color: var(--text-muted); z-index: 1; font-family: var(--font-tc); font-weight: 500;">Slide to verify / 向右滑動驗證</span>
+                <div id="login-slider-btn" style="width: 54px; height: 54px; background: var(--bg-paper); border: 1px solid var(--line-light); border-radius: 16px; position: absolute; left: 0; top: 0; cursor: grab; z-index: 2; display: flex; align-items: center; justify-content: center; transition: background 0.3s;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                </div>
+            </div>
+            <button class="btn-primary" onclick="triggerHaptic(); handleAuth('login')" id="btn-login">Sign In / 登入</button>
+            <div style="display:flex; gap:12px; margin-bottom: 24px;">
+                <button class="btn-secondary" style="flex:1" onclick="handleOAuth('google')">Google</button>
+                <button class="btn-secondary" style="flex:1" onclick="handleOAuth('github')">GitHub</button>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+                <div class="auth-switch" onclick="triggerHaptic(); switchAuthView('register')">Sign up / 註冊</div>
+                <div class="auth-switch" onclick="triggerHaptic(); switchAuthView('forgot')" style="color:var(--text-muted)">Forgot password? / 忘記密碼</div>
+            </div>
+            <div id="login-error" style="color:var(--error-color); font-size:14px; margin-top:12px;"></div>
+        </div>
+
+        <div class="auth-wrapper view-hidden" id="view-register">
+            <div class="brand-title">Create Account</div>
+            <div class="brand-subtitle">Start your Daily Story</div>
+            <input type="email" class="form-input" id="reg-email" placeholder="Email / 郵箱">
+            <input type="password" class="form-input" id="reg-password" placeholder="Password / 密碼">
+            <div id="register-slider-wrapper" style="width: 100%; height: 54px; background: var(--bg-sub); border-radius: 16px; position: relative; margin-bottom: 24px; overflow: hidden; user-select: none; display: flex; align-items: center; justify-content: center;">
+                <div id="register-slider-bg" style="position: absolute; left: 0; top: 0; height: 100%; width: 0; background: var(--apple-blue-light); transition: background 0.3s;"></div>
+                <span id="register-slider-text" style="font-size: 14px; color: var(--text-muted); z-index: 1; font-family: var(--font-tc); font-weight: 500;">Slide to verify / 向右滑動驗證</span>
+                <div id="register-slider-btn" style="width: 54px; height: 54px; background: var(--bg-paper); border: 1px solid var(--line-light); border-radius: 16px; position: absolute; left: 0; top: 0; cursor: grab; z-index: 2; display: flex; align-items: center; justify-content: center; transition: background 0.3s;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                </div>
+            </div>
+            <button class="btn-primary" onclick="triggerHaptic(); handleAuth('register')" id="btn-register">Sign up / 註冊</button>
+            <div class="auth-switch" onclick="triggerHaptic(); switchAuthView('login')">Sign in / 返回登入</div>
+            <div id="reg-error" style="color:var(--error-color); font-size:14px; margin-top:12px; line-height: 1.4;"></div>
+        </div>
+
+        <div class="auth-wrapper view-hidden" id="view-forgot">
+            <div class="brand-title">Reset Password</div>
+            <div class="brand-subtitle">Enter your email to receive a reset link.</div>
+            <input type="email" class="form-input" id="forgot-email" placeholder="Email / 郵箱">
+            <div id="forgot-slider-wrapper" style="width: 100%; height: 54px; background: var(--bg-sub); border-radius: 16px; position: relative; margin-bottom: 24px; overflow: hidden; user-select: none; display: flex; align-items: center; justify-content: center;">
+                <div id="forgot-slider-bg" style="position: absolute; left: 0; top: 0; height: 100%; width: 0; background: var(--apple-blue-light); transition: background 0.3s;"></div>
+                <span id="forgot-slider-text" style="font-size: 14px; color: var(--text-muted); z-index: 1; font-family: var(--font-tc); font-weight: 500;">Slide to verify / 向右滑動驗證</span>
+                <div id="forgot-slider-btn" style="width: 54px; height: 54px; background: var(--bg-paper); border: 1px solid var(--line-light); border-radius: 16px; position: absolute; left: 0; top: 0; cursor: grab; z-index: 2; display: flex; align-items: center; justify-content: center; transition: background 0.3s;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                </div>
+            </div>
+            <button class="btn-primary" onclick="triggerHaptic(); handleForgotPassword()">Send Link / 發送郵件</button>
+            <div class="auth-switch" onclick="triggerHaptic(); switchAuthView('login')">Back to Sign In / 返回登入</div>
+            <div id="forgot-message" style="font-size:14px; margin-top:12px;"></div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://nhjkhtrgehznhdlqyybs.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_BFkX70SHXwbSmNzE_h7AQg_a1OwKkO_";
+        let currentAccessToken = localStorage.getItem('aloka_sb_token') || null;
+        const sliderState = { login: false, register: false, forgot: false };
+
+        function triggerHaptic(duration = 15) {
+            if (navigator.vibrate) {
+                navigator.vibrate(duration);
+            }
+        }
+
+        function switchAuthView(view) {
+            document.getElementById('view-login').classList.add('view-hidden');
+            document.getElementById('view-register').classList.add('view-hidden');
+            document.getElementById('view-forgot').classList.add('view-hidden');
+            document.getElementById(`view-${view}`).classList.remove('view-hidden');
+        }
+
+        function handleOAuth(provider) {
+            const redirectUrl = encodeURIComponent(window.location.origin + window.location.pathname);
+            window.location.href = `${SUPABASE_URL}/auth/v1/authorize?provider=${provider}&redirect_to=${redirectUrl}`;
+        }
+
+        async function handleForgotPassword() {
+            const email = document.getElementById('forgot-email').value.trim();
+            const msgBox = document.getElementById('forgot-message');
+            if(!email) return;
+            if (!sliderState['forgot']) {
+                msgBox.style.color = 'var(--error-color)';
+                msgBox.innerText = 'Please slide to complete verification. / 請向右滑動滑塊完成驗證。';
+                return;
+            }
+            try {
+                const res = await fetch(`${SUPABASE_URL}/auth/v1/recover`, {
+                    method: 'POST',
+                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                if(res.ok) {
+                    msgBox.style.color = 'var(--success-color)';
+                    msgBox.innerText = 'Check your email for the reset link.';
+                } else {
+                    throw new Error('Recovery request failed');
+                }
+            } catch (e) {
+                msgBox.style.color = 'var(--error-color)';
+                msgBox.innerText = 'Error: Please check your email address.';
+            }
+        }
+
+        async function handleAuth(type) {
+            const email = document.getElementById(type === 'login' ? 'login-email' : 'reg-email').value.trim();
+            const password = document.getElementById(type === 'login' ? 'login-password' : 'reg-password').value;
+            const errBox = document.getElementById(type === 'login' ? 'login-error' : 'reg-error');
+            const btn = document.getElementById(`btn-${type}`);
+            if (!email || !password) { errBox.innerText = 'Email and Password required.'; return; }
+            if (!sliderState[type]) {
+                errBox.style.color = 'var(--error-color)';
+                errBox.innerText = 'Please slide to complete verification. / 請向右滑動滑塊完成驗證。';
+                return;
+            }
+            btn.disabled = true; errBox.innerText = '';
+            const endpoint = type === 'login' ? 'token?grant_type=password' : 'signup';
+            try {
+                const res = await fetch(`${SUPABASE_URL}/auth/v1/${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.msg || data.error_description || 'Auth failed');
+                if (type === 'login') {
+                    currentAccessToken = data.access_token;
+                    localStorage.setItem('aloka_sb_token', currentAccessToken);
+                    showAppSection();
+                } else {
+                    errBox.style.color = 'var(--success-color)';
+                    errBox.innerText = 'Registration successful! Please check your email to verify before signing in.';
+                    setTimeout(() => switchAuthView('login'), 3500);
+                }
+            } catch (err) {
+                errBox.style.color = 'var(--error-color)';
+                errBox.innerText = err.message;
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        function showAppSection() {
+            window.location.href = "./app/index.html";
+        }
+
+        function initSliderVerify(type) {
+            const wrapper = document.getElementById(`${type}-slider-wrapper`);
+            const btn = document.getElementById(`${type}-slider-btn`);
+            const bg = document.getElementById(`${type}-slider-bg`);
+            const text = document.getElementById(`${type}-slider-text`);
+            if (!wrapper || !btn) return;
+            let isDragging = false;
+            let startX = 0;
+            function onStart(e) {
+                if (sliderState[type]) return;
+                isDragging = true;
+                startX = e.touches ? e.touches[0].clientX : e.clientX;
+                btn.style.cursor = 'grabbing';
+            }
+            function onMove(e) {
+                if (!isDragging) return;
+                const maxMove = wrapper.clientWidth - btn.clientWidth;
+                const currentX = e.touches ? e.touches[0].clientX : e.clientX;
+                let moveX = currentX - startX;
+                if (moveX < 0) moveX = 0;
+                if (moveX > maxMove) moveX = maxMove;
+                btn.style.left = moveX + 'px';
+                bg.style.width = (moveX + btn.clientWidth / 2) + 'px';
+                if (moveX >= maxMove && maxMove > 0) {
+                    isDragging = false;
+                    sliderState[type] = true;
+                    btn.style.left = maxMove + 'px';
+                    bg.style.width = '100%';
+                    bg.style.background = 'rgba(52, 199, 89, 0.15)';
+                    text.innerText = 'Verification Passed / 驗證通過';
+                    text.style.color = 'var(--success-color)';
+                    btn.style.cursor = 'default';
+                    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success-color)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+                    if (navigator.vibrate) navigator.vibrate(30);
+                    removeListeners();
+                }
+            }
+            function onEnd() {
+                if (!isDragging) return;
+                isDragging = false;
+                btn.style.cursor = 'grab';
+                if (!sliderState[type]) {
+                    btn.style.left = '0px';
+                    bg.style.width = '0px';
+                }
+            }
+            function removeListeners() {
+                document.removeEventListener('mousemove', onMove);
+                document.removeEventListener('mouseup', onEnd);
+                document.removeEventListener('touchmove', onMove);
+                document.removeEventListener('touchend', onEnd);
+            }
+            btn.addEventListener('mousedown', (e) => { onStart(e); document.addEventListener('mousemove', onMove); document.addEventListener('mouseup', onEnd); });
+            btn.addEventListener('touchstart', (e) => { onStart(e); document.addEventListener('touchmove', onMove); document.addEventListener('touchend', onEnd); }, { passive: true });
+        }
+
+        window.onload = async () => {
+            const hash = window.location.hash;
+            if (hash && hash.includes('access_token')) {
+                const params = new URLSearchParams(hash.substring(1));
+                const token = params.get('access_token');
+                if (token) {
+                    currentAccessToken = token;
+                    localStorage.setItem('aloka_sb_token', token);
+                    window.history.replaceState(null, '', window.location.pathname);
+                }
+            }
+            if (currentAccessToken) {
+                const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${currentAccessToken}` }
+                });
+                if (res.ok) { 
+                    showAppSection(); 
+                } else { 
+                    localStorage.removeItem('aloka_sb_token'); 
+                    currentAccessToken = null;
+                }
+            }
+            initSliderVerify('login');
+            initSliderVerify('register');
+            initSliderVerify('forgot');
+        };
+
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('button, .auth-switch')) {
+                triggerHaptic(15);
+            }
+        });
+        document.addEventListener('input', (e) => {
+            if (e.target.matches('input[type="text"], input[type="email"], input[type="password"]')) {
+                triggerHaptic(5);
+            }
+        });
+    </script>
+</body>
+</html>

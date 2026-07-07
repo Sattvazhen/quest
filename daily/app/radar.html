@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+    <title>Radar · Candlelight Aloka</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-paper: #ffffff;
+            --bg-sub: #f5f5f7;
+            --text-dark: #1d1d1f; 
+            --text-muted: #86868b; 
+            --line-light: rgba(0, 0, 0, 0.06);
+            --apple-blue: #007AFF;
+            --apple-blue-light: #E5F1FF;
+            --success-color: #34c759;
+            --radius: 20px;
+            --safe-bottom: env(safe-area-inset-bottom, 20px);
+            --safe-top: env(safe-area-inset-top, 40px); 
+            --ease-curve: cubic-bezier(0.32, 0.72, 0, 1); 
+            --font-en: 'Inter', -apple-system, sans-serif;
+            --font-tc: 'Noto Sans TC', 'PingFang TC', sans-serif;
+            --glass-bg: rgba(245, 245, 247, 0.85);
+        }
+        [data-theme="dark"] {
+            --bg-paper: #000000; --bg-sub: #1c1c1e; --text-dark: #f5f5f7; --text-muted: #8e8e93;
+            --line-light: rgba(255, 255, 255, 0.1); --apple-blue-light: #0A2948;
+            --glass-bg: rgba(28, 28, 30, 0.85);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: var(--font-en), var(--font-tc); background-color: var(--bg-sub); color: var(--text-dark);
+            -webkit-font-smoothing: antialiased; text-align: left; height: 100vh; overflow: hidden;
+            letter-spacing: 0.01em; transition: background-color 0.4s var(--ease-curve), color 0.4s var(--ease-curve);
+        }
+
+        .view-hidden { display: none !important; }
+
+        #app-section {
+            display: flex; flex-direction: column; height: 100%; max-width: 100%; 
+            margin: 0 auto; background: var(--bg-sub); position: relative; overflow: hidden;
+            animation: appStageIn 0.8s var(--ease-curve);
+        }
+        @media (min-width: 600px) { #app-section { max-width: 600px; border-left: 1px solid var(--line-light); border-right: 1px solid var(--line-light); } }
+
+        @keyframes appStageIn { from { opacity: 0; transform: scale(0.98) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+        .app-header {
+            display: flex; align-items: flex-end; justify-content: space-between;
+            padding: calc(var(--safe-top) + 32px) 32px 24px; background: var(--bg-sub); flex-shrink: 0;
+            border-bottom: 1px solid var(--line-light);
+        }
+        .app-header-left { text-align: left; }
+        .app-header h1 { font-size: 34px; font-weight: 700; letter-spacing: -0.8px; line-height: 1.1; margin-bottom: 6px; }
+        .status-text { font-size: 14px; color: var(--text-muted); font-weight: 500; display: flex; align-items: center; gap: 8px; }
+        
+        /* 脈衝小綠點 */
+        .pulse-dot { width: 8px; height: 8px; background-color: var(--success-color); border-radius: 50%; position: relative; }
+        .pulse-dot::after {
+            content: ''; position: absolute; inset: -4px; border-radius: 50%;
+            border: 2px solid var(--success-color); animation: pulse 2s infinite var(--ease-curve);
+        }
+        @keyframes pulse { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+
+        .main-view { flex: 1; overflow-y: auto; padding: 32px; scroll-behavior: smooth; }
+        .main-view::-webkit-scrollbar { display: none; }
+
+        /* 左對齊的匹配卡片 */
+        .match-card {
+            background: var(--bg-paper); border-radius: var(--radius); padding: 28px;
+            margin-bottom: 24px; border: 1px solid var(--line-light);
+            text-align: left; position: relative; overflow: hidden;
+            transition: transform 0.4s var(--ease-curve), box-shadow 0.4s var(--ease-curve);
+            display: flex; flex-direction: column; gap: 20px;
+        }
+
+        .match-header { display: flex; align-items: center; gap: 16px; }
+        .avatar {
+            width: 56px; height: 56px; border-radius: 50%; background-color: var(--bg-sub);
+            object-fit: cover; flex-shrink: 0; border: 1px solid var(--line-light);
+        }
+        .user-info { display: flex; flex-direction: column; gap: 4px; }
+        .nickname { font-size: 18px; font-weight: 700; color: var(--text-dark); letter-spacing: -0.3px; }
+        .location { font-size: 13px; color: var(--text-muted); font-weight: 500; display: flex; align-items: center; gap: 4px; }
+
+        /* 相似度條 */
+        .similarity-row { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 4px; }
+        .sim-label { font-size: 14px; font-weight: 600; color: var(--text-dark); }
+        .sim-score { font-size: 24px; font-weight: 700; color: var(--apple-blue); font-variant-numeric: tabular-nums; letter-spacing: -1px; }
+        
+        /* 標籤顯示 */
+        .tags-container { display: flex; flex-wrap: wrap; gap: 8px; }
+        .tag-badge {
+            background: var(--bg-sub); color: var(--text-muted); padding: 6px 12px;
+            border-radius: 8px; font-size: 13px; font-weight: 500;
+        }
+        .tag-badge.shared {
+            background: var(--apple-blue-light); color: var(--apple-blue); font-weight: 600;
+        }
+
+        .btn-message {
+            width: 100%; font-size: 15px; font-weight: 600; padding: 16px; border-radius: 12px;
+            cursor: pointer; transition: all 0.4s var(--ease-curve); display: flex;
+            justify-content: center; align-items: center; gap: 8px; 
+            color: var(--text-dark); background: var(--bg-sub); border: none; margin-top: 8px;
+        }
+        .btn-message:active { transform: scale(0.97); background: var(--line-light); }
+        .btn-message svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+        .bottom-tab-bar {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: calc(64px + var(--safe-bottom));
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--line-light); display: flex; justify-content: space-around;
+            align-items: flex-start; padding-top: 12px; z-index: 100;
+        }
+        .tab-item {
+            display: flex; flex-direction: column; align-items: center; text-decoration: none;
+            color: var(--text-muted); gap: 6px; transition: color 0.4s var(--ease-curve), transform 0.4s var(--ease-curve); width: 20%;
+        }
+        .tab-item.active { color: var(--text-dark); }
+        .tab-item:active { transform: scale(0.9); }
+        .tab-item svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .tab-item span { font-size: 10px; font-weight: 500; letter-spacing: 0.5px; }
+
+        .empty-state { text-align: left; padding: 40px 0; }
+        .empty-title { font-size: 18px; font-weight: 600; color: var(--text-dark); margin-bottom: 8px; }
+        .empty-desc { font-size: 15px; color: var(--text-muted); line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+    <svg width="0" height="0" style="display:none;">
+        <defs>
+            <g id="icon-book"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" fill="none" stroke-width="2" stroke-linecap="round" pathLength="1"/></g>
+            <g id="icon-radar"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></g>
+            <g id="icon-moment"><path d="M12 2l3 6 6 3-6 3-3 6-3-6-6-3 6-3z" stroke-linejoin="round"/></g>
+            <g id="icon-message"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></g>
+            <g id="icon-my"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></g>
+            <g id="icon-pin"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="10" r="3" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
+            <g id="icon-send"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
+        </defs>
+    </svg>
+
+    <div id="app-section">
+        <header class="app-header">
+            <div class="app-header-left">
+                <h1>Radar</h1>
+                <div class="status-text">
+                    <div class="pulse-dot"></div>
+                    <span id="scan-status">Analyzing resonances... / 正在解析標籤共鳴...</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-view" id="match-container">
+            </div>
+
+        <nav class="bottom-tab-bar">
+            <a href="index.html" class="tab-item" onclick="triggerHaptic()">
+                <svg viewBox="0 0 24 24"><use href="#icon-book"/></svg>
+                <span>Daily</span>
+            </a>
+            <a href="radar.html" class="tab-item active" onclick="triggerHaptic()">
+                <svg viewBox="0 0 24 24"><use href="#icon-radar"/></svg>
+                <span>Radar</span>
+            </a>
+            <a href="moment.html" class="tab-item" onclick="triggerHaptic()">
+                <svg viewBox="0 0 24 24"><use href="#icon-moment"/></svg>
+                <span>Moment</span>
+            </a>
+            <a href="message.html" class="tab-item" onclick="triggerHaptic()">
+                <svg viewBox="0 0 24 24"><use href="#icon-message"/></svg>
+                <span>Message</span>
+            </a>
+            <a href="my/index.html" class="tab-item" onclick="triggerHaptic()">
+                <svg viewBox="0 0 24 24"><use href="#icon-my"/></svg>
+                <span>My</span>
+            </a>
+        </nav>
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://nhjkhtrgehznhdlqyybs.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_BFkX70SHXwbSmNzE_h7AQg_a1OwKkO_";
+        
+        let currentAccessToken = localStorage.getItem('aloka_sb_token') || null;
+        let currentUserData = null;
+        let myTags = [];
+
+        function triggerHaptic(duration = 15) {
+            if (navigator.vibrate) navigator.vibrate(duration);
+        }
+
+        window.onload = async () => {
+            if (!currentAccessToken) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            try {
+                // 1. 驗證當前用戶
+                const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${currentAccessToken}` }
+                });
+                if (!userRes.ok) {
+                    localStorage.removeItem('aloka_sb_token');
+                    window.location.href = 'index.html';
+                    return;
+                }
+                currentUserData = await userRes.json();
+
+                // 2. 獲取自己的 Profile (主要是為了拿 tags)
+                const myProfileRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${currentUserData.id}&select=tags`, {
+                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${currentAccessToken}` }
+                });
+                
+                if (myProfileRes.ok) {
+                    const myProfileData = await myProfileRes.json();
+                    if (myProfileData.length > 0 && myProfileData[0].tags) {
+                        try {
+                            myTags = Array.isArray(myProfileData[0].tags) ? myProfileData[0].tags : JSON.parse(myProfileData[0].tags);
+                        } catch(e) { myTags = []; }
+                    }
+                }
+
+                // 3. 獲取其他所有用戶進行匹配
+                fetchAndMatchProfiles();
+
+            } catch (err) {
+                console.error("Initialization Error:", err);
+                document.getElementById('scan-status').innerText = "Radar offline / 雷達已斷線";
+                document.querySelector('.pulse-dot').style.backgroundColor = 'var(--error-color)';
+            }
+        };
+
+        async function fetchAndMatchProfiles() {
+            try {
+                // 讀取所有不是自己的 profiles
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=neq.${currentUserData.id}&select=*`, {
+                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${currentAccessToken}` }
+                });
+
+                if (!res.ok) throw new Error("Failed to fetch profiles");
+                
+                const allProfiles = await res.json();
+                let matches = [];
+
+                allProfiles.forEach(profile => {
+                    let theirTags = [];
+                    if (profile.tags) {
+                        try {
+                            theirTags = Array.isArray(profile.tags) ? profile.tags : JSON.parse(profile.tags);
+                        } catch(e) {}
+                    }
+
+                    // 如果對方沒有標籤，或者我自己沒有標籤，相似度為 0
+                    if (theirTags.length === 0 || myTags.length === 0) return;
+
+                    // 計算交集 (不區分大小寫)
+                    const myTagsLower = myTags.map(t => typeof t === 'string' ? t.toLowerCase().trim() : '');
+                    const theirTagsLower = theirTags.map(t => typeof t === 'string' ? t.toLowerCase().trim() : '');
+                    
+                    const sharedTags = theirTags.filter(t => myTagsLower.includes(t.toLowerCase().trim()));
+                    
+                    // 相似度算法：(共同標籤數量 / 我自己的標籤總數) * 100
+                    const similarityScore = Math.round((sharedTags.length / myTags.length) * 100);
+
+                    // 只保留相似度 >= 30% 的用戶
+                    if (similarityScore >= 30) {
+                        matches.push({
+                            ...profile,
+                            similarity: similarityScore,
+                            sharedTags: sharedTags,
+                            allTags: theirTags
+                        });
+                    }
+                });
+
+                // 按相似度從高到低排序
+                matches.sort((a, b) => b.similarity - a.similarity);
+                renderMatches(matches);
+
+            } catch (e) {
+                console.error("Match error:", e);
+            }
+        }
+
+        function renderMatches(matches) {
+            const container = document.getElementById('match-container');
+            
+            document.getElementById('scan-status').innerText = `Found ${matches.length} resonances / 尋獲 ${matches.length} 個共鳴`;
+
+            if (matches.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-title">Silence in the ether.</div>
+                        <div class="empty-desc">No resonances above 30% found. Try adding more tags to your profile to expand your frequency.<br><br>
+                        宇宙暫時安靜。目前沒有發現相似度大於 30% 的用戶，請嘗試在個人主頁豐富你的標籤以擴大共鳴頻率。</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            
+            matches.forEach(match => {
+                const avatarSrc = match.avatar_url ? match.avatar_url : 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23e5e5ea"><circle cx="12" cy="12" r="12"/></svg>';
+                const nickname = match.nickname || "Anonymous";
+                const location = match.location_city || "Unknown Location";
+
+                // 生成標籤 HTML，優先顯示共同標籤並高亮
+                let tagsHTML = '';
+                match.sharedTags.forEach(t => {
+                    tagsHTML += `<span class="tag-badge shared">${t}</span>`;
+                });
+                
+                // 顯示其他非共用的標籤 (最多再顯示3個以免版面過長)
+                let unsharedCount = 0;
+                match.allTags.forEach(t => {
+                    if (!match.sharedTags.includes(t) && unsharedCount < 3) {
+                        tagsHTML += `<span class="tag-badge">${t}</span>`;
+                        unsharedCount++;
+                    }
+                });
+                if (match.allTags.length > match.sharedTags.length + 3) {
+                    tagsHTML += `<span class="tag-badge">...</span>`;
+                }
+
+                container.innerHTML += `
+                    <div class="match-card">
+                        <div class="match-header">
+                            <img src="${avatarSrc}" alt="Avatar" class="avatar">
+                            <div class="user-info">
+                                <div class="nickname">${nickname}</div>
+                                <div class="location">
+                                    <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor"><use href="#icon-pin"/></svg>
+                                    ${location}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="similarity-row">
+                                <span class="sim-label">Synchronicity / 共鳴度</span>
+                                <span class="sim-score">${match.similarity}%</span>
+                            </div>
+                            <div style="width:100%; height:4px; background:var(--bg-sub); border-radius:2px; overflow:hidden; margin-bottom: 16px;">
+                                <div style="width:${match.similarity}%; height:100%; background:var(--apple-blue); border-radius:2px;"></div>
+                            </div>
+                            
+                            <div class="tags-container">
+                                ${tagsHTML}
+                            </div>
+                        </div>
+
+                        <button class="btn-message" onclick="triggerHaptic(); initiateChat('${match.id}', '${nickname.replace(/'/g, "\\'")}')">
+                            <svg viewBox="0 0 24 24"><use href="#icon-send"/></svg>
+                            Message / 私信
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        async function initiateChat(targetUserId, targetNickname) {
+            try {
+                // 確保 User1 的 ID 字串小於 User2 的 ID，防止重複建立相同的房間 (對應後端的 CHECK 限制)
+                const user1 = currentUserData.id < targetUserId ? currentUserData.id : targetUserId;
+                const user2 = currentUserData.id < targetUserId ? targetUserId : currentUserData.id;
+
+                // 嘗試建立對話房間，如果已經存在，Supabase 會透過 Prefer: resolution=ignore-duplicates 忽略錯誤
+                await fetch(`${SUPABASE_URL}/rest/v1/conversations`, {
+                    method: 'POST',
+                    headers: { 
+                        'apikey': SUPABASE_ANON_KEY, 
+                        'Authorization': `Bearer ${currentAccessToken}`, 
+                        'Content-Type': 'application/json',
+                        'Prefer': 'resolution=ignore-duplicates'
+                    },
+                    body: JSON.stringify({ user1_id: user1, user2_id: user2 })
+                });
+
+                // 建立完成或已存在，跳轉至 Message 頁面 (透過 URL 參數告知 Message 頁面要打開哪個聊天)
+                // 注意：你的 message.html 需要根據 URL 參數來自動打開對應房間，此處預留了跳轉接口
+                window.location.href = `message.html?chat_with=${targetUserId}`;
+
+            } catch (err) {
+                console.error("Error initiating chat:", err);
+                alert("無法發起對話，請稍後再試。");
+            }
+        }
+
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('button, .tab-item')) { triggerHaptic(15); }
+        });
+    </script>
+</body>
+</html>
