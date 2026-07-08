@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
-    <title>Daily Story · Candlelight Aloka</title>
+    <title>Aloka Quest · Candlelight Aloka</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -46,11 +46,11 @@
         }
         .auth-wrapper { width: 100%; max-width: 380px; position: relative; text-align: left; margin: 0 auto; }
         .brand-title { font-size: 34px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
-        .brand-subtitle { font-family: var(--font-tc); font-size: 15px; color: var(--text-muted); margin-bottom: 3.5rem; line-height: 1.5; }
+        .brand-subtitle { font-family: var(--font-tc); font-size: 15px; color: var(--text-muted); margin-bottom: 3.5rem; line-height: 1.6; }
         .form-input {
             width: 100%; background: var(--bg-sub); border: 1px solid transparent; padding: 18px 20px;
             border-radius: 16px; font-size: 16px; outline: none; color: var(--text-dark);
-            margin-bottom: 20px; transition: all 0.4s var(--ease-curve);
+            margin-bottom: 20px; transition: all 0.4s var(--ease-curve); line-height: 1.4;
         }
         .form-input:focus { 
             border-color: var(--apple-blue); 
@@ -62,22 +62,49 @@
             justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px;
         }
         .btn-primary { color: #ffffff; background: var(--apple-blue); border: none; }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
         .btn-secondary { color: var(--text-dark); background: transparent; border: 1px solid var(--line-light); }
-        .btn-primary:active, .btn-secondary:active { transform: scale(0.95); }
+        .btn-primary:active:not(:disabled), .btn-secondary:active { transform: scale(0.95); }
         .auth-switch { font-size: 15px; font-weight: 500; color: var(--apple-blue); cursor: pointer; margin-top: 1.5rem; display: inline-block; }
+        
+        /* 隱私與服務條款樣式 */
+        .policy-container {
+            display: flex; align-items: flex-start; gap: 8px; margin-bottom: 20px;
+            font-family: var(--font-tc); font-size: 13px; color: var(--text-muted); line-height: 1.5;
+        }
+        .policy-container input[type="checkbox"] {
+            margin-top: 2px; width: 16px; height: 16px; accent-color: var(--apple-blue); cursor: pointer;
+        }
+        .policy-link {
+            color: var(--apple-blue); text-decoration: none; font-weight: 500;
+        }
+        .policy-link:hover { text-decoration: underline; }
+
+        /* Placeholder multi-line fallback styling */
+        .form-input::placeholder { color: var(--text-muted); opacity: 0.8; white-space: pre-line; }
     </style>
 </head>
 <body>
     <div class="auth-container" id="authSection">
         <div class="auth-wrapper" id="view-login">
-            <div class="brand-title">Daily Story</div>
-            <div class="brand-subtitle">Sign in to your daily life</div>
-            <input type="email" class="form-input" id="login-email" placeholder="Email / 郵箱">
-            <input type="password" class="form-input" id="login-password" placeholder="Password / 密碼">
-            <div id="login-slider-wrapper" style="width: 100%; height: 54px; background: var(--bg-sub); border-radius: 16px; position: relative; margin-bottom: 24px; overflow: hidden; user-select: none; display: flex; align-items: center; justify-content: center;">
+            <div class="brand-title">Aloka Quest</div>
+            <div class="brand-subtitle">Sign in to your account <br>登入您的帳號</div>
+            <input type="email" class="form-input" id="login-email" placeholder="Email&#10;郵箱">
+            <input type="password" class="form-input" id="login-password" placeholder="Password&#10;密碼">
+            
+            <!-- 登入頁面的條款勾選 -->
+            <div class="policy-container">
+                <input type="checkbox" id="login-policy-check">
+                <label for="login-policy-check">
+                    I have read and agree to the <a href="https://alokaquest.top/privacy" target="_blank" class="policy-link">Privacy Policy</a> and <a href="https://alokaquest.top/service" target="_blank" class="policy-link">Terms of Service</a>.<br>
+                    我已閱讀並同意 <a href="https://alokaquest.top/privacy" target="_blank" class="policy-link">隱私政策</a> 與 <a href="https://alokaquest.top/service" target="_blank" class="policy-link">服務協議</a>。
+                </label>
+            </div>
+
+            <div id="login-slider-wrapper" style="width: 100%; height: 58px; background: var(--bg-sub); border-radius: 16px; position: relative; margin-bottom: 24px; overflow: hidden; user-select: none; display: flex; align-items: center; justify-content: center;">
                 <div id="login-slider-bg" style="position: absolute; left: 0; top: 0; height: 100%; width: 0; background: var(--apple-blue-light); transition: background 0.3s;"></div>
-                <span id="login-slider-text" style="font-size: 14px; color: var(--text-muted); z-index: 1; font-family: var(--font-tc); font-weight: 500;">Slide to verify / 向右滑動驗證</span>
-                <div id="login-slider-btn" style="width: 54px; height: 54px; background: var(--bg-paper); border: 1px solid var(--line-light); border-radius: 16px; position: absolute; left: 0; top: 0; cursor: grab; z-index: 2; display: flex; align-items: center; justify-content: center; transition: background 0.3s;">
+                <span id="login-slider-text" style="font-size: 13px; color: var(--text-muted); z-index: 1; font-family: var(--font-tc); font-weight: 500; text-align: center; line-height: 1.4;">Slide to verify<br>向右滑動驗證</span>
+                <div id="login-slider-btn" style="width: 58px; height: 58px; background: var(--bg-paper); border: 1px solid var(--line-light); border-radius: 16px; position: absolute; left: 0; top: 0; cursor: grab; z-index: 2; display: flex; align-items: center; justify-content: center; transition: background 0.3s;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
                 </div>
             </div>
@@ -90,40 +117,50 @@
                 <div class="auth-switch" onclick="triggerHaptic(); switchAuthView('register')">Sign up / 註冊</div>
                 <div class="auth-switch" onclick="triggerHaptic(); switchAuthView('forgot')" style="color:var(--text-muted)">Forgot password? / 忘記密碼</div>
             </div>
-            <div id="login-error" style="color:var(--error-color); font-size:14px; margin-top:12px;"></div>
+            <div id="login-error" style="color:var(--error-color); font-size:14px; margin-top:12px; line-height: 1.6;"></div>
         </div>
 
         <div class="auth-wrapper view-hidden" id="view-register">
             <div class="brand-title">Create Account</div>
-            <div class="brand-subtitle">Start your Daily Story</div>
-            <input type="email" class="form-input" id="reg-email" placeholder="Email / 郵箱">
-            <input type="password" class="form-input" id="reg-password" placeholder="Password / 密碼">
-            <div id="register-slider-wrapper" style="width: 100%; height: 54px; background: var(--bg-sub); border-radius: 16px; position: relative; margin-bottom: 24px; overflow: hidden; user-select: none; display: flex; align-items: center; justify-content: center;">
+            <div class="brand-subtitle">Begin your Aloka Quest<br>創建您的帳號</div>
+            <input type="email" class="form-input" id="reg-email" placeholder="Email&#10;郵箱">
+            <input type="password" class="form-input" id="reg-password" placeholder="Password&#10;密碼">
+            
+            <!-- 註冊頁面的條款勾選 -->
+            <div class="policy-container">
+                <input type="checkbox" id="reg-policy-check">
+                <label for="reg-policy-check">
+                    I have read and agree to the <a href="https://alokaquest.top/privacy" target="_blank" class="policy-link">Privacy Policy</a> and <a href="https://alokaquest.top/service" target="_blank" class="policy-link">Terms of Service</a>.<br>
+                    我已閱讀並同意 <a href="https://alokaquest.top/privacy" target="_blank" class="policy-link">隱私政策</a> 與 <a href="https://alokaquest.top/service" target="_blank" class="policy-link">服務協議</a>。
+                </label>
+            </div>
+
+            <div id="register-slider-wrapper" style="width: 100%; height: 58px; background: var(--bg-sub); border-radius: 16px; position: relative; margin-bottom: 24px; overflow: hidden; user-select: none; display: flex; align-items: center; justify-content: center;">
                 <div id="register-slider-bg" style="position: absolute; left: 0; top: 0; height: 100%; width: 0; background: var(--apple-blue-light); transition: background 0.3s;"></div>
-                <span id="register-slider-text" style="font-size: 14px; color: var(--text-muted); z-index: 1; font-family: var(--font-tc); font-weight: 500;">Slide to verify / 向右滑動驗證</span>
-                <div id="register-slider-btn" style="width: 54px; height: 54px; background: var(--bg-paper); border: 1px solid var(--line-light); border-radius: 16px; position: absolute; left: 0; top: 0; cursor: grab; z-index: 2; display: flex; align-items: center; justify-content: center; transition: background 0.3s;">
+                <span id="register-slider-text" style="font-size: 13px; color: var(--text-muted); z-index: 1; font-family: var(--font-tc); font-weight: 500; text-align: center; line-height: 1.4;">Slide to verify<br>向右滑動驗證</span>
+                <div id="register-slider-btn" style="width: 58px; height: 58px; background: var(--bg-paper); border: 1px solid var(--line-light); border-radius: 16px; position: absolute; left: 0; top: 0; cursor: grab; z-index: 2; display: flex; align-items: center; justify-content: center; transition: background 0.3s;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
                 </div>
             </div>
             <button class="btn-primary" onclick="triggerHaptic(); handleAuth('register')" id="btn-register">Sign up / 註冊</button>
             <div class="auth-switch" onclick="triggerHaptic(); switchAuthView('login')">Sign in / 返回登入</div>
-            <div id="reg-error" style="color:var(--error-color); font-size:14px; margin-top:12px; line-height: 1.4;"></div>
+            <div id="reg-error" style="color:var(--error-color); font-size:14px; margin-top:12px; line-height: 1.6;"></div>
         </div>
 
         <div class="auth-wrapper view-hidden" id="view-forgot">
             <div class="brand-title">Reset Password</div>
-            <div class="brand-subtitle">Enter your email to receive a reset link.</div>
-            <input type="email" class="form-input" id="forgot-email" placeholder="Email / 郵箱">
-            <div id="forgot-slider-wrapper" style="width: 100%; height: 54px; background: var(--bg-sub); border-radius: 16px; position: relative; margin-bottom: 24px; overflow: hidden; user-select: none; display: flex; align-items: center; justify-content: center;">
+            <div class="brand-subtitle">Enter your email to receive a reset link.<br>輸入郵箱以獲取重設連結。</div>
+            <input type="email" class="form-input" id="forgot-email" placeholder="Email&#10;郵箱">
+            <div id="forgot-slider-wrapper" style="width: 100%; height: 58px; background: var(--bg-sub); border-radius: 16px; position: relative; margin-bottom: 24px; overflow: hidden; user-select: none; display: flex; align-items: center; justify-content: center;">
                 <div id="forgot-slider-bg" style="position: absolute; left: 0; top: 0; height: 100%; width: 0; background: var(--apple-blue-light); transition: background 0.3s;"></div>
-                <span id="forgot-slider-text" style="font-size: 14px; color: var(--text-muted); z-index: 1; font-family: var(--font-tc); font-weight: 500;">Slide to verify / 向右滑動驗證</span>
-                <div id="forgot-slider-btn" style="width: 54px; height: 54px; background: var(--bg-paper); border: 1px solid var(--line-light); border-radius: 16px; position: absolute; left: 0; top: 0; cursor: grab; z-index: 2; display: flex; align-items: center; justify-content: center; transition: background 0.3s;">
+                <span id="forgot-slider-text" style="font-size: 13px; color: var(--text-muted); z-index: 1; font-family: var(--font-tc); font-weight: 500; text-align: center; line-height: 1.4;">Slide to verify<br>向右滑動驗證</span>
+                <div id="forgot-slider-btn" style="width: 58px; height: 58px; background: var(--bg-paper); border: 1px solid var(--line-light); border-radius: 16px; position: absolute; left: 0; top: 0; cursor: grab; z-index: 2; display: flex; align-items: center; justify-content: center; transition: background 0.3s;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
                 </div>
             </div>
             <button class="btn-primary" onclick="triggerHaptic(); handleForgotPassword()">Send Link / 發送郵件</button>
             <div class="auth-switch" onclick="triggerHaptic(); switchAuthView('login')">Back to Sign In / 返回登入</div>
-            <div id="forgot-message" style="font-size:14px; margin-top:12px;"></div>
+            <div id="forgot-message" style="font-size:14px; margin-top:12px; line-height: 1.6;"></div>
         </div>
     </div>
 
@@ -147,6 +184,19 @@
         }
 
         function handleOAuth(provider) {
+            // OAuth 認證也可以依需求在此處做勾選檢查
+            const isLogin = document.getElementById('view-login').classList.contains('view-hidden') === false;
+            const checkId = isLogin ? 'login-policy-check' : 'reg-policy-check';
+            const errBoxId = isLogin ? 'login-error' : 'reg-error';
+            const policyChecked = document.getElementById(checkId).checked;
+            
+            if (!policyChecked) {
+                const errBox = document.getElementById(errBoxId);
+                errBox.style.color = 'var(--error-color)';
+                errBox.innerHTML = 'Please read and agree to the Privacy Policy and Terms of Service.<br>請閱讀並勾選同意隱私政策與服務協議。';
+                return;
+            }
+
             const redirectUrl = encodeURIComponent(window.location.origin + window.location.pathname);
             window.location.href = `${SUPABASE_URL}/auth/v1/authorize?provider=${provider}&redirect_to=${redirectUrl}`;
         }
@@ -154,10 +204,14 @@
         async function handleForgotPassword() {
             const email = document.getElementById('forgot-email').value.trim();
             const msgBox = document.getElementById('forgot-message');
-            if(!email) return;
+            if(!email) {
+                msgBox.style.color = 'var(--error-color)';
+                msgBox.innerHTML = 'Email address is required.<br>請輸入電子郵件。';
+                return;
+            }
             if (!sliderState['forgot']) {
                 msgBox.style.color = 'var(--error-color)';
-                msgBox.innerText = 'Please slide to complete verification. / 請向右滑動滑塊完成驗證。';
+                msgBox.innerHTML = 'Please slide to complete verification.<br>請向右滑動滑塊完成驗證。';
                 return;
             }
             try {
@@ -168,13 +222,14 @@
                 });
                 if(res.ok) {
                     msgBox.style.color = 'var(--success-color)';
-                    msgBox.innerText = 'Check your email for the reset link.';
+                    msgBox.innerHTML = 'Check your email for the reset link.<br>重設連結已發送，請檢查您的電子郵箱。';
                 } else {
-                    throw new Error('Recovery request failed');
+                    const data = await res.json();
+                    throw new Error(data.msg || data.error_description || 'Recovery failed');
                 }
             } catch (e) {
                 msgBox.style.color = 'var(--error-color)';
-                msgBox.innerText = 'Error: Please check your email address.';
+                msgBox.innerHTML = getBilingualErrorMessage(e.message);
             }
         }
 
@@ -183,13 +238,31 @@
             const password = document.getElementById(type === 'login' ? 'login-password' : 'reg-password').value;
             const errBox = document.getElementById(type === 'login' ? 'login-error' : 'reg-error');
             const btn = document.getElementById(`btn-${type}`);
-            if (!email || !password) { errBox.innerText = 'Email and Password required.'; return; }
-            if (!sliderState[type]) {
+            
+            // 新增：隱私與服務協議勾選檢查
+            const policyChecked = document.getElementById(type === 'login' ? 'login-policy-check' : 'reg-policy-check').checked;
+            if (!policyChecked) {
                 errBox.style.color = 'var(--error-color)';
-                errBox.innerText = 'Please slide to complete verification. / 請向右滑動滑塊完成驗證。';
+                errBox.innerHTML = 'Please read and agree to the Privacy Policy and Terms of Service.<br>請閱讀並勾選同意隱私政策與服務協議。';
                 return;
             }
-            btn.disabled = true; errBox.innerText = '';
+
+            if (!email || !password) { 
+                errBox.style.color = 'var(--error-color)';
+                errBox.innerHTML = 'Email and Password are required.<br>請輸入電子郵件和密碼。'; 
+                return; 
+            }
+            if (!sliderState[type]) {
+                errBox.style.color = 'var(--error-color)';
+                errBox.innerHTML = 'Please slide to complete verification.<br>請向右滑動滑塊完成驗證。';
+                return;
+            }
+
+            const originalBtnText = type === 'login' ? 'Sign In / 登入' : 'Sign up / 註冊';
+            btn.innerText = type === 'login' ? 'Signing In... / 登入中...' : 'Signing Up... / 註冊中...';
+            btn.disabled = true; 
+            errBox.innerHTML = '';
+            
             const endpoint = type === 'login' ? 'token?grant_type=password' : 'signup';
             try {
                 const res = await fetch(`${SUPABASE_URL}/auth/v1/${endpoint}`, {
@@ -205,14 +278,15 @@
                     showAppSection();
                 } else {
                     errBox.style.color = 'var(--success-color)';
-                    errBox.innerText = 'Registration successful! Please check your email to verify before signing in.';
+                    errBox.innerHTML = 'Registration successful! Please check your email to verify before signing in.<br>註冊成功！請檢查郵箱完成驗證後再行登入。';
                     setTimeout(() => switchAuthView('login'), 3500);
                 }
             } catch (err) {
                 errBox.style.color = 'var(--error-color)';
-                errBox.innerText = err.message;
+                errBox.innerHTML = getBilingualErrorMessage(err.message);
             } finally {
                 btn.disabled = false;
+                btn.innerText = originalBtnText;
             }
         }
 
@@ -248,11 +322,13 @@
                     sliderState[type] = true;
                     btn.style.left = maxMove + 'px';
                     bg.style.width = '100%';
-                    bg.style.background = 'rgba(52, 199, 89, 0.15)';
-                    text.innerText = 'Verification Passed / 驗證通過';
-                    text.style.color = 'var(--success-color)';
+                    
+                    bg.style.background = 'var(--success-color)';
+                    text.innerHTML = 'Verification Passed<br>驗證通過';
+                    text.style.color = '#ffffff'; 
                     btn.style.cursor = 'default';
                     btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success-color)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+                    
                     if (navigator.vibrate) navigator.vibrate(30);
                     removeListeners();
                 }
