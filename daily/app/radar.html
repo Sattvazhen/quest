@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700&family=Noto+Sans+TC:wght=300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -37,8 +37,14 @@
         
         body {
             font-family: var(--font-en), var(--font-tc); background-color: var(--bg-sub); color: var(--text-dark);
-            -webkit-font-smoothing: antialiased; text-align: left; height: 100vh; overflow: hidden;
+            -webkit-font-smoothing: antialiased; text-align: left; height: 100dvh; overflow: hidden;
             letter-spacing: 0.01em; transition: background-color 0.4s var(--ease-curve), color 0.4s var(--ease-curve);
+            
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
         }
 
         .view-hidden { display: none !important; }
@@ -51,6 +57,7 @@
         @media (min-width: 600px) { #app-section { max-width: 600px; border-left: 1px solid var(--line-light); border-right: 1px solid var(--line-light); } }
 
         @keyframes appStageIn { from { opacity: 0; transform: scale(0.98) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .app-header {
             display: flex; align-items: flex-end; justify-content: space-between;
@@ -61,58 +68,114 @@
         .app-header h1 { font-size: 34px; font-weight: 700; letter-spacing: -0.8px; line-height: 1.1; margin-bottom: 6px; }
         .status-text { font-size: 14px; color: var(--text-muted); font-weight: 500; display: flex; align-items: center; gap: 8px; }
         
-        /* 脈衝小綠點 */
-        .pulse-dot { width: 8px; height: 8px; background-color: var(--success-color); border-radius: 50%; position: relative; }
+        .pulse-dot { width: 8px; height: 8px; background-color: var(--success-color); border-radius: 50%; position: relative; transition: background-color 0.3s; }
         .pulse-dot::after {
             content: ''; position: absolute; inset: -4px; border-radius: 50%;
             border: 2px solid var(--success-color); animation: pulse 2s infinite var(--ease-curve);
+            transition: border-color 0.3s;
         }
+        .pulse-dot.idle { background-color: var(--text-muted); }
+        .pulse-dot.idle::after { border-color: var(--text-muted); animation: none; opacity: 0.3; }
+
         @keyframes pulse { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
 
-        .main-view { flex: 1; overflow-y: auto; padding: 32px; scroll-behavior: smooth; }
+        .main-view { 
+            flex: 1; overflow-y: auto; padding: 32px; 
+            padding-bottom: calc(100px + var(--safe-bottom));
+            scroll-behavior: smooth; position: relative;
+        }
         .main-view::-webkit-scrollbar { display: none; }
 
-        /* 左對齊的匹配卡片 */
+        #radar-scan-view {
+            display: flex; flex-direction: column; align-items: flex-start;
+            height: 100%; position: absolute; top: 32px; left: 32px; right: 32px;
+            animation: fadeIn 0.5s var(--ease-curve);
+        }
+        
+        .radar-compass {
+            position: relative; width: 240px; height: 240px;
+            border-radius: 50%; border: 1px solid var(--line-light);
+            margin-bottom: 32px; flex-shrink: 0;
+            background: radial-gradient(circle at center, transparent 60%, var(--line-light) 200%);
+            overflow: hidden;
+        }
+
+        .radar-compass::before { content: ''; position: absolute; top: 0; left: 50%; width: 1px; height: 100%; background: var(--line-light); transform: translateX(-50%); }
+        .radar-compass::after { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: var(--line-light); transform: translateY(-50%); }
+        
+        .radar-ring { position: absolute; top: 50%; left: 50%; border: 1px solid var(--line-light); border-radius: 50%; transform: translate(-50%, -50%); }
+        .radar-ring.inner { width: 33%; height: 33%; }
+        .radar-ring.middle { width: 66%; height: 66%; }
+        
+        .radar-sweep {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent 75%, rgba(0, 122, 255, 0.05) 95%, rgba(0, 122, 255, 0.5) 100%);
+            animation: radar-spin 2s linear infinite; transform-origin: 50% 50%;
+        }
+        @keyframes radar-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        
+        .radar-blip { position: absolute; width: 6px; height: 6px; background: var(--apple-blue); border-radius: 50%; opacity: 0; }
+        @keyframes blip-fade {
+            0% { opacity: 0; transform: scale(0.5); box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.4); }
+            20% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px 4px rgba(0, 122, 255, 0.2); }
+            100% { opacity: 0; transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 122, 255, 0); }
+        }
+        
+        .blip-1 { top: 25%; left: 65%; animation: blip-fade 2s infinite 0.8s; }
+        .blip-2 { top: 70%; left: 35%; animation: blip-fade 2s infinite 1.5s; }
+        .blip-3 { top: 40%; left: 20%; animation: blip-fade 2s infinite 0.3s; }
+
+        .scan-log-container { text-align: left; z-index: 10; }
+        .scan-subtitle { font-size: 15px; color: var(--text-muted); font-weight: 500; line-height: 1.6; }
+
+        #match-container { animation: fadeIn 0.6s var(--ease-curve); }
+
         .match-card {
             background: var(--bg-paper); border-radius: var(--radius); padding: 28px;
-            margin-bottom: 24px; border: 1px solid var(--line-light);
-            text-align: left; position: relative; overflow: hidden;
-            transition: transform 0.4s var(--ease-curve), box-shadow 0.4s var(--ease-curve);
+            margin-bottom: 24px; border: 1px solid var(--line-light); text-align: left; position: relative; overflow: hidden;
             display: flex; flex-direction: column; gap: 20px;
         }
 
         .match-header { display: flex; align-items: center; gap: 16px; }
-        .avatar {
-            width: 56px; height: 56px; border-radius: 50%; background-color: var(--bg-sub);
-            object-fit: cover; flex-shrink: 0; border: 1px solid var(--line-light);
-        }
+        .avatar { width: 56px; height: 56px; border-radius: 50%; background-color: var(--bg-sub); object-fit: cover; flex-shrink: 0; border: 1px solid var(--line-light); }
         .user-info { display: flex; flex-direction: column; gap: 4px; }
         .nickname { font-size: 18px; font-weight: 700; color: var(--text-dark); letter-spacing: -0.3px; }
         .location { font-size: 13px; color: var(--text-muted); font-weight: 500; display: flex; align-items: center; gap: 4px; }
 
-        /* 相似度條 */
         .similarity-row { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 4px; }
         .sim-label { font-size: 14px; font-weight: 600; color: var(--text-dark); }
         .sim-score { font-size: 24px; font-weight: 700; color: var(--apple-blue); font-variant-numeric: tabular-nums; letter-spacing: -1px; }
         
-        /* 標籤顯示 */
         .tags-container { display: flex; flex-wrap: wrap; gap: 8px; }
-        .tag-badge {
-            background: var(--bg-sub); color: var(--text-muted); padding: 6px 12px;
-            border-radius: 8px; font-size: 13px; font-weight: 500;
-        }
-        .tag-badge.shared {
-            background: var(--apple-blue-light); color: var(--apple-blue); font-weight: 600;
-        }
+        .tag-badge { background: var(--bg-sub); color: var(--text-muted); padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; }
+        .tag-badge.shared { background: var(--apple-blue-light); color: var(--apple-blue); font-weight: 600; }
 
         .btn-message {
             width: 100%; font-size: 15px; font-weight: 600; padding: 16px; border-radius: 12px;
-            cursor: pointer; transition: all 0.4s var(--ease-curve); display: flex;
-            justify-content: center; align-items: center; gap: 8px; 
+            cursor: pointer; transition: all 0.4s var(--ease-curve); display: flex; justify-content: center; align-items: center; gap: 8px; 
             color: var(--text-dark); background: var(--bg-sub); border: none; margin-top: 8px;
         }
         .btn-message:active { transform: scale(0.97); background: var(--line-light); }
         .btn-message svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+        .empty-state {
+            display: flex; flex-direction: column; align-items: flex-start; gap: 16px;
+            text-align: left; padding: 20px 0;
+        }
+        .empty-icon-box {
+            width: 48px; height: 48px; border-radius: 14px; background: var(--bg-paper); border: 1px solid var(--line-light);
+            display: flex; align-items: center; justify-content: center; color: var(--text-muted); margin-bottom: 8px;
+        }
+        .empty-icon-box svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .empty-title { font-size: 20px; font-weight: 700; color: var(--text-dark); letter-spacing: -0.5px; margin: 0; }
+        .empty-desc { font-size: 15px; color: var(--text-muted); line-height: 1.6; margin: 0; max-width: 90%; }
+        
+        .btn-secondary {
+            background: transparent; border: 1px solid var(--line-light); color: var(--text-dark);
+            padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 600;
+            cursor: pointer; transition: all 0.3s var(--ease-curve); margin-top: 8px;
+        }
+        .btn-secondary:active { background: var(--line-light); transform: scale(0.97); }
 
         .bottom-tab-bar {
             position: absolute; bottom: 0; left: 0; width: 100%; height: calc(64px + var(--safe-bottom));
@@ -120,18 +183,11 @@
             border-top: 1px solid var(--line-light); display: flex; justify-content: space-around;
             align-items: flex-start; padding-top: 12px; z-index: 100;
         }
-        .tab-item {
-            display: flex; flex-direction: column; align-items: center; text-decoration: none;
-            color: var(--text-muted); gap: 6px; transition: color 0.4s var(--ease-curve), transform 0.4s var(--ease-curve); width: 20%;
-        }
+        .tab-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--text-muted); gap: 6px; transition: color 0.4s var(--ease-curve), transform 0.4s var(--ease-curve); width: 20%; }
         .tab-item.active { color: var(--text-dark); }
         .tab-item:active { transform: scale(0.9); }
         .tab-item svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
         .tab-item span { font-size: 10px; font-weight: 500; letter-spacing: 0.5px; }
-
-        .empty-state { text-align: left; padding: 40px 0; }
-        .empty-title { font-size: 18px; font-weight: 600; color: var(--text-dark); margin-bottom: 8px; }
-        .empty-desc { font-size: 15px; color: var(--text-muted); line-height: 1.6; }
     </style>
 </head>
 <body>
@@ -145,6 +201,7 @@
             <g id="icon-my"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></g>
             <g id="icon-pin"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="10" r="3" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
             <g id="icon-send"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
+            <g id="icon-user-x"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/></g>
         </defs>
     </svg>
 
@@ -153,14 +210,31 @@
             <div class="app-header-left">
                 <h1>Radar</h1>
                 <div class="status-text">
-                    <div class="pulse-dot"></div>
-                    <span id="scan-status">Analyzing resonances... / 正在解析標籤共鳴...</span>
+                    <div id="status-dot" class="pulse-dot"></div>
+                    <span id="scan-status">Radar Active / 雷達運作中...</span>
                 </div>
             </div>
         </header>
 
-        <div class="main-view" id="match-container">
+        <div class="main-view" id="main-scroll-area">
+            <div id="radar-scan-view">
+                <div class="radar-compass">
+                    <div class="radar-ring inner"></div>
+                    <div class="radar-ring middle"></div>
+                    <div class="radar-sweep"></div>
+                    <div class="radar-blip blip-1"></div>
+                    <div class="radar-blip blip-2"></div>
+                    <div class="radar-blip blip-3"></div>
+                </div>
+                
+                <div class="scan-log-container">
+                    <div class="scan-subtitle">Matching you with people you might be interested in...<br>正在為您匹配您可能感興趣的人...</div>
+                </div>
             </div>
+
+            <div id="match-container" class="view-hidden">
+            </div>
+        </div>
 
         <nav class="bottom-tab-bar">
             <a href="index.html" class="tab-item" onclick="triggerHaptic()">
@@ -194,18 +268,34 @@
         let currentUserData = null;
         let myTags = [];
 
+        const isLocalTesting = false; 
+
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('copy', e => e.preventDefault());
+
         function triggerHaptic(duration = 15) {
-            if (navigator.vibrate) navigator.vibrate(duration);
+            if (typeof navigator !== 'undefined' && navigator.vibrate) {
+                navigator.vibrate(duration);
+            }
+        }
+
+        function setStatus(text, isScanning) {
+            document.getElementById('scan-status').innerText = text;
+            const dot = document.getElementById('status-dot');
+            if (isScanning) {
+                dot.classList.remove('idle');
+            } else {
+                dot.classList.add('idle');
+            }
         }
 
         window.onload = async () => {
             if (!currentAccessToken) {
-                window.location.href = 'index.html';
+                window.location.href = 'index.html'; 
                 return;
             }
 
             try {
-                // 1. 驗證當前用戶
                 const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
                     headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${currentAccessToken}` }
                 });
@@ -216,7 +306,6 @@
                 }
                 currentUserData = await userRes.json();
 
-                // 2. 獲取自己的 Profile (主要是為了拿 tags)
                 const myProfileRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${currentUserData.id}&select=tags`, {
                     headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${currentAccessToken}` }
                 });
@@ -230,84 +319,92 @@
                     }
                 }
 
-                // 3. 獲取其他所有用戶進行匹配
-                fetchAndMatchProfiles();
+                startScanProcess();
 
             } catch (err) {
                 console.error("Initialization Error:", err);
-                document.getElementById('scan-status').innerText = "Radar offline / 雷達已斷線";
-                document.querySelector('.pulse-dot').style.backgroundColor = 'var(--error-color)';
+                setStatus("System offline / 系統連線異常", false);
+                document.getElementById('status-dot').style.backgroundColor = '#ff3b30';
             }
         };
 
+        function startScanProcess() {
+            document.getElementById('match-container').classList.add('view-hidden');
+            document.getElementById('match-container').innerHTML = '';
+            document.getElementById('radar-scan-view').classList.remove('view-hidden');
+            setStatus("Radar Active / 雷達運作中...", true);
+
+            setTimeout(() => {
+                fetchAndMatchProfiles();
+            }, 2500); 
+        }
+
         async function fetchAndMatchProfiles() {
             try {
-                // 讀取所有不是自己的 profiles
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=neq.${currentUserData.id}&select=*`, {
-                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${currentAccessToken}` }
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_radar_matches`, {
+                    method: 'POST',
+                    headers: { 
+                        'apikey': SUPABASE_ANON_KEY, 
+                        'Authorization': `Bearer ${currentAccessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ current_user_id: currentUserData.id, match_threshold: 20 })
                 });
 
-                if (!res.ok) throw new Error("Failed to fetch profiles");
+                if (!res.ok) throw new Error("Failed to fetch matches");
                 
-                const allProfiles = await res.json();
-                let matches = [];
+                let matchesData = await res.json();
+                if (!matchesData) matchesData = [];
 
-                allProfiles.forEach(profile => {
+                const myTagsLower = myTags.map(t => typeof t === 'string' ? t.toLowerCase().trim() : '');
+
+                const formattedMatches = matchesData.map(match => {
                     let theirTags = [];
-                    if (profile.tags) {
+                    if (match.tags) {
                         try {
-                            theirTags = Array.isArray(profile.tags) ? profile.tags : JSON.parse(profile.tags);
+                            theirTags = Array.isArray(match.tags) ? match.tags : JSON.parse(match.tags);
                         } catch(e) {}
                     }
-
-                    // 如果對方沒有標籤，或者我自己沒有標籤，相似度為 0
-                    if (theirTags.length === 0 || myTags.length === 0) return;
-
-                    // 計算交集 (不區分大小寫)
-                    const myTagsLower = myTags.map(t => typeof t === 'string' ? t.toLowerCase().trim() : '');
-                    const theirTagsLower = theirTags.map(t => typeof t === 'string' ? t.toLowerCase().trim() : '');
-                    
                     const sharedTags = theirTags.filter(t => myTagsLower.includes(t.toLowerCase().trim()));
                     
-                    // 相似度算法：(共同標籤數量 / 我自己的標籤總數) * 100
-                    const similarityScore = Math.round((sharedTags.length / myTags.length) * 100);
-
-                    // 只保留相似度 >= 30% 的用戶
-                    if (similarityScore >= 30) {
-                        matches.push({
-                            ...profile,
-                            similarity: similarityScore,
-                            sharedTags: sharedTags,
-                            allTags: theirTags
-                        });
-                    }
+                    return {
+                        ...match,
+                        sharedTags: sharedTags,
+                        allTags: theirTags
+                    };
                 });
 
-                // 按相似度從高到低排序
-                matches.sort((a, b) => b.similarity - a.similarity);
-                renderMatches(matches);
+                document.getElementById('radar-scan-view').classList.add('view-hidden');
+                document.getElementById('match-container').classList.remove('view-hidden');
+                
+                renderMatches(formattedMatches);
+                triggerHaptic(20);
 
             } catch (e) {
                 console.error("Match error:", e);
+                setStatus("Scan interrupted / 掃描程序中斷", false);
             }
         }
 
         function renderMatches(matches) {
             const container = document.getElementById('match-container');
             
-            document.getElementById('scan-status').innerText = `Found ${matches.length} resonances / 尋獲 ${matches.length} 個共鳴`;
-
             if (matches.length === 0) {
+                setStatus("No matches / 暫無匹配", false);
                 container.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-title">Silence in the ether.</div>
-                        <div class="empty-desc">No resonances above 30% found. Try adding more tags to your profile to expand your frequency.<br><br>
-                        宇宙暫時安靜。目前沒有發現相似度大於 30% 的用戶，請嘗試在個人主頁豐富你的標籤以擴大共鳴頻率。</div>
+                        <div class="empty-icon-box">
+                            <svg viewBox="0 0 24 24"><use href="#icon-user-x"/></svg>
+                        </div>
+                        <div class="empty-title">No matches nearby.</div>
+                        <div class="empty-desc">There are no profiles matching your tags above 20% right now. Try expanding your interests to discover more people.<br><br>附近暫時沒有匹配度大於 20% 的用戶。可以嘗試在個人主頁新增更多標籤，以擴大探索範圍。</div>
+                        <button class="btn-secondary" onclick="triggerHaptic(); window.location.href='my/index.html'">Edit Profile / 編輯主頁</button>
                     </div>
                 `;
                 return;
             }
 
+            setStatus(`Found ${matches.length} matches / 已建立 ${matches.length} 個配對`, false);
             container.innerHTML = '';
             
             matches.forEach(match => {
@@ -315,13 +412,11 @@
                 const nickname = match.nickname || "Anonymous";
                 const location = match.location_city || "Unknown Location";
 
-                // 生成標籤 HTML，優先顯示共同標籤並高亮
                 let tagsHTML = '';
                 match.sharedTags.forEach(t => {
                     tagsHTML += `<span class="tag-badge shared">${t}</span>`;
                 });
                 
-                // 顯示其他非共用的標籤 (最多再顯示3個以免版面過長)
                 let unsharedCount = 0;
                 match.allTags.forEach(t => {
                     if (!match.sharedTags.includes(t) && unsharedCount < 3) {
@@ -348,7 +443,7 @@
 
                         <div>
                             <div class="similarity-row">
-                                <span class="sim-label">Synchronicity / 共鳴度</span>
+                                <span class="sim-label">Match Rate / 匹配度</span>
                                 <span class="sim-score">${match.similarity}%</span>
                             </div>
                             <div style="width:100%; height:4px; background:var(--bg-sub); border-radius:2px; overflow:hidden; margin-bottom: 16px;">
@@ -371,11 +466,9 @@
 
         async function initiateChat(targetUserId, targetNickname) {
             try {
-                // 確保 User1 的 ID 字串小於 User2 的 ID，防止重複建立相同的房間 (對應後端的 CHECK 限制)
                 const user1 = currentUserData.id < targetUserId ? currentUserData.id : targetUserId;
                 const user2 = currentUserData.id < targetUserId ? targetUserId : currentUserData.id;
 
-                // 嘗試建立對話房間，如果已經存在，Supabase 會透過 Prefer: resolution=ignore-duplicates 忽略錯誤
                 await fetch(`${SUPABASE_URL}/rest/v1/conversations`, {
                     method: 'POST',
                     headers: { 
@@ -387,8 +480,6 @@
                     body: JSON.stringify({ user1_id: user1, user2_id: user2 })
                 });
 
-                // 建立完成或已存在，跳轉至 Message 頁面 (透過 URL 參數告知 Message 頁面要打開哪個聊天)
-                // 注意：你的 message.html 需要根據 URL 參數來自動打開對應房間，此處預留了跳轉接口
                 window.location.href = `message.html?chat_with=${targetUserId}`;
 
             } catch (err) {

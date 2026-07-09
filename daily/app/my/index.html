@@ -153,6 +153,15 @@
             cursor: pointer; color: #ffffff; background: var(--apple-blue); border: none; transition: transform 0.2s;
         }
         .btn-primary:active { transform: scale(0.95); }
+        .btn-primary:disabled { opacity: 0.6; transform: none; pointer-events: none; }
+
+        .file-preview {
+            margin-bottom: 16px; border-radius: 12px; overflow: hidden; background: var(--bg-sub);
+        }
+        .file-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .avatar-preview { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 16px; background: var(--bg-sub); }
+        .banner-preview { width: 100%; height: 120px; margin-bottom: 16px; background: var(--bg-sub); border-radius: 12px; overflow: hidden; }
+        .file-input-wrapper { margin-bottom: 16px; }
     </style>
 </head>
 <body>
@@ -185,7 +194,6 @@
             </div>
 
             <div class="profile-info">
-                <!-- 名字在這裡，放大了字體並加入了加載提示 -->
                 <div class="profile-name" id="display-name">Loading... / 加載中...</div>
                 
                 <div class="profile-meta">
@@ -210,8 +218,8 @@
             <!-- 興趣區塊已徹底移除 -->
         </div>
 
-        <!-- 懸浮設置按鈕 (右下角) -->
-        <a href="../settings/index.html" class="settings-fab" onclick="triggerHaptic()">
+        <!-- 懸浮設置按鈕 - 定向到指定 URL -->
+        <a href="https://alokaquest.top/app/my/settings" class="settings-fab" onclick="triggerHaptic()">
             <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"><use href="#icon-settings"/></svg>
         </a>
 
@@ -257,11 +265,19 @@
             <label class="form-label">Bio / 個人簡介</label>
             <textarea id="input-bio" class="form-input" rows="3" placeholder="A brief introduction / 簡單介紹一下自己"></textarea>
 
-            <label class="form-label">Avatar URL / 頭像連結</label>
-            <input type="text" id="input-avatar" class="form-input" placeholder="https://...">
+            <!-- 頭像上傳 -->
+            <label class="form-label">Avatar / 頭像</label>
+            <div class="avatar-preview" id="avatar-preview">
+                <img id="avatar-preview-img" src="" style="width:100%; height:100%; object-fit:cover; display:none;">
+            </div>
+            <input type="file" id="input-avatar-file" accept="image/*" class="form-input" style="padding:12px;">
 
-            <label class="form-label">Background URL / 背景連結</label>
-            <input type="text" id="input-banner" class="form-input" placeholder="https://...">
+            <!-- 背景上傳 -->
+            <label class="form-label">Background / 背景圖片</label>
+            <div class="banner-preview" id="banner-preview">
+                <img id="banner-preview-img" src="" style="width:100%; height:100%; object-fit:cover; display:none;">
+            </div>
+            <input type="file" id="input-banner-file" accept="image/*" class="form-input" style="padding:12px;">
 
             <label class="form-label">MBTI (Required) / MBTI (必填)</label>
             <div class="tag-grid" id="mbti-grid">
@@ -302,7 +318,7 @@
             <label class="form-label">Custom Tags / 自定義標籤 (逗號分隔，最多8個)</label>
             <input type="text" id="input-custom-tags" class="form-input" placeholder="e.g. Design, Reading, Coffee / 例如：設計，閱讀，咖啡">
 
-            <button class="btn-primary" onclick="triggerHaptic(); saveProfile()">Save Profile / 儲存資料</button>
+            <button class="btn-primary" id="save-btn" onclick="triggerHaptic(); saveProfile()">Save Profile / 儲存資料</button>
         </div>
     </div>
 
@@ -337,13 +353,14 @@
             } catch (err) {}
         };
 
+        // 使用 Supabase Edge Function 获取 IP（方法一）
         async function fetchClientIP() {
             try {
-                const ipRes = await fetch('https://api.ipify.org?format=json');
-                const ipData = await ipRes.json();
-                document.getElementById('display-ip').innerText = ipData.ip || "Unknown IP";
+                const res = await fetch('https://nhjkhtrgehznhdlqyybs.supabase.co/functions/v1/get-client-ip');
+                const data = await res.json();
+                document.getElementById('display-ip').innerText = data.ip || "Unknown IP";
             } catch (e) {
-                document.getElementById('display-ip').innerText = "IP hidden";
+                document.getElementById('display-ip').innerText = "IP unavailable";
             }
         }
 
@@ -372,8 +389,21 @@
             document.getElementById('display-bio').innerText = profileData.bio || "Add a bio to introduce yourself... / 添加簡介來介紹自己...";
             document.getElementById('display-location').innerText = profileData.location_city || "Location not set / 未填寫位置";
             
-            if (profileData.avatar_url) document.getElementById('display-avatar').src = profileData.avatar_url;
-            if (profileData.background_url) document.getElementById('display-banner').src = profileData.background_url;
+            if (profileData.avatar_url) {
+                document.getElementById('display-avatar').src = profileData.avatar_url;
+                document.getElementById('avatar-preview-img').src = profileData.avatar_url;
+                document.getElementById('avatar-preview-img').style.display = 'block';
+            } else {
+                document.getElementById('display-avatar').src = '';
+                document.getElementById('avatar-preview-img').style.display = 'none';
+            }
+            if (profileData.background_url) {
+                document.getElementById('display-banner').src = profileData.background_url;
+                document.getElementById('banner-preview-img').src = profileData.background_url;
+                document.getElementById('banner-preview-img').style.display = 'block';
+            } else {
+                document.getElementById('banner-preview-img').style.display = 'none';
+            }
 
             const tagsContainer = document.getElementById('display-tags');
             tagsContainer.innerHTML = '';
@@ -409,8 +439,23 @@
             document.getElementById('input-name').value = profileData.nickname || '';
             document.getElementById('input-location').value = profileData.location_city || '';
             document.getElementById('input-bio').value = profileData.bio || '';
-            document.getElementById('input-avatar').value = profileData.avatar_url || '';
-            document.getElementById('input-banner').value = profileData.background_url || '';
+            // 清空文件输入
+            document.getElementById('input-avatar-file').value = '';
+            document.getElementById('input-banner-file').value = '';
+
+            // 预览现有图片
+            if (profileData.avatar_url) {
+                document.getElementById('avatar-preview-img').src = profileData.avatar_url;
+                document.getElementById('avatar-preview-img').style.display = 'block';
+            } else {
+                document.getElementById('avatar-preview-img').style.display = 'none';
+            }
+            if (profileData.background_url) {
+                document.getElementById('banner-preview-img').src = profileData.background_url;
+                document.getElementById('banner-preview-img').style.display = 'block';
+            } else {
+                document.getElementById('banner-preview-img').style.display = 'none';
+            }
 
             let tags = [];
             try {
@@ -449,29 +494,66 @@
             document.getElementById('edit-modal').classList.remove('open');
         }
 
+        // 上传文件到 Supabase Storage
+        async function uploadFile(file, bucket, path) {
+            const formData = new FormData();
+            formData.append('file', file);
+            const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${bucket}/${path}`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${currentAccessToken}` },
+                body: formData
+            });
+            if (!res.ok) throw new Error('Upload failed');
+            // 构造公开 URL
+            return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
+        }
+
         async function saveProfile() {
-            if (!selectedMbti || !selectedZodiac) {
-                alert("MBTI and Zodiac are required. / MBTI 和 星座為必填項目。");
-                return;
-            }
-
-            const customTagsRaw = document.getElementById('input-custom-tags').value;
-            let customTags = customTagsRaw.split(',').map(t => t.trim()).filter(t => t);
-            customTags = customTags.slice(0, 8);
-            
-            const finalTags = [selectedMbti, selectedZodiac, ...customTags];
-
-            const updates = {
-                nickname: document.getElementById('input-name').value.trim(),
-                location_city: document.getElementById('input-location').value.trim(),
-                bio: document.getElementById('input-bio').value.trim(),
-                avatar_url: document.getElementById('input-avatar').value.trim(),
-                background_url: document.getElementById('input-banner').value.trim(),
-                tags: finalTags, 
-                updated_at: new Date().toISOString()
-            };
+            const btn = document.getElementById('save-btn');
+            btn.disabled = true;
+            btn.innerText = 'Saving...';
 
             try {
+                if (!selectedMbti || !selectedZodiac) {
+                    alert("MBTI and Zodiac are required. / MBTI 和 星座為必填項目。");
+                    btn.disabled = false;
+                    btn.innerText = 'Save Profile / 儲存資料';
+                    return;
+                }
+
+                const customTagsRaw = document.getElementById('input-custom-tags').value;
+                let customTags = customTagsRaw.split(',').map(t => t.trim()).filter(t => t);
+                customTags = customTags.slice(0, 8);
+                
+                const finalTags = [selectedMbti, selectedZodiac, ...customTags];
+
+                const updates = {
+                    nickname: document.getElementById('input-name').value.trim(),
+                    location_city: document.getElementById('input-location').value.trim(),
+                    bio: document.getElementById('input-bio').value.trim(),
+                    tags: finalTags, 
+                    updated_at: new Date().toISOString()
+                };
+
+                // 处理头像上传
+                const avatarFile = document.getElementById('input-avatar-file').files[0];
+                if (avatarFile) {
+                    const ext = avatarFile.name.split('.').pop();
+                    const path = `${currentUserData.id}/avatar_${Date.now()}.${ext}`;
+                    const url = await uploadFile(avatarFile, 'avatars', path);
+                    updates.avatar_url = url;
+                }
+
+                // 处理背景上传
+                const bannerFile = document.getElementById('input-banner-file').files[0];
+                if (bannerFile) {
+                    const ext = bannerFile.name.split('.').pop();
+                    const path = `${currentUserData.id}/banner_${Date.now()}.${ext}`;
+                    const url = await uploadFile(bannerFile, 'banners', path);
+                    updates.background_url = url;
+                }
+
+                // 更新 profile
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${currentUserData.id}`, {
                     method: 'PATCH',
                     headers: { 
@@ -487,6 +569,7 @@
                     renderProfile();
                     closeEditModal();
                 } else {
+                    // 若记录不存在，尝试插入
                     await fetch(`${SUPABASE_URL}/rest/v1/profiles`, {
                         method: 'POST',
                         headers: { 
@@ -503,8 +586,35 @@
                 }
             } catch (e) {
                 alert("Error saving profile. / 儲存資料時發生錯誤。");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Save Profile / 儲存資料';
             }
         }
+
+        // 文件输入预览（可选）
+        document.getElementById('input-avatar-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    document.getElementById('avatar-preview-img').src = ev.target.result;
+                    document.getElementById('avatar-preview-img').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        document.getElementById('input-banner-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    document.getElementById('banner-preview-img').src = ev.target.result;
+                    document.getElementById('banner-preview-img').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
     </script>
 </body>
 </html>
