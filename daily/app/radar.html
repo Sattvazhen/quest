@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700&family=Noto+Sans+TC:wght=300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -289,9 +289,10 @@
             }
         }
 
+        /* --- ORIGINAL AUTH CHECK ROUTE REFACTOR --- */
         window.onload = async () => {
             if (!currentAccessToken) {
-                window.location.href = 'index.html'; 
+                window.location.href = 'index.html'; // 統一修正相對路徑跳轉
                 return;
             }
 
@@ -301,7 +302,7 @@
                 });
                 if (!userRes.ok) {
                     localStorage.removeItem('aloka_sb_token');
-                    window.location.href = 'index.html';
+                    window.location.href = 'index.html'; // 統一修正相對路徑跳轉
                     return;
                 }
                 currentUserData = await userRes.json();

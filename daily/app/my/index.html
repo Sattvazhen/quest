@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh" data-theme="light">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
-    <title>提示 · Aloka</title>
+    <title>My Profile / 個人主頁 · Candlelight Aloka</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,101 +15,638 @@
             --bg-sub: #f5f5f7;
             --text-dark: #1d1d1f; 
             --text-muted: #86868b; 
+            --line-light: rgba(0, 0, 0, 0.06);
             --apple-blue: #007AFF;
             --apple-blue-light: #E5F1FF;
+            --radius: 20px;
+            --safe-bottom: env(safe-area-inset-bottom, 20px);
+            --safe-top: env(safe-area-inset-top, 40px); 
+            --ease-curve: cubic-bezier(0.32, 0.72, 0, 1); 
             --font-en: 'Inter', -apple-system, sans-serif;
             --font-tc: 'Noto Sans TC', 'PingFang TC', sans-serif;
+            --glass-bg: rgba(245, 245, 247, 0.85);
+        }
+        [data-theme="dark"] {
+            --bg-paper: #000000; --bg-sub: #1c1c1e; --text-dark: #f5f5f7; --text-muted: #8e8e93;
+            --line-light: rgba(255, 255, 255, 0.1); --apple-blue-light: #0A2948;
+            --glass-bg: rgba(28, 28, 30, 0.85);
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
-            font-family: var(--font-en), var(--font-tc);
-            background-color: var(--bg-paper);
+            font-family: var(--font-en), var(--font-tc); background-color: var(--bg-paper); color: var(--text-dark);
+            -webkit-font-smoothing: antialiased; text-align: left; height: 100vh; overflow: hidden;
+            letter-spacing: 0.01em;
+        }
+
+        .view-hidden { display: none !important; }
+
+        #app-section {
+            display: flex; flex-direction: column; height: 100%; max-width: 100%; 
+            margin: 0 auto; background: var(--bg-paper); position: relative; overflow: hidden;
+        }
+        @media (min-width: 600px) { #app-section { max-width: 600px; border-left: 1px solid var(--line-light); border-right: 1px solid var(--line-light); } }
+
+        .main-view { flex: 1; overflow-y: auto; padding: 0 0 calc(88px + var(--safe-bottom)); scroll-behavior: smooth; }
+        .main-view::-webkit-scrollbar { display: none; }
+
+        .profile-banner-container {
+            position: relative; width: 100%; height: 220px; background-color: var(--bg-sub);
+        }
+        .profile-banner {
+            width: 100%; height: 100%; object-fit: cover; display: block;
+        }
+
+        .profile-avatar-row {
+            display: flex; align-items: flex-end; justify-content: space-between;
+            padding: 0 32px; margin-top: -40px; position: relative; z-index: 2;
+        }
+        .profile-avatar {
+            width: 88px; height: 88px; border-radius: 50%; border: 4px solid var(--bg-paper);
+            background-color: var(--bg-sub); object-fit: cover;
+        }
+
+        .profile-info { padding: 16px 32px 16px; text-align: left; }
+        .profile-name { font-size: 28px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.5px; }
+        
+        .profile-meta { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; flex-wrap: wrap; }
+        .meta-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted); font-weight: 500; letter-spacing: 0.02em; }
+        
+        .profile-bio { font-size: 15px; color: var(--text-muted); line-height: 1.6; white-space: pre-wrap; margin-top: 4px; }
+
+        .list-group {
+            margin-top: 16px;
+            border-top: 1px solid var(--line-light);
+            border-bottom: 1px solid var(--line-light);
+            background: var(--bg-paper);
+        }
+        .list-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 32px;
+            text-decoration: none;
             color: var(--text-dark);
-            -webkit-font-smoothing: antialiased;
-            height: 100vh;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.3s var(--ease-curve);
+        }
+        .list-item:active { background: var(--bg-sub); }
+        .list-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 32px;
+            right: 0;
+            height: 1px;
+            background: var(--line-light);
+        }
+        .item-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
-            padding: 32px;
-            margin: 0;
+            color: var(--text-dark);
         }
-
-        .container {
-            max-width: 480px;
+        .item-icon svg {
             width: 100%;
+            height: 100%;
         }
-
-        .emoji-icon {
-            font-size: 64px;
-            margin-bottom: 24px;
-            display: block;
-        }
-
-        .title {
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            margin-bottom: 12px;
-        }
-
-        .sub {
+        .item-title {
+            flex: 1;
             font-size: 16px;
-            line-height: 1.6;
-            color: var(--text-muted);
-            margin-bottom: 8px;
+            font-weight: 500;
         }
-
-        .sub-en {
+        .item-value {
             font-size: 14px;
             color: var(--text-muted);
-            opacity: 0.7;
-            margin-bottom: 32px;
+            margin-right: 8px;
+            max-width: 150px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .arrow-icon {
+            width: 18px;
+            height: 18px;
+            stroke: var(--text-muted);
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
-        .btn-settings {
-            display: inline-block;
-            background: var(--apple-blue);
-            color: #fff;
-            font-size: 18px;
-            font-weight: 600;
-            padding: 16px 40px;
-            border-radius: 16px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+        .bottom-tab-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: calc(64px + var(--safe-bottom));
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--line-light); display: flex; justify-content: space-around;
+            align-items: flex-start; padding-top: 12px; z-index: 100;
+        }
+        .tab-item {
+            display: flex; flex-direction: column; align-items: center; text-decoration: none;
+            color: var(--text-muted); gap: 6px; transition: color 0.4s var(--ease-curve), transform 0.4s var(--ease-curve);
+            width: 20%;
+        }
+        .tab-item.active { color: var(--text-dark); }
+        .tab-item:active { transform: scale(0.9); }
+        .tab-item svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .tab-item span { font-size: 10px; font-weight: 500; letter-spacing: 0.5px; }
+
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px); z-index: 200; display: none; align-items: flex-end; opacity: 0; transition: opacity 0.4s var(--ease-curve);
+        }
+        .modal-overlay.open { display: flex; opacity: 1; }
+        .modal-sheet {
+            background: var(--bg-paper); border-radius: 24px 24px 0 0; width: 100%; max-width: 600px;
+            max-height: 90dvh; padding: 32px 32px calc(32px + var(--safe-bottom)); overflow-y: auto; margin: 0 auto;
+            transform: translateY(100%); transition: transform 0.5s var(--ease-curve);
+        }
+        .modal-sheet::-webkit-scrollbar { display: none; }
+        .modal-overlay.open .modal-sheet { transform: translateY(0); }
+
+        .form-input {
+            width: 100%; background: var(--bg-sub); border: 1px solid transparent; padding: 16px 20px;
+            border-radius: 16px; font-size: 15px; outline: none; color: var(--text-dark); margin-bottom: 24px;
+        }
+        .form-input:focus { border-color: var(--apple-blue); background: var(--bg-paper); }
+        .form-label { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 12px; display: block; }
+        
+        .tag-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 32px; }
+        .tag-option {
+            background: var(--bg-sub); color: var(--text-dark); padding: 10px 18px; border-radius: 14px;
+            font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s var(--ease-curve);
+            border: 1px solid transparent;
+        }
+        .tag-option:active { transform: scale(0.95); }
+        .tag-option.selected {
+            background: var(--apple-blue-light); color: var(--apple-blue); border-color: var(--apple-blue);
         }
 
-        .btn-settings:active {
-            transform: scale(0.94);
-            box-shadow: 0 2px 6px rgba(0, 122, 255, 0.2);
+        .btn-primary {
+            width: 100%; font-size: 16px; font-weight: 600; padding: 18px; border-radius: 16px;
+            cursor: pointer; color: #ffffff; background: var(--apple-blue); border: none; transition: transform 0.2s;
         }
+        .btn-primary:active { transform: scale(0.95); }
+        .btn-primary:disabled { opacity: 0.6; transform: none; pointer-events: none; }
 
-        .btn-settings:hover {
-            background: #0066d9;
+        .file-preview {
+            margin-bottom: 16px; border-radius: 12px; overflow: hidden; background: var(--bg-sub);
         }
-
-        .footer-note {
-            margin-top: 48px;
-            font-size: 12px;
-            color: var(--text-muted);
-            opacity: 0.5;
-        }
+        .file-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .avatar-preview { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 16px; background: var(--bg-sub); overflow: hidden; }
+        .banner-preview { width: 100%; height: 120px; margin-bottom: 16px; background: var(--bg-sub); border-radius: 12px; overflow: hidden; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <span class="emoji-icon">TvT</span>
-        <div class="title">親愛的用戶，非常抱歉！</div>
-        <div class="sub">網頁還在逐步製作中！！</div>
-        <div class="sub">為您造成的不便請您諒解。</div>
-        <div class="sub-en">Dear user, we apologize for the inconvenience.<br>This page is still under construction.</div>
-        
-        <a href="https://alokaquest.top/daily/app/my/settings" class="btn-settings">設置 Settings</a>
-        
-        <div class="footer-note">© Candlelight Aloka</div>
+
+    <svg width="0" height="0" style="display:none;">
+        <defs>
+            <g id="icon-book"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" fill="none" stroke-width="2" stroke-linecap="round" pathLength="1"/></g>
+            <g id="icon-radar"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></g>
+            <g id="icon-moment"><path d="M12 2l3 6 6 3-6 3-3 6-3-6-6-3 6-3z" stroke-linejoin="round"/></g>
+            <g id="icon-message"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></g>
+            <g id="icon-my"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></g>
+            <g id="icon-settings"><circle cx="12" cy="12" r="3" fill="none" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" fill="none" stroke-width="2" stroke-linecap="round"/></g>
+            <g id="icon-close"><path d="M18 6L6 18M6 6l12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
+            <g id="icon-pin"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="10" r="3" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
+            <g id="icon-globe"><circle cx="12" cy="12" r="10" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
+            <g id="icon-tag"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82zM7 7h.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
+            <g id="icon-chevron-right"><path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
+        </defs>
+    </svg>
+
+    <div id="app-section">
+        <div class="main-view">
+            
+            <div class="profile-banner-container">
+                <img id="display-banner" src="https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?auto=format&fit=crop&q=80&w=800" class="profile-banner" alt="Background">
+            </div>
+
+            <div class="profile-avatar-row">
+                <img id="display-avatar" src="" class="profile-avatar" alt="Avatar">
+            </div>
+
+            <div class="profile-info">
+                <div class="profile-name" id="display-name">Loading... / 加載中...</div>
+                
+                <div class="profile-meta">
+                    <div class="meta-item">
+                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor"><use href="#icon-globe"/></svg>
+                        <span id="display-ip">IP Loading...</span>
+                    </div>
+                    <div class="meta-item">
+                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor"><use href="#icon-pin"/></svg>
+                        <span id="display-location">Location not set / 未填寫位置</span>
+                    </div>
+                </div>
+
+                <div class="profile-bio" id="display-bio"></div>
+            </div>
+
+            <div class="list-group">
+                <div class="list-item" onclick="openEditModal()">
+                    <div class="item-icon">
+                        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+                    </div>
+                    <div class="item-title">Profile / 編輯資料</div>
+                    <svg class="arrow-icon" viewBox="0 0 24 24"><use href="#icon-chevron-right"/></svg>
+                </div>
+                
+                <div class="list-item" onclick="openEditModal()">
+                    <div class="item-icon">
+                        <svg viewBox="0 0 24 24"><use href="#icon-tag"/></svg>
+                    </div>
+                    <div class="item-title">Tags / 標籤</div>
+                    <div class="item-value" id="display-tags-str">No tags added</div>
+                    <svg class="arrow-icon" viewBox="0 0 24 24"><use href="#icon-chevron-right"/></svg>
+                </div>
+
+                <a href="https://alokaquest.top/daily/app/my/settings" class="list-item" onclick="triggerHaptic()">
+                    <div class="item-icon">
+                        <svg viewBox="0 0 24 24" stroke="currentColor"><use href="#icon-settings"/></svg>
+                    </div>
+                    <div class="item-title">Settings / 設置</div>
+                    <svg class="arrow-icon" viewBox="0 0 24 24"><use href="#icon-chevron-right"/></svg>
+                </a>
+            </div>
+
+        </div>
+
+        <nav class="bottom-tab-bar">
+            <a href="../index.html" class="tab-item" onclick="triggerHaptic()">
+                <svg viewBox="0 0 24 24"><use href="#icon-book"/></svg>
+                <span>Daily</span>
+            </a>
+            <a href="../radar.html" class="tab-item" onclick="triggerHaptic()">
+                <svg viewBox="0 0 24 24"><use href="#icon-radar"/></svg>
+                <span>Radar</span>
+            </a>
+            <a href="../moment.html" class="tab-item" onclick="triggerHaptic()">
+                <svg viewBox="0 0 24 24"><use href="#icon-moment"/></svg>
+                <span>Moment</span>
+            </a>
+            <a href="../message.html" class="tab-item" onclick="triggerHaptic()">
+                <svg viewBox="0 0 24 24"><use href="#icon-message"/></svg>
+                <span>Message</span>
+            </a>
+            <a href="index.html" class="tab-item active" onclick="triggerHaptic()">
+                <svg viewBox="0 0 24 24"><use href="#icon-my"/></svg>
+                <span>My</span>
+            </a>
+        </nav>
     </div>
+
+    <div class="modal-overlay" id="edit-modal">
+        <div class="modal-sheet">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                <h2 style="font-size:22px; font-weight:700;">Edit Profile / 編輯個人資料</h2>
+                <button onclick="closeEditModal()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; padding:8px;">
+                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"><use href="#icon-close"/></svg>
+                </button>
+            </div>
+
+            <label class="form-label">Nickname / 暱稱</label>
+            <input type="text" id="input-name" class="form-input" placeholder="Your nickname / 你的暱稱">
+
+            <label class="form-label">Location / 地理位置</label>
+            <input type="text" id="input-location" class="form-input" placeholder="City or Region / 所在的城市或地區">
+
+            <label class="form-label">Bio / 個人簡介</label>
+            <textarea id="input-bio" class="form-input" rows="3" placeholder="A brief introduction / 簡單介紹一下自己"></textarea>
+
+            <label class="form-label">Avatar / 頭像</label>
+            <div class="avatar-preview" id="avatar-preview">
+                <img id="avatar-preview-img" src="" style="width:100%; height:100%; object-fit:cover; display:none;">
+            </div>
+            <input type="file" id="input-avatar-file" accept="image/*" class="form-input" style="padding:12px;">
+
+            <label class="form-label">Background / 背景圖片</label>
+            <div class="banner-preview" id="banner-preview">
+                <img id="banner-preview-img" src="" style="width:100%; height:100%; object-fit:cover; display:none;">
+            </div>
+            <input type="file" id="input-banner-file" accept="image/*" class="form-input" style="padding:12px;">
+
+            <label class="form-label">MBTI (Required) / MBTI (必填)</label>
+            <div class="tag-grid" id="mbti-grid">
+                <div class="tag-option" data-type="mbti" data-val="INTJ" onclick="selectTag('mbti', 'INTJ', this)">INTJ</div>
+                <div class="tag-option" data-type="mbti" data-val="INTP" onclick="selectTag('mbti', 'INTP', this)">INTP</div>
+                <div class="tag-option" data-type="mbti" data-val="ENTJ" onclick="selectTag('mbti', 'ENTJ', this)">ENTJ</div>
+                <div class="tag-option" data-type="mbti" data-val="ENTP" onclick="selectTag('mbti', 'ENTP', this)">ENTP</div>
+                <div class="tag-option" data-type="mbti" data-val="INFJ" onclick="selectTag('mbti', 'INFJ', this)">INFJ</div>
+                <div class="tag-option" data-type="mbti" data-val="INFP" onclick="selectTag('mbti', 'INFP', this)">INFP</div>
+                <div class="tag-option" data-type="mbti" data-val="ENFJ" onclick="selectTag('mbti', 'ENFJ', this)">ENFJ</div>
+                <div class="tag-option" data-type="mbti" data-val="ENFP" onclick="selectTag('mbti', 'ENFP', this)">ENFP</div>
+                <div class="tag-option" data-type="mbti" data-val="ISTJ" onclick="selectTag('mbti', 'ISTJ', this)">ISTJ</div>
+                <div class="tag-option" data-type="mbti" data-val="ISFJ" onclick="selectTag('mbti', 'ISFJ', this)">ISFJ</div>
+                <div class="tag-option" data-type="mbti" data-val="ESTJ" onclick="selectTag('mbti', 'ESTJ', this)">ESTJ</div>
+                <div class="tag-option" data-type="mbti" data-val="ESFJ" onclick="selectTag('mbti', 'ESFJ', this)">ESFJ</div>
+                <div class="tag-option" data-type="mbti" data-val="ISTP" onclick="selectTag('mbti', 'ISTP', this)">ISTP</div>
+                <div class="tag-option" data-type="mbti" data-val="ISFP" onclick="selectTag('mbti', 'ISFP', this)">ISFP</div>
+                <div class="tag-option" data-type="mbti" data-val="ESTP" onclick="selectTag('mbti', 'ESTP', this)">ESTP</div>
+                <div class="tag-option" data-type="mbti" data-val="ESFP" onclick="selectTag('mbti', 'ESFP', this)">ESFP</div>
+            </div>
+
+            <label class="form-label">Zodiac (Required) / 星座 (必填)</label>
+            <div class="tag-grid" id="zodiac-grid">
+                <div class="tag-option" data-type="zodiac" data-val="Aries" onclick="selectTag('zodiac', 'Aries', this)">Aries / 白羊座</div>
+                <div class="tag-option" data-type="zodiac" data-val="Taurus" onclick="selectTag('zodiac', 'Taurus', this)">Taurus / 金牛座</div>
+                <div class="tag-option" data-type="zodiac" data-val="Gemini" onclick="selectTag('zodiac', 'Gemini', this)">Gemini / 雙子座</div>
+                <div class="tag-option" data-type="zodiac" data-val="Cancer" onclick="selectTag('zodiac', 'Cancer', this)">Cancer / 巨蟹座</div>
+                <div class="tag-option" data-type="zodiac" data-val="Leo" onclick="selectTag('zodiac', 'Leo', this)">Leo / 獅子座</div>
+                <div class="tag-option" data-type="zodiac" data-val="Virgo" onclick="selectTag('zodiac', 'Virgo', this)">Virgo / 處女座</div>
+                <div class="tag-option" data-type="zodiac" data-val="Libra" onclick="selectTag('zodiac', 'Libra', this)">Libra / 天秤座</div>
+                <div class="tag-option" data-type="zodiac" data-val="Scorpio" onclick="selectTag('zodiac', 'Scorpio', this)">Scorpio / 天蠍座</div>
+                <div class="tag-option" data-type="zodiac" data-val="Sagittarius" onclick="selectTag('zodiac', 'Sagittarius', this)">Sagittarius / 射手座</div>
+                <div class="tag-option" data-type="zodiac" data-val="Capricorn" onclick="selectTag('zodiac', 'Capricorn', this)">Capricorn / 摩羯座</div>
+                <div class="tag-option" data-type="zodiac" data-val="Aquarius" onclick="selectTag('zodiac', 'Aquarius', this)">Aquarius / 水瓶座</div>
+                <div class="tag-option" data-type="zodiac" data-val="Pisces" onclick="selectTag('zodiac', 'Pisces', this)">Pisces / 雙魚座</div>
+            </div>
+
+            <label class="form-label">Custom Tags / 自定義標籤 (逗號分隔，最多8個)</label>
+            <input type="text" id="input-custom-tags" class="form-input" placeholder="e.g. Design, Reading, Coffee / 例如：設計，閱讀，咖啡">
+
+            <button class="btn-primary" id="save-btn" onclick="triggerHaptic(); saveProfile()">Save Profile / 儲存資料</button>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://nhjkhtrgehznhdlqyybs.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_BFkX70SHXwbSmNzE_h7AQg_a1OwKkO_";
+        let currentAccessToken = localStorage.getItem('aloka_sb_token') || null;
+        let currentUserData = null;
+        let profileData = {};
+        
+        let selectedMbti = "";
+        let selectedZodiac = "";
+
+        window.onload = async () => {
+            fetchClientIP();
+            
+            if (!currentAccessToken) {
+                window.location.href = '../../index.html'; 
+                return;
+            }
+            try {
+                const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${currentAccessToken}` }
+                });
+                if (res.ok) { 
+                    currentUserData = await res.json();
+                    fetchProfile();
+                } else { 
+                    localStorage.removeItem('aloka_sb_token'); 
+                    window.location.href = '../../index.html';
+                }
+            } catch (err) {}
+        };
+
+        async function fetchClientIP() {
+            try {
+                const res = await fetch('https://nhjkhtrgehznhdlqyybs.supabase.co/functions/v1/get-client-ip');
+                const data = await res.json();
+                document.getElementById('display-ip').innerText = data.ip || "Unknown IP";
+            } catch (e) {
+                document.getElementById('display-ip').innerText = "IP unavailable";
+            }
+        }
+
+        function triggerHaptic(duration = 15) {
+            if (navigator.vibrate) navigator.vibrate(duration);
+        }
+
+        async function fetchProfile() {
+            try {
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${currentUserData.id}&select=*`, {
+                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${currentAccessToken}` }
+                });
+                const data = await res.json();
+                if (data && data.length > 0) {
+                    profileData = data[0];
+                    renderProfile();
+                } else {
+                    document.getElementById('display-name').innerText = "New User / 新用戶";
+                    document.getElementById('display-bio').innerText = "Add a bio to introduce yourself... / 添加簡介來介紹自己...";
+                }
+            } catch (err) {}
+        }
+
+        function renderProfile() {
+            document.getElementById('display-name').innerText = profileData.nickname || "Anonymous / 匿名用戶";
+            document.getElementById('display-bio').innerText = profileData.bio || "Add a bio to introduce yourself... / 添加簡介來介紹自己...";
+            document.getElementById('display-location').innerText = profileData.location_city || "Location not set / 未填寫位置";
+            
+            if (profileData.avatar_url) {
+                document.getElementById('display-avatar').src = profileData.avatar_url;
+                document.getElementById('avatar-preview-img').src = profileData.avatar_url;
+                document.getElementById('avatar-preview-img').style.display = 'block';
+            } else {
+                document.getElementById('display-avatar').src = '';
+                document.getElementById('avatar-preview-img').style.display = 'none';
+            }
+            if (profileData.background_url) {
+                document.getElementById('display-banner').src = profileData.background_url;
+                document.getElementById('banner-preview-img').src = profileData.background_url;
+                document.getElementById('banner-preview-img').style.display = 'block';
+            } else {
+                document.getElementById('banner-preview-img').style.display = 'none';
+            }
+
+            let tags = [];
+            try {
+                if (typeof profileData.tags === 'string') tags = JSON.parse(profileData.tags);
+                else if (Array.isArray(profileData.tags)) tags = profileData.tags;
+            } catch(e) {}
+
+            if (tags.length === 0) {
+                document.getElementById('display-tags-str').innerText = 'No tags added. / 暫無標籤';
+            } else {
+                document.getElementById('display-tags-str').innerText = tags.join(', ');
+            }
+        }
+
+        function selectTag(type, val, el) {
+            triggerHaptic(10);
+            document.querySelectorAll(`.tag-option[data-type="${type}"]`).forEach(btn => btn.classList.remove('selected'));
+            el.classList.add('selected');
+            if (type === 'mbti') selectedMbti = val;
+            if (type === 'zodiac') selectedZodiac = val;
+        }
+
+        function openEditModal() {
+            triggerHaptic();
+            document.getElementById('input-name').value = profileData.nickname || '';
+            document.getElementById('input-location').value = profileData.location_city || '';
+            document.getElementById('input-bio').value = profileData.bio || '';
+            document.getElementById('input-avatar-file').value = '';
+            document.getElementById('input-banner-file').value = '';
+
+            if (profileData.avatar_url) {
+                document.getElementById('avatar-preview-img').src = profileData.avatar_url;
+                document.getElementById('avatar-preview-img').style.display = 'block';
+            } else {
+                document.getElementById('avatar-preview-img').style.display = 'none';
+            }
+            if (profileData.background_url) {
+                document.getElementById('banner-preview-img').src = profileData.background_url;
+                document.getElementById('banner-preview-img').style.display = 'block';
+            } else {
+                document.getElementById('banner-preview-img').style.display = 'none';
+            }
+
+            let tags = [];
+            try {
+                if (typeof profileData.tags === 'string') tags = JSON.parse(profileData.tags);
+                else if (Array.isArray(profileData.tags)) tags = profileData.tags;
+            } catch(e) {}
+
+            selectedMbti = "";
+            selectedZodiac = "";
+            let customTags = [];
+
+            document.querySelectorAll('.tag-option').forEach(el => el.classList.remove('selected'));
+
+            tags.forEach(tag => {
+                const mbtiEl = document.querySelector(`.tag-option[data-type="mbti"][data-val="${tag}"]`);
+                if (mbtiEl) {
+                    selectedMbti = tag;
+                    mbtiEl.classList.add('selected');
+                } else {
+                    const zodiacEl = document.querySelector(`.tag-option[data-type="zodiac"][data-val="${tag}"]`);
+                    if (zodiacEl) {
+                        selectedZodiac = tag;
+                        zodiacEl.classList.add('selected');
+                    } else {
+                        customTags.push(tag);
+                    }
+                }
+            });
+
+            document.getElementById('input-custom-tags').value = customTags.join(', ');
+            document.getElementById('edit-modal').classList.add('open');
+        }
+
+        function closeEditModal() {
+            triggerHaptic();
+            document.getElementById('edit-modal').classList.remove('open');
+        }
+
+        async function uploadFile(file, bucket, path) {
+            const formData = new FormData();
+            formData.append('file', file);
+            const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${bucket}/${path}`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${currentAccessToken}` },
+                body: formData
+            });
+            if (!res.ok) throw new Error('Upload failed');
+            return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
+        }
+
+        async function saveProfile() {
+            const btn = document.getElementById('save-btn');
+            btn.disabled = true;
+            btn.innerText = 'Saving...';
+
+            try {
+                if (!selectedMbti || !selectedZodiac) {
+                    alert("MBTI and Zodiac are required. / MBTI 和 星座為必填項目。");
+                    btn.disabled = false;
+                    btn.innerText = 'Save Profile / 儲存資料';
+                    return;
+                }
+
+                const customTagsRaw = document.getElementById('input-custom-tags').value;
+                let customTags = customTagsRaw.split(',').map(t => t.trim()).filter(t => t);
+                customTags = customTags.slice(0, 8);
+                
+                const finalTags = [selectedMbti, selectedZodiac, ...customTags];
+
+                const updates = {
+                    nickname: document.getElementById('input-name').value.trim(),
+                    location_city: document.getElementById('input-location').value.trim(),
+                    bio: document.getElementById('input-bio').value.trim(),
+                    tags: finalTags, 
+                    updated_at: new Date().toISOString()
+                };
+
+                const avatarFile = document.getElementById('input-avatar-file').files[0];
+                if (avatarFile) {
+                    const ext = avatarFile.name.split('.').pop();
+                    const path = `${currentUserData.id}/avatar_${Date.now()}.${ext}`;
+                    const url = await uploadFile(avatarFile, 'avatars', path);
+                    updates.avatar_url = url;
+                }
+
+                const bannerFile = document.getElementById('input-banner-file').files[0];
+                if (bannerFile) {
+                    const ext = bannerFile.name.split('.').pop();
+                    const path = `${currentUserData.id}/banner_${Date.now()}.${ext}`;
+                    const url = await uploadFile(bannerFile, 'banners', path);
+                    updates.background_url = url;
+                }
+
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${currentUserData.id}`, {
+                    method: 'PATCH',
+                    headers: { 
+                        'apikey': SUPABASE_ANON_KEY, 
+                        'Authorization': `Bearer ${currentAccessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updates)
+                });
+
+                if (res.ok) {
+                    profileData = { ...profileData, ...updates };
+                    renderProfile();
+                    closeEditModal();
+                } else {
+                    await fetch(`${SUPABASE_URL}/rest/v1/profiles`, {
+                        method: 'POST',
+                        headers: { 
+                            'apikey': SUPABASE_ANON_KEY, 
+                            'Authorization': `Bearer ${currentAccessToken}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'resolution=merge-duplicates'
+                        },
+                        body: JSON.stringify({ id: currentUserData.id, ...updates })
+                    });
+                    profileData = { id: currentUserData.id, ...updates };
+                    renderProfile();
+                    closeEditModal();
+                }
+            } catch (e) {
+                alert("Error saving profile. / 儲存資料時發生錯誤。");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Save Profile / 儲存資料';
+            }
+        }
+
+        document.getElementById('input-avatar-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    document.getElementById('avatar-preview-img').src = ev.target.result;
+                    document.getElementById('avatar-preview-img').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        document.getElementById('input-banner-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    document.getElementById('banner-preview-img').src = ev.target.result;
+                    document.getElementById('banner-preview-img').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
 </body>
 </html>
