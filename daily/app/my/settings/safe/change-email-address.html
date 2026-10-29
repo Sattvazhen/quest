@@ -3,79 +3,149 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
-    <title>Change Email · Daily Story</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Aloka — 更换邮箱</title>
 
     <style>
         :root {
-            --bg-paper: #ffffff;
-            --bg-sub: #f5f5f7;
-            --text-dark: #1d1d1f; 
-            --text-muted: #86868b; 
-            --apple-blue: #007AFF;
-            --error-color: #ff3b30;
-            --success-color: #34c759;
-            --ease-curve: cubic-bezier(0.32, 0.72, 0, 1); 
-            --font-en: 'Inter', -apple-system, sans-serif;
-            --font-tc: 'Noto Sans TC', 'PingFang TC', sans-serif;
+            /* ---- Apple 设计令牌（唯一数值来源） ---- */
+            --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+                "Helvetica Neue", "PingFang TC", "PingFang SC", "Hiragino Sans GB",
+                "Microsoft YaHei", "Noto Sans TC", "Noto Sans SC", Arial, sans-serif;
+
+            --ink-1: #1d1d1f; --ink-2: #424245; --ink-3: #6e6e73; --ink-4: #86868b;
+            --line: rgba(0, 0, 0, 0.10);
+
+            --surface-1: #ffffff; --surface-2: #fbfbfd; --surface-3: #f5f5f7;
+            --surface-invert: #060607; --on-invert-1: #f5f5f7; --on-invert-2: #a1a1a6;
+            --line-invert: rgba(255, 255, 255, 0.16);
+
+            --accent: #0071e3; --accent-hover: #0077ed; --accent-press: #0068cf;
+            --accent-wash: rgba(0, 113, 227, 0.06); --accent-on-dark: #2997ff;
+
+            --error-color: #ff3b30; --success-color: #34c759;
+
+            --radius-xs: 6px; --radius-sm: 10px; --radius-md: 18px;
+            --radius-lg: 28px; --radius-pill: 999px;
+
+            --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
+            --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+            --dur-fast: 200ms; --dur-base: 320ms; --dur-reveal: 640ms;
+            --size-hit: 44px;
+
+            --safe-top: env(safe-area-inset-top, 20px);
+            --safe-bottom: env(safe-area-inset-bottom, 20px);
+
+            /* ---- 旧变量别名（保留，禁止删除） ---- */
+            --bg-paper: var(--surface-1);
+            --bg-sub: var(--surface-3);
+            --text-dark: var(--ink-1);
+            --text-primary: var(--ink-1);
+            --text-secondary: var(--ink-2);
+            --text-muted: var(--ink-3);
+            --line-light: var(--line);
+            --apple-blue: var(--accent);
+            --apple-blue-hover: var(--accent-hover);
+            --apple-blue-light: var(--accent-wash);
+            --radius: var(--radius-md);
+            --ease-curve: var(--ease-out);
+            --font-en: var(--font-sans);
+            --font-tc: var(--font-sans);
+            --glass-bg: rgba(255, 255, 255, 0.78);
         }
         [data-theme="dark"] {
             --bg-paper: #000000; --bg-sub: #1c1c1e; --text-dark: #f5f5f7; --text-muted: #8e8e93;
+            --line-light: rgba(255, 255, 255, 0.12);
+            --apple-blue-light: rgba(41, 151, 255, 0.14);
+            --glass-bg: rgba(28, 28, 30, 0.78);
         }
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        
+
+        html { -webkit-text-size-adjust: 100%; }
+
         body {
-            font-family: var(--font-en); background-color: var(--bg-paper); color: var(--text-dark);
-            -webkit-font-smoothing: antialiased; text-align: left; height: 100vh; overflow: hidden;
-            letter-spacing: 0.01em; transition: background-color 0.4s var(--ease-curve), color 0.4s var(--ease-curve);
+            font-family: var(--font-sans);
+            background: var(--surface-1);
+            color: var(--ink-1);
+            -webkit-font-smoothing: antialiased;
+            text-align: left;
+            letter-spacing: 0.01em;
+            overflow-x: clip;
+            height: 100dvh;
+            overflow: hidden;
         }
+
+        :lang(zh), :lang(zh-TW), :lang(zh-Hant), :lang(zh-CN) { letter-spacing: 0.01em; }
+
+        :focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+            border-radius: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        .skip-link { position: absolute; left: -9999px; top: 0; z-index: 30; padding: 12px 16px; background: var(--surface-1); color: var(--ink-1); border: 1px solid var(--line); border-radius: var(--radius-sm); }
+        .skip-link:focus { left: 16px; top: 16px; }
+
         .auth-container {
-            width: 100%; min-height: 100dvh; display: flex; align-items: center; justify-content: flex-start;
-            padding: 40px 32px; background: var(--bg-paper);
+            width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-start;
+            padding: 40px 24px;
         }
         .auth-wrapper { width: 100%; max-width: 380px; position: relative; text-align: left; margin: 0 auto; }
-        
-        .brand-title { font-size: 34px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
-        .brand-subtitle { font-family: var(--font-tc); font-size: 15px; color: var(--text-muted); margin-bottom: 3.5rem; line-height: 1.5; }
-        
-        .form-input {
-            width: 100%; background: var(--bg-sub); border: 1px solid transparent; padding: 18px 20px;
-            border-radius: 16px; font-size: 16px; outline: none; color: var(--text-dark);
-            margin-bottom: 20px; transition: all 0.4s var(--ease-curve);
-        }
-        .form-input:focus { border-color: var(--apple-blue); background: var(--bg-paper); }
-        .form-input:disabled { opacity: 0.5; cursor: not-allowed; }
-        
-        .btn-primary {
-            width: 100%; font-size: 16px; font-weight: 600; padding: 18px; border-radius: 16px;
-            cursor: pointer; transition: all 0.4s var(--ease-curve); display: inline-flex;
-            justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px;
-            color: #ffffff; background: var(--apple-blue); border: none; text-decoration: none;
-        }
-        .btn-primary:active { transform: scale(0.95); }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        .auth-switch { font-size: 15px; font-weight: 500; color: var(--apple-blue); cursor: pointer; margin-top: 1.5rem; display: inline-block; text-decoration: none; }
+        .brand-title { font-size: 34px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 8px; color: var(--ink-1); }
+        .brand-subtitle { font-size: 15px; color: var(--ink-2); margin-bottom: 40px; line-height: 1.5; }
+
+        .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--ink-2); margin-bottom: 8px; }
+
+        .form-input {
+            width: 100%; background: var(--surface-3); border: 1px solid transparent; padding: 14px 16px;
+            border-radius: var(--radius-sm); font-size: 16px; color: var(--ink-1);
+            margin-bottom: 16px; transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
+        }
+        .form-input:focus { border-color: var(--accent); background: var(--surface-1); }
+        .form-input:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .btn {
+            width: 100%; font-size: 16px; font-weight: 600; padding: 14px; min-height: var(--size-hit); border-radius: var(--radius-pill);
+            cursor: pointer; transition: background-color var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+            display: inline-flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px;
+            border: none; text-decoration: none;
+        }
+        .btn.btn-primary { color: #ffffff; background: var(--accent); }
+        .btn.btn-primary:active { background: var(--accent-press); }
+        .btn.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .auth-switch { font-size: 15px; font-weight: 500; color: var(--accent); cursor: pointer; margin-top: 16px; display: inline-block; text-decoration: none; }
+        .auth-switch:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
+    <a class="skip-link" href="#main">跳到主要内容</a>
+
     <div class="auth-container">
-        <div class="auth-wrapper" id="form-section">
-            <div class="brand-title">Daily Story</div>
-            <div class="brand-subtitle">Change Email / 更改信箱</div>
-            
+        <main id="main" class="auth-wrapper">
+            <h1 class="brand-title">Daily Story</h1>
+            <p class="brand-subtitle">Change Email / 更改信箱</p>
+
+            <label for="new-email" class="form-label">New Email Address / 新信箱地址</label>
             <input type="email" class="form-input" id="new-email" placeholder="New Email Address / 新信箱地址">
+            <label for="confirm-email" class="form-label">Confirm New Email / 再次輸入新信箱</label>
             <input type="email" class="form-input" id="confirm-email" placeholder="Confirm New Email / 再次輸入新信箱">
-            
-            <button class="btn-primary" id="btn-update" onclick="handleEmailChange()">Update Email / 確認更改</button>
-            
+
+            <button class="btn btn-primary" id="btn-update" onclick="handleEmailChange()">Update Email / 確認更改</button>
+
             <a href="./index.html" class="auth-switch">Back / 返回</a>
 
             <div id="status-msg" style="font-size:14px; margin-top:16px; line-height: 1.5;"></div>
-        </div>
+        </main>
     </div>
 
     <script>
@@ -123,21 +193,21 @@
             try {
                 const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
                     method: 'PUT',
-                    headers: { 
-                        'apikey': SUPABASE_ANON_KEY, 
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
                         'Authorization': `Bearer ${currentAccessToken}`,
-                        'Content-Type': 'application/json' 
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ email: newEmail })
                 });
 
                 const data = await res.json();
-                
+
                 if (!res.ok) throw new Error(data.msg || data.error_description || 'Update failed');
 
                 msgEl.style.color = 'var(--success-color)';
                 msgEl.innerHTML = 'Confirmation links sent! <br>For security, please check <b>BOTH</b> your old and new email inboxes to confirm the change.<br><br>確認信已發送！為確保安全，請前往您的<b>新信箱與舊信箱</b>點擊確認連結以完成更改。';
-                
+
                 document.getElementById('new-email').value = '';
                 document.getElementById('confirm-email').value = '';
 
