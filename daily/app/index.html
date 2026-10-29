@@ -3,75 +3,117 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
-    <title>Aloka Quest · Candlelight Aloka</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <title>Aloka Quest — 记录每日的探索</title>
+
+    <script src="./vendor/html2canvas.min.js"></script>
 
     <style>
         :root {
-            --bg-paper: #ffffff;
-            --bg-sub: #f5f5f7;
-            --text-dark: #1d1d1f; 
-            --text-muted: #86868b; 
-            --line-light: rgba(0, 0, 0, 0.06);
-            --apple-blue: #007AFF;
-            --apple-blue-light: #E5F1FF;
-            --error-color: #ff3b30;
-            --success-color: #34c759;
-            --radius: 20px;
-            --safe-bottom: env(safe-area-inset-bottom, 24px);
-            --safe-top: env(safe-area-inset-top, 40px); 
-            --ease-curve: cubic-bezier(0.32, 0.72, 0, 1); 
-            --font-en: 'Inter', -apple-system, sans-serif;
-            --font-tc: 'Noto Sans TC', 'PingFang TC', sans-serif;
-            --glass-bg: rgba(245, 245, 247, 0.85);
+            /* ---- Apple 设计令牌（唯一数值来源） ---- */
+            --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+                "Helvetica Neue", "PingFang TC", "PingFang SC", "Hiragino Sans GB",
+                "Microsoft YaHei", "Noto Sans TC", "Noto Sans SC", Arial, sans-serif;
+
+            --ink-1: #1d1d1f; --ink-2: #424245; --ink-3: #6e6e73; --ink-4: #86868b;
+            --line: rgba(0, 0, 0, 0.10);
+
+            --surface-1: #ffffff; --surface-2: #fbfbfd; --surface-3: #f5f5f7;
+            --surface-invert: #060607; --on-invert-1: #f5f5f7; --on-invert-2: #a1a1a6;
+            --line-invert: rgba(255, 255, 255, 0.16);
+
+            --accent: #0071e3; --accent-hover: #0077ed; --accent-press: #0068cf;
+            --accent-wash: rgba(0, 113, 227, 0.06); --accent-on-dark: #2997ff;
+
+            --error-color: #ff3b30; --success-color: #34c759;
+
+            --radius-xs: 6px; --radius-sm: 10px; --radius-md: 18px;
+            --radius-lg: 28px; --radius-pill: 999px;
+
+            --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
+            --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+            --dur-fast: 200ms; --dur-base: 320ms; --dur-reveal: 640ms;
+            --size-hit: 44px;
+
+            --safe-top: env(safe-area-inset-top, 20px);
+            --safe-bottom: env(safe-area-inset-bottom, 20px);
+
+            /* ---- 旧变量别名（保留，禁止删除） ---- */
+            --bg-paper: var(--surface-1);
+            --bg-sub: var(--surface-3);
+            --text-dark: var(--ink-1);
+            --text-primary: var(--ink-1);
+            --text-secondary: var(--ink-2);
+            --text-muted: var(--ink-3);
+            --line-light: var(--line);
+            --apple-blue: var(--accent);
+            --apple-blue-hover: var(--accent-hover);
+            --apple-blue-light: var(--accent-wash);
+            --radius: var(--radius-md);
+            --ease-curve: var(--ease-out);
+            --font-en: var(--font-sans);
+            --font-tc: var(--font-sans);
+            --glass-bg: rgba(255, 255, 255, 0.78);
         }
+
         [data-theme="dark"] {
-            --bg-paper: #000000; --bg-sub: #1c1c1e; --text-dark: #f5f5f7; --text-muted: #8e8e93;
-            --line-light: rgba(255, 255, 255, 0.1); --apple-blue-light: #0A2948;
-            --glass-bg: rgba(28, 28, 30, 0.85);
+            --bg-paper: #000000; --bg-sub: #1c1c1e;
+            --text-dark: #f5f5f7; --text-muted: #8e8e93;
+            --line-light: rgba(255, 255, 255, 0.12);
+            --apple-blue-light: rgba(41, 151, 255, 0.14);
+            --glass-bg: rgba(28, 28, 30, 0.78);
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        
+
+        html { -webkit-text-size-adjust: 100%; }
+
         body {
-            font-family: var(--font-en); background-color: var(--bg-paper); color: var(--text-dark);
-            -webkit-font-smoothing: antialiased; text-align: left; 
-            height: 100dvh; 
+            font-family: var(--font-sans);
+            background: var(--bg-paper);
+            color: var(--text-dark);
+            -webkit-font-smoothing: antialiased;
+            text-align: left;
+            letter-spacing: 0.01em;
+            overflow-x: clip;
+            height: 100dvh;
             overflow: hidden;
-            letter-spacing: 0.01em; transition: background-color 0.4s var(--ease-curve), color 0.4s var(--ease-curve);
+            transition: background-color var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
         }
 
-        .view-hidden { display: none !important; }
-        
-        @keyframes drawLine {
-            0% { stroke-dashoffset: 1.05; }
-            100% { stroke-dashoffset: 0; }
+        :lang(zh), :lang(zh-TW), :lang(zh-Hant), :lang(zh-CN) { letter-spacing: 0.01em; }
+
+        :focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
         }
 
-        @keyframes iconSpring {
-            0% { transform: scale(0.8); opacity: 0.5; }
-            40% { transform: scale(1.1); }
-            80% { transform: scale(0.95); }
-            100% { transform: scale(1); opacity: 1; }
+        .skip-link { position: absolute; left: -9999px; top: 0; z-index: 30; padding: 12px 16px; background: #000000; color: var(--on-invert-1); border-radius: var(--radius-sm); }
+        .skip-link:focus { left: 16px; top: 16px; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
         }
 
-        svg path, svg circle, svg rect {
-            stroke-dasharray: 1.05;
-            stroke-dashoffset: 0;
+        .view-hidden { display: none; }
+
+        #temp-custom-toggle {
+            background: var(--bg-sub); border: none; color: var(--text-muted); cursor: pointer;
+            width: 56px; height: 56px; border-radius: var(--radius-pill);
+            align-items: center; justify-content: center;
+            transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
         }
+        #temp-custom-toggle:not(.view-hidden) { display: flex; }
 
         #app-section {
-            display: flex; flex-direction: column; height: 100%; max-width: 100%; 
+            display: flex; flex-direction: column; height: 100%; max-width: 100%;
             margin: 0 auto; background: var(--bg-sub); position: relative; overflow: hidden;
-            animation: appStageIn 0.8s var(--ease-curve);
         }
         @media (min-width: 600px) { #app-section { max-width: 600px; border-left: 1px solid var(--line-light); border-right: 1px solid var(--line-light); } }
-
-        @keyframes appStageIn { from { opacity: 0; transform: scale(0.98) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 
         .app-header {
             display: flex; align-items: flex-start; justify-content: space-between;
@@ -84,14 +126,13 @@
         .main-view::-webkit-scrollbar { display: none; }
 
         .entry-card {
-            background: var(--bg-paper); border-radius: var(--radius); padding: 28px;
-            margin-bottom: 32px; 
+            background: var(--bg-paper); border-radius: var(--radius-md); padding: 28px;
+            margin-bottom: 32px;
             border: 1px solid var(--line-light);
-            cursor: pointer; transition: transform 0.4s var(--ease-curve), border-color 0.4s var(--ease-curve);
+            cursor: pointer; transition: border-color var(--dur-fast) var(--ease-out);
             text-align: left; position: relative;
         }
-        .entry-card:active { 
-            transform: scale(0.95); 
+        .entry-card:active {
             border-color: var(--text-muted);
         }
 
@@ -102,8 +143,6 @@
             width: 100%;
             height: calc(64px + var(--safe-bottom));
             background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border-top: 1px solid var(--line-light);
             display: flex;
             justify-content: space-around;
@@ -118,7 +157,7 @@
             text-decoration: none;
             color: var(--text-muted);
             gap: 6px;
-            transition: color 0.4s var(--ease-curve), transform 0.4s var(--ease-curve);
+            transition: color var(--dur-fast) var(--ease-out);
             width: 20%;
             background: none;
             border: none;
@@ -126,14 +165,12 @@
             font-family: inherit;
         }
         .tab-item.active { color: var(--text-dark); }
-        .tab-item:active { transform: scale(0.9); }
         .tab-item svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
         .tab-item span { font-size: 10px; font-weight: 500; letter-spacing: 0.5px; }
 
         .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            z-index: 200; display: none; align-items: flex-end; opacity: 0; transition: opacity 0.5s var(--ease-curve);
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4);
+            z-index: 200; display: none; align-items: flex-end; opacity: 0; transition: opacity var(--dur-base) var(--ease-out);
         }
         .modal-overlay.open { display: flex; opacity: 1; }
         
@@ -154,7 +191,7 @@
         .detail-meta-row { display: flex; gap: 24px; border-top: 1px solid var(--line-light); padding-top: 24px; }
         .detail-meta-item { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--text-muted); }
 
-        .wizard-step { display: none; animation: fadeUp 0.6s var(--ease-curve); min-height: 100%; height: max-content; flex-direction: column; text-align: left;}
+        .wizard-step { display: none; min-height: 100%; height: max-content; flex-direction: column; text-align: left;}
         .wizard-step.active { display: flex; }
         
         .wizard-header { margin-bottom: 40px; }
@@ -166,52 +203,49 @@
 
         .selector-grid { display: flex; flex-wrap: wrap; gap: 16px; }
         .option-btn {
-            background: var(--bg-sub); border: 1px solid transparent; padding: 20px; border-radius: 20px;
+            background: var(--bg-sub); border: 1px solid transparent; padding: 20px; border-radius: var(--radius-md);
             cursor: pointer; color: var(--text-dark); display: flex; flex-direction: column; align-items: flex-start;
-            gap: 16px; font-size: 16px; font-weight: 500; transition: all 0.4s var(--ease-curve); width: calc(50% - 8px); text-align: left;
+            gap: 16px; font-size: 16px; font-weight: 500; transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out); width: calc(50% - 8px); text-align: left;
         }
-        .option-btn svg { width: 28px; height: 28px; stroke: var(--text-muted); transition: all 0.4s var(--ease-curve); }
-        
-        .option-btn.selected { background: var(--apple-blue-light); border-color: var(--apple-blue); color: var(--apple-blue); }
-        .option-btn.selected svg { 
-            stroke: var(--apple-blue); 
-            stroke-dasharray: 1.05;
-            stroke-dashoffset: 1.05;
-            animation: iconSpring 0.8s var(--ease-curve) forwards, drawLine 1.2s var(--ease-curve) forwards; 
+        .option-btn svg { width: 28px; height: 28px; stroke: var(--text-muted); transition: stroke var(--dur-fast) var(--ease-out); }
+
+        .option-btn.selected { background: var(--accent-wash); border-color: var(--accent); color: var(--accent); }
+        .option-btn.selected svg {
+            stroke: var(--accent);
         }
 
-        .temp-slider { -webkit-appearance: none; width: 100%; height: 8px; border-radius: 4px; background: var(--line-light); outline: none; margin: 40px 0; }
-        .temp-slider::-webkit-slider-thumb { 
-            -webkit-appearance: none; appearance: none; width: 36px; height: 36px; border-radius: 50%; 
+        .temp-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 8px; border-radius: var(--radius-sm); background: var(--line-light); margin: 40px 0; }
+        .temp-slider:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+        .temp-slider::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none; width: 36px; height: 36px; border-radius: var(--radius-pill);
             background: var(--bg-paper); border: 1px solid var(--line-light);
-            cursor: pointer; transition: transform 0.3s var(--ease-curve); 
+            cursor: pointer;
         }
-        .temp-slider::-webkit-slider-thumb:active { transform: scale(0.85); }
-        
+
         .temp-display { font-size: 64px; font-weight: 700; margin-bottom: 8px; font-variant-numeric: tabular-nums; letter-spacing: -3px;}
         .temp-feeling { font-size: 16px; color: var(--text-muted); font-family: var(--font-tc); display: flex; align-items: center; gap: 8px; font-weight: 500;}
 
         .wizard-footer { margin-top: 24px; padding-bottom: 32px; display: flex; gap: 16px; }
 
         .btn-primary, .btn-secondary {
-            width: 100%; font-size: 16px; font-weight: 600; padding: 18px; border-radius: 16px;
-            cursor: pointer; transition: all 0.4s var(--ease-curve); display: inline-flex;
+            width: 100%; font-size: 16px; font-weight: 600; padding: 18px; border-radius: var(--radius-pill);
+            cursor: pointer; transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out); display: inline-flex;
             justify-content: center; align-items: center; gap: 8px;
         }
-        .btn-primary { color: #ffffff; background: var(--apple-blue); border: none; }
+        .btn-primary { color: #ffffff; background: var(--accent); border: none; }
         .btn-secondary { color: var(--text-dark); background: transparent; border: 1px solid var(--line-light); }
-        .btn-primary:active, .btn-secondary:active { transform: scale(0.95); }
+        .header-actions button:active { background: var(--accent-press); }
 
         .form-input {
             width: 100%; background: var(--bg-sub); border: 1px solid transparent; padding: 18px 20px;
-            border-radius: 16px; font-size: 16px; outline: none; color: var(--text-dark);
-            transition: all 0.4s var(--ease-curve);
+            border-radius: var(--radius-sm); font-size: 16px; color: var(--text-dark);
+            transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
         }
-        .form-input:focus { border-color: var(--apple-blue); background: var(--bg-paper); }
+        .form-input:focus { border-color: var(--accent); background: var(--bg-paper); }
 
         #export-render-card {
-            position: fixed; left: -9999px; top: 0; width: 800px; background: #FFFFFF;
-            padding: 80px; color: #1D1D1F; font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            position: fixed; left: -9999px; top: 0; width: 800px; background: var(--bg-paper);
+            padding: 80px; color: #1D1D1F; font-family: var(--font-sans);
             text-align: left; box-sizing: border-box; z-index: -1;
         }
         .export-header { border-bottom: 2px solid #000; padding-bottom: 24px; margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end; }
@@ -223,15 +257,16 @@
         .export-footer { margin-top: 48px; font-size: 14px; color: #86868B; text-align: left; letter-spacing: 0.5px;}
 
         .download-icon-btn {
-            background: var(--bg-sub); border: none; color: var(--text-muted); cursor: pointer; 
-            width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-            transition: all 0.3s var(--ease-curve);
+            background: var(--bg-sub); border: none; color: var(--text-muted); cursor: pointer;
+            width: 40px; height: 40px; border-radius: var(--radius-pill); display: flex; align-items: center; justify-content: center;
+            transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
         }
-        .download-icon-btn:hover { background: var(--apple-blue-light); color: var(--apple-blue); }
-        .download-icon-btn:active { transform: scale(0.85); }
+        .download-icon-btn:hover { background: var(--accent-wash); color: var(--accent); }
     </style>
 </head>
 <body>
+
+    <a class="skip-link" href="#main">跳到主要内容</a>
 
     <svg width="0" height="0" style="display:none;">
         <defs>
@@ -263,15 +298,15 @@
                 <div id="live-clock" class="live-clock">加載時間中...</div>
             </div>
             <div class="header-actions">
-                <button onclick="triggerHaptic(); openWizard()" title="New Entry" style="background:var(--apple-blue); color:white; border:none; width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; transition: transform 0.4s var(--ease-curve);">
+                <button onclick="triggerHaptic(); openWizard()" title="New Entry" aria-label="New Entry" style="background:var(--accent); color:white; border:none; width:56px; height:56px; border-radius:var(--radius-pill); display:flex; align-items:center; justify-content:center; cursor:pointer; transition: background-color var(--dur-fast) var(--ease-out);">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="24" height="24"><use href="#icon-pen"/></svg>
                 </button>
             </div>
         </header>
 
-        <div class="main-view" id="view-timeline">
+        <main id="main" class="main-view">
             <div id="timeline-container"></div>
-        </div>
+        </main>
 
         <nav class="bottom-tab-bar">
             <a href="index.html" class="tab-item active" onclick="triggerHaptic()">
@@ -299,7 +334,7 @@
 
     <div class="modal-overlay" id="wizard-modal">
         <div class="modal-sheet">
-            <button onclick="triggerHaptic(); closeModal('wizard-modal')" style="position:absolute; top:calc(var(--safe-top) + 20px); right: 32px; background:var(--bg-sub); border:none; color:var(--text-muted); cursor:pointer; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; transition: all 0.4s var(--ease-curve); z-index: 10;">
+            <button onclick="triggerHaptic(); closeModal('wizard-modal')" aria-label="Close" style="position:absolute; top:calc(var(--safe-top) + 20px); right: 32px; background:var(--bg-sub); border:none; color:var(--text-muted); cursor:pointer; width:44px; height:44px; border-radius:var(--radius-pill); display:flex; align-items:center; justify-content:center; transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out); z-index: 10;">
                 <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor"><use href="#icon-close"/></svg>
             </button>
             
@@ -311,7 +346,7 @@
 
                 <div class="form-section-gap">
                     <div class="wizard-meta" style="margin-bottom:0;">Nickname / 暱稱</div>
-                    <input type="text" id="nickname-input" class="form-input" placeholder="Enter nickname... / 輸入暱稱">
+                    <input type="text" id="nickname-input" class="form-input" placeholder="Enter nickname... / 輸入暱稱" aria-label="Nickname / 暱稱">
                 </div>
 
                 <div class="form-section-gap">
@@ -322,7 +357,7 @@
                         <button class="option-btn mood-btn" data-val="sad" onclick="triggerHaptic(); selectOption('mood', 'sad', this)"><svg viewBox="0 0 24 24"><use href="#icon-sad"/></svg> Sad</button>
                         <button class="option-btn mood-btn" data-val="custom" onclick="triggerHaptic(); selectOption('mood', 'custom', this)"><svg viewBox="0 0 24 24"><use href="#icon-gear"/></svg> Custom </button>
                     </div>
-                    <input type="text" id="custom-mood-input" class="form-input view-hidden" style="margin-top:16px;" placeholder="Describe your mood... / 描述心情">
+                    <input type="text" id="custom-mood-input" class="form-input view-hidden" style="margin-top:16px;" placeholder="Describe your mood... / 描述心情" aria-label="Custom mood / 自定義心情">
                 </div>
 
                 <div class="form-section-gap">
@@ -335,12 +370,12 @@
                                 <span id="temp-text-status">Comfortable / 舒適</span>
                             </div>
                         </div>
-                        <button id="temp-custom-toggle" onclick="triggerHaptic(); toggleCustomTemp()" title="自定義感受" style="background:var(--bg-sub); border:none; color:var(--text-muted); cursor:pointer; width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; transition: all 0.4s var(--ease-curve);">
+                        <button id="temp-custom-toggle" onclick="triggerHaptic(); toggleCustomTemp()" title="自定義感受" aria-label="自定義感受">
                             <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"><use href="#icon-gear"/></svg>
                         </button>
                     </div>
-                    <input type="range" class="temp-slider" id="temp-slider" min="-50" max="50" step="1" value="20" oninput="triggerHaptic(10); updateTemp()">
-                    <input type="text" id="custom-temp-input" class="form-input view-hidden" placeholder="Override feeling / 自定義感受">
+                    <input type="range" class="temp-slider" id="temp-slider" min="-50" max="50" step="1" value="20" oninput="triggerHaptic(10); updateTemp()" aria-label="Temperature / 氣溫">
+                    <input type="text" id="custom-temp-input" class="form-input view-hidden" placeholder="Override feeling / 自定義感受" aria-label="Custom temperature feeling / 自定義感受">
                 </div>
 
                 <div class="form-section-gap">
@@ -351,7 +386,7 @@
                         <button class="option-btn weather-btn" data-val="Rainy" onclick="triggerHaptic(); selectOption('weather', 'Rainy', this)"><svg viewBox="0 0 24 24"><use href="#icon-rain"/></svg> Rainy</button>
                         <button class="option-btn weather-btn" data-val="custom" onclick="triggerHaptic(); selectOption('weather', 'custom', this)"><svg viewBox="0 0 24 24"><use href="#icon-gear"/></svg> Custom</button>
                     </div>
-                    <input type="text" id="custom-weather-input" class="form-input view-hidden" style="margin-top:16px;" placeholder="Enter weather...">
+                    <input type="text" id="custom-weather-input" class="form-input view-hidden" style="margin-top:16px;" placeholder="Enter weather..." aria-label="Custom weather / 自定義天氣">
                 </div>
 
                 <div class="form-section-gap">
@@ -367,15 +402,15 @@
                             <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"><use href="#icon-gear"/></svg> Custom 
                         </button>
                     </div>
-                    <input type="text" id="location-input" class="form-input view-hidden" style="margin-top:16px;" placeholder="Enter custom location / 輸入自定義地點">
+                    <input type="text" id="location-input" class="form-input view-hidden" style="margin-top:16px;" placeholder="Enter custom location / 輸入自定義地點" aria-label="Custom location / 自定義地點">
                 </div>
 
                 <div class="form-section-gap">
                     <div class="wizard-meta" style="margin-bottom:0;">Story / 故事</div>
                     <div id="story-editor-container" style="display:flex; flex-direction:column; gap:16px;">
-                        <input type="text" id="story-main-title" class="form-input" style="font-size: 22px; font-weight: 700; padding: 16px 20px;" placeholder="Main Title / 大標題">
+                        <input type="text" id="story-main-title" class="form-input" style="font-size: 22px; font-weight: 700; padding: 16px 20px;" placeholder="Main Title / 大標題" aria-label="Story main title / 大標題">
                         <div id="story-blocks" style="display:flex; flex-direction:column; gap:16px;">
-                            <textarea class="form-input block-body" style="height:120px; resize:none; font-size:16px; line-height:1.8;" placeholder="Body / 正文"></textarea>
+                            <textarea class="form-input block-body" style="height:120px; resize:none; font-size:16px; line-height:1.8;" placeholder="Body / 正文" aria-label="Story body / 正文"></textarea>
                         </div>
                         <div style="display:flex; gap:12px;">
                             <button class="btn-secondary" onclick="triggerHaptic(); addStoryBlock('subtitle')" style="padding: 12px; font-size:14px; width: auto; border-radius: 12px;">+ Subtitle / 新增小標題</button>
@@ -393,7 +428,7 @@
 
     <div class="modal-overlay" id="detail-modal">
         <div class="modal-sheet">
-            <button onclick="triggerHaptic(); closeModal('detail-modal')" style="position:absolute; top:calc(var(--safe-top) + 20px); right: 32px; background:var(--bg-sub); border:none; color:var(--text-muted); cursor:pointer; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; transition: all 0.4s var(--ease-curve);">
+            <button onclick="triggerHaptic(); closeModal('detail-modal')" aria-label="Close" style="position:absolute; top:calc(var(--safe-top) + 20px); right: 32px; background:var(--bg-sub); border:none; color:var(--text-muted); cursor:pointer; width:44px; height:44px; border-radius:var(--radius-pill); display:flex; align-items:center; justify-content:center; transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);">
                 <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor"><use href="#icon-close"/></svg>
             </button>
             <div id="detail-content-area"></div>
@@ -613,6 +648,7 @@
         }
 
         function downloadEntry(id) {
+            if (typeof html2canvas === 'undefined') { alert('导出组件未加载'); return; }
             const entry = diariesData[id];
             if(!entry) return;
             
@@ -659,6 +695,7 @@
                 input.style.fontWeight = '600';
                 input.style.padding = '16px 20px';
                 input.placeholder = 'Subtitle / 小標題';
+                input.setAttribute('aria-label', 'Story subtitle / 小標題');
                 container.appendChild(input);
             } else if (type === 'body') {
                 const textarea = document.createElement('textarea');
@@ -668,6 +705,7 @@
                 textarea.style.fontSize = '16px';
                 textarea.style.lineHeight = '1.8';
                 textarea.placeholder = 'Body / 正文';
+                textarea.setAttribute('aria-label', 'Story body / 正文');
                 container.appendChild(textarea);
             }
             smoothScrollTo('story-editor-container');
@@ -684,7 +722,7 @@
             if(mainTitleEl) mainTitleEl.value = '';
             const blocksContainer = document.getElementById('story-blocks');
             if(blocksContainer) {
-                blocksContainer.innerHTML = '<textarea class="form-input block-body" style="height:120px; resize:none; font-size:16px; line-height:1.8;" placeholder="Body / 正文"></textarea>';
+                blocksContainer.innerHTML = '<textarea class="form-input block-body" style="height:120px; resize:none; font-size:16px; line-height:1.8;" placeholder="Body / 正文" aria-label="Story body / 正文"></textarea>';
             }
 
             document.getElementById('wizard-modal').classList.add('open');
@@ -748,8 +786,8 @@
             let desc = '';
             const thermIcon = document.getElementById('dynamic-thermometer');
             
-            if(val < 0) { desc = "Freezing Cold / 嚴寒"; thermIcon.style.color = "#007AFF"; }
-            else if(val < 10) { desc = "Cold / 寒冷"; thermIcon.style.color = "#007AFF"; }
+            if(val < 0) { desc = "Freezing Cold / 嚴寒"; thermIcon.style.color = "var(--accent)"; }
+            else if(val < 10) { desc = "Cold / 寒冷"; thermIcon.style.color = "var(--accent)"; }
             else if(val < 20) { desc = "Cool / 涼爽"; thermIcon.style.color = "#5AC8FA"; }
             else if(val < 28) { desc = "Comfortable / 舒適"; thermIcon.style.color = "var(--text-dark)"; }
             else if(val < 35) { desc = "Hot / 炎熱"; thermIcon.style.color = "#FF9500"; }
