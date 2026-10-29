@@ -3,42 +3,101 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Privacy Policy · Aloka Quest</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Aloka Quest — 隐私政策</title>
     <style>
         :root {
-            --bg-paper: #ffffff;
-            --bg-sub: #f5f5f7;
-            --text-dark: #1d1d1f; 
-            --text-muted: #86868b; 
-            --line-light: rgba(0, 0, 0, 0.1);
-            --apple-blue: #007AFF;
+            /* ---- Apple 设计令牌（唯一数值来源） ---- */
+            --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+                "Helvetica Neue", "PingFang TC", "PingFang SC", "Hiragino Sans GB",
+                "Microsoft YaHei", "Noto Sans TC", "Noto Sans SC", Arial, sans-serif;
+
+            --ink-1: #1d1d1f; --ink-2: #424245; --ink-3: #6e6e73; --ink-4: #86868b;
+            --line: rgba(0, 0, 0, 0.10);
+
+            --surface-1: #ffffff; --surface-2: #fbfbfd; --surface-3: #f5f5f7;
+            --surface-invert: #060607; --on-invert-1: #f5f5f7; --on-invert-2: #a1a1a6;
+            --line-invert: rgba(255, 255, 255, 0.16);
+
+            --accent: #0071e3; --accent-hover: #0077ed; --accent-press: #0068cf;
+            --accent-wash: rgba(0, 113, 227, 0.06); --accent-on-dark: #2997ff;
+
+            --error-color: #ff3b30; --success-color: #34c759;
+
+            --radius-xs: 6px; --radius-sm: 10px; --radius-md: 18px;
+            --radius-lg: 28px; --radius-pill: 999px;
+
+            --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
+            --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+            --dur-fast: 200ms; --dur-base: 320ms; --dur-reveal: 640ms;
+            --size-hit: 44px;
+
+            --safe-top: env(safe-area-inset-top, 20px);
             --safe-bottom: env(safe-area-inset-bottom, 20px);
-            --safe-top: env(safe-area-inset-top, 40px); 
-            --font-en: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            --font-tc: 'Noto Sans TC', 'PingFang TC', sans-serif;
+
+            /* ---- 旧变量别名（保留，禁止删除） ---- */
+            --bg-paper: var(--surface-1);
+            --bg-sub: var(--surface-3);
+            --text-dark: var(--ink-1);
+            --text-primary: var(--ink-1);
+            --text-secondary: var(--ink-2);
+            --text-muted: var(--ink-3);
+            --line-light: var(--line);
+            --apple-blue: var(--accent);
+            --apple-blue-hover: var(--accent-hover);
+            --apple-blue-light: var(--accent-wash);
+            --radius: var(--radius-md);
+            --ease-curve: var(--ease-out);
+            --font-en: var(--font-sans);
+            --font-tc: var(--font-sans);
+            --glass-bg: rgba(255, 255, 255, 0.78);
         }
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-paper: #000000;
-                --bg-sub: #1c1c1e;
-                --text-dark: #f5f5f7;
-                --text-muted: #8e8e93;
-                --line-light: rgba(255, 255, 255, 0.15);
+
+        [data-theme="dark"] {
+            --bg-paper: #000000; --bg-sub: #1c1c1e;
+            --text-dark: #f5f5f7; --text-muted: #8e8e93;
+            --line-light: rgba(255, 255, 255, 0.12);
+            --apple-blue-light: rgba(41, 151, 255, 0.14);
+            --glass-bg: rgba(28, 28, 30, 0.78);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { -webkit-text-size-adjust: 100%; }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--surface-1);
+            color: var(--ink-1);
+            -webkit-font-smoothing: antialiased;
+            text-align: left;
+            letter-spacing: 0.01em;
+            overflow-x: clip;
+            line-height: 1.6;
+            font-variant-numeric: tabular-nums;
+        }
+
+        :lang(zh), :lang(zh-TW), :lang(zh-Hant), :lang(zh-CN) { letter-spacing: 0.01em; }
+
+        :focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+            border-radius: 2px;
+        }
+
+        .skip-link { position: absolute; left: -9999px; top: 0; z-index: 30; padding: 12px 16px; background: var(--surface-invert); color: var(--on-invert-1); }
+        .skip-link:focus { left: 16px; top: 16px; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
             }
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: var(--font-en);
-            background-color: var(--bg-paper);
-            color: var(--text-dark);
-            -webkit-font-smoothing: antialiased;
-            line-height: 1.6;
-        }
+
         .container {
-            max-width: 800px;
+            max-width: 692px;
             margin: 0 auto;
             padding: calc(var(--safe-top) + 40px) 24px calc(var(--safe-bottom) + 60px);
         }
@@ -48,33 +107,32 @@
         }
         .title {
             font-size: 32px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
             margin-bottom: 8px;
-            font-family: var(--font-tc);
+            color: var(--ink-1);
         }
         .last-updated {
             font-size: 14px;
-            color: var(--text-muted);
+            color: var(--ink-3);
             font-weight: 400;
         }
         .content-section {
             margin-bottom: 60px;
-            font-family: var(--font-tc);
         }
         h2 {
             font-size: 20px;
             font-weight: 600;
             margin-top: 32px;
             margin-bottom: 16px;
-            color: var(--text-dark);
+            color: var(--ink-1);
             border-bottom: 1px solid var(--line-light);
             padding-bottom: 8px;
         }
         p {
             font-size: 15px;
             margin-bottom: 16px;
-            color: var(--text-dark);
+            color: var(--ink-2);
         }
         ul {
             margin-left: 20px;
@@ -83,15 +141,15 @@
         li {
             font-size: 15px;
             margin-bottom: 12px;
-            color: var(--text-dark);
+            color: var(--ink-2);
             padding-left: 4px;
         }
         li strong {
             font-weight: 600;
-            color: var(--text-dark);
+            color: var(--ink-1);
         }
         a {
-            color: var(--apple-blue);
+            color: var(--accent);
             text-decoration: none;
         }
         a:hover {
@@ -103,11 +161,13 @@
             margin: 60px 0;
             border: none;
         }
-        .lang-en-title { font-family: var(--font-en); }
     </style>
 </head>
 <body>
 
+<a class="skip-link" href="#main">跳到主要内容</a>
+
+<main id="main">
 <div class="container">
     <!-- 中文版隱私政策 -->
     <div class="header">
@@ -189,7 +249,7 @@
 
     <!-- English Version Privacy Policy -->
     <div class="header" style="margin-top: 60px;">
-        <h1 class="title lang-en-title">ALOKA Quest Privacy Policy and Service Statement Chinese&English</h1>
+        <h2 class="title lang-en-title">ALOKA Quest Privacy Policy and Service Statement Chinese&English</h2>
         <div class="last-updated" style="font-family: var(--font-en);">Last Updated: July 2026</div>
     </div>
 
@@ -263,6 +323,7 @@
         </ul>
     </div>
 </div>
+</main>
 
 </body>
 </html>
