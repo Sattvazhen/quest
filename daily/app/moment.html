@@ -3,75 +3,115 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
-    <title>Moment · Candlelight Aloka</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Aloka Quest — Moment 动态</title>
 
     <style>
         :root {
-            --bg-paper: #ffffff;
-            --bg-sub: #f5f5f7;
-            --text-dark: #1d1d1f; 
-            --text-muted: #86868b; 
-            --line-light: rgba(0, 0, 0, 0.06);
-            --apple-blue: #007AFF;
-            --apple-blue-light: #E5F1FF;
-            --error-color: #ff3b30;
-            --success-color: #34c759;
-            --radius: 20px;
+            /* ---- Apple 设计令牌（唯一数值来源） ---- */
+            --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+                "Helvetica Neue", "PingFang TC", "PingFang SC", "Hiragino Sans GB",
+                "Microsoft YaHei", "Noto Sans TC", "Noto Sans SC", Arial, sans-serif;
+
+            --ink-1: #1d1d1f; --ink-2: #424245; --ink-3: #6e6e73; --ink-4: #86868b;
+            --line: rgba(0, 0, 0, 0.10);
+
+            --surface-1: #ffffff; --surface-2: #fbfbfd; --surface-3: #f5f5f7;
+            --surface-invert: #060607; --on-invert-1: #f5f5f7; --on-invert-2: #a1a1a6;
+            --line-invert: rgba(255, 255, 255, 0.16);
+
+            --accent: #0071e3; --accent-hover: #0077ed; --accent-press: #0068cf;
+            --accent-wash: rgba(0, 113, 227, 0.06); --accent-on-dark: #2997ff;
+
+            --error-color: #ff3b30; --success-color: #34c759;
+
+            --radius-xs: 6px; --radius-sm: 10px; --radius-md: 18px;
+            --radius-lg: 28px; --radius-pill: 999px;
+
+            --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
+            --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+            --dur-fast: 200ms; --dur-base: 320ms; --dur-reveal: 640ms;
+            --size-hit: 44px;
+
+            --safe-top: env(safe-area-inset-top, 20px);
             --safe-bottom: env(safe-area-inset-bottom, 20px);
-            --safe-top: env(safe-area-inset-top, 40px); 
-            --ease-curve: cubic-bezier(0.32, 0.72, 0, 1); 
-            --font-en: 'Inter', -apple-system, sans-serif;
-            --font-tc: 'Noto Sans TC', 'PingFang TC', sans-serif;
-            --glass-bg: rgba(245, 245, 247, 0.85);
+
+            /* ---- 旧变量别名（保留，禁止删除） ---- */
+            --bg-paper: var(--surface-1);
+            --bg-sub: var(--surface-3);
+            --text-dark: var(--ink-1);
+            --text-primary: var(--ink-1);
+            --text-secondary: var(--ink-2);
+            --text-muted: var(--ink-3);
+            --line-light: var(--line);
+            --apple-blue: var(--accent);
+            --apple-blue-hover: var(--accent-hover);
+            --apple-blue-light: var(--accent-wash);
+            --radius: var(--radius-md);
+            --ease-curve: var(--ease-out);
+            --font-en: var(--font-sans);
+            --font-tc: var(--font-sans);
+            --glass-bg: rgba(255, 255, 255, 0.78);
         }
+
         [data-theme="dark"] {
-            --bg-paper: #000000; --bg-sub: #1c1c1e; --text-dark: #f5f5f7; --text-muted: #8e8e93;
-            --line-light: rgba(255, 255, 255, 0.1); --apple-blue-light: #0A2948;
-            --glass-bg: rgba(28, 28, 30, 0.85);
+            --bg-paper: #000000; --bg-sub: #1c1c1e;
+            --text-dark: #f5f5f7; --text-muted: #8e8e93;
+            --line-light: rgba(255, 255, 255, 0.12);
+            --apple-blue-light: rgba(41, 151, 255, 0.14);
+            --glass-bg: rgba(28, 28, 30, 0.78);
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        
+
+        html { -webkit-text-size-adjust: 100%; }
+
         body {
-            font-family: var(--font-en), var(--font-tc); background-color: var(--bg-sub); color: var(--text-dark);
-            -webkit-font-smoothing: antialiased; text-align: left; height: 100vh; overflow: hidden;
-            letter-spacing: 0.01em; transition: background-color 0.4s var(--ease-curve), color 0.4s var(--ease-curve);
+            font-family: var(--font-sans);
+            background: var(--bg-sub);
+            color: var(--text-dark);
+            -webkit-font-smoothing: antialiased;
+            text-align: left;
+            letter-spacing: 0.01em;
+            overflow-x: clip;
+            height: 100dvh;
+            overflow: hidden;
+            transition: background-color var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
         }
 
-        .view-hidden { display: none !important; }
+        :lang(zh), :lang(zh-TW), :lang(zh-Hant), :lang(zh-CN) { letter-spacing: 0.01em; }
+
+        :focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+        }
+
+        .skip-link { position: absolute; left: -9999px; top: 0; z-index: 30; padding: 12px 16px; background: #000000; color: var(--on-invert-1); border-radius: var(--radius-sm); }
+        .skip-link:focus { left: 16px; top: 16px; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        .view-hidden { display: none; }
+
+        #temp-custom-toggle {
+            background: var(--bg-sub); border: none; color: var(--text-muted); cursor: pointer;
+            width: 56px; height: 56px; border-radius: var(--radius-pill);
+            align-items: center; justify-content: center;
+            transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+        }
+        #temp-custom-toggle:not(.view-hidden) { display: flex; }
 
         #app-section {
-            display: flex; flex-direction: column; height: 100%; max-width: 100%; 
+            display: flex; flex-direction: column; height: 100%; max-width: 100%;
             margin: 0 auto; background: var(--bg-sub); position: relative; overflow: hidden;
-            animation: appStageIn 0.8s var(--ease-curve);
         }
         @media (min-width: 600px) { #app-section { max-width: 600px; border-left: 1px solid var(--line-light); border-right: 1px solid var(--line-light); } }
-
-        @keyframes appStageIn { from { opacity: 0; transform: scale(0.98) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-
-        /* --- ORIGINAL CSS INCREMENTAL UPDATE START --- 
-        .app-header {
-            display: flex; align-items: flex-start; justify-content: space-between;
-            padding: calc(var(--safe-top) + 32px) 32px 32px; background: var(--bg-sub); flex-shrink: 0;
-        }
-        .main-view { flex: 1; overflow-y: auto; padding: 0 32px calc(88px + var(--safe-bottom)); scroll-behavior: smooth; }
-        .moment-card {
-            background: #FFFFFF; padding: 40px; color: #1D1D1F; border-radius: 24px;
-            margin-bottom: 32px; box-shadow: 0 8px 32px rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.05);
-            text-align: left; position: relative;
-        }
-        .moment-header { border-bottom: 2px solid var(--text-dark); padding-bottom: 16px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; }
-        .modal-sheet {
-            background: var(--bg-paper); border-radius: 0; width: 100%; max-width: 600px;
-            height: 100dvh; padding: calc(var(--safe-top) + 64px) 32px 48px; overflow-y: auto; margin: 0 auto;
-            transform: translateY(100%); transition: transform 0.6s var(--ease-curve); position: relative;
-            scroll-behavior: smooth; text-align: left;
-        }
-        --- ORIGINAL CSS INCREMENTAL UPDATE END --- */
 
         /* NEW CSS REFACTOR */
         .app-header {
@@ -81,8 +121,8 @@
         .main-view { flex: 1; overflow-y: auto; padding: 0 24px calc(88px + var(--safe-bottom)); scroll-behavior: smooth; }
         
         .moment-card {
-            background: var(--bg-paper); padding: 24px; color: var(--text-dark); border-radius: 20px;
-            margin-bottom: 24px; box-shadow: 0 4px 24px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.05);
+            background: var(--bg-paper); padding: 24px; color: var(--text-dark); border-radius: var(--radius-md);
+            margin-bottom: 24px; border: 1px solid var(--line-light);
             text-align: left; position: relative;
         }
         .moment-header { border-bottom: 1px solid var(--line-light); padding-bottom: 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end; }
@@ -119,18 +159,17 @@
         .moment-ip { font-size: 12px; color: var(--text-muted); font-weight: 500; display: flex; align-items: center; gap: 6px; }
         
         .like-btn {
-            display: flex; align-items: center; gap: 6px; cursor: pointer; transition: color 0.3s;
+            display: flex; align-items: center; gap: 6px; cursor: pointer; transition: color var(--dur-fast) var(--ease-out);
             background: none; border: none; font-size: 14px; font-weight: 600; color: var(--text-muted);
         }
         .like-btn.liked { color: var(--error-color); }
-        .like-btn svg { transition: transform 0.3s var(--ease-curve); fill: transparent; stroke: currentColor; }
+        .like-btn svg { transition: fill var(--dur-fast) var(--ease-out), stroke var(--dur-fast) var(--ease-out); fill: transparent; stroke: currentColor; }
         .like-btn.liked svg { fill: var(--error-color); stroke: var(--error-color); }
-        .like-btn:active svg { transform: scale(0.7); }
 
         /* Wizard Styles */
         .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px); z-index: 200; display: none; align-items: flex-end; opacity: 0; transition: opacity 0.5s var(--ease-curve);
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4);
+            z-index: 200; display: none; align-items: flex-end; opacity: 0; transition: opacity var(--dur-base) var(--ease-out);
         }
         .modal-overlay.open { display: flex; opacity: 1; }
         
@@ -139,21 +178,21 @@
 
         .form-input {
             width: 100%; background: var(--bg-sub); border: 1px solid transparent; padding: 18px 20px;
-            border-radius: 16px; font-size: 16px; outline: none; color: var(--text-dark);
-            margin-bottom: 20px; transition: all 0.4s var(--ease-curve);
+            border-radius: var(--radius-sm); font-size: 16px; color: var(--text-dark);
+            margin-bottom: 20px; transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
         }
-        .form-input:focus { border-color: var(--apple-blue); background: var(--bg-paper); }
-        
+        .form-input:focus { border-color: var(--accent); background: var(--bg-paper); }
+
         .btn-primary, .btn-secondary {
-            width: 100%; font-size: 16px; font-weight: 600; padding: 18px; border-radius: 16px;
-            cursor: pointer; transition: all 0.4s var(--ease-curve); display: inline-flex;
+            width: 100%; font-size: 16px; font-weight: 600; padding: 18px; border-radius: var(--radius-pill);
+            cursor: pointer; transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out); display: inline-flex;
             justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px;
         }
-        .btn-primary { color: #ffffff; background: var(--apple-blue); border: none; }
+        .btn-primary { color: #ffffff; background: var(--accent); border: none; }
         .btn-secondary { color: var(--text-dark); background: transparent; border: 1px solid var(--line-light); }
-        .btn-primary:active, .btn-secondary:active { transform: scale(0.95); }
+        .header-actions button:active { background: var(--accent-press); }
 
-        .wizard-step { display: none; animation: fadeUp 0.6s var(--ease-curve); min-height: 100%; height: max-content; flex-direction: column; text-align: left;}
+        .wizard-step { display: none; min-height: 100%; height: max-content; flex-direction: column; text-align: left;}
         .wizard-step.active { display: flex; }
         .wizard-header { margin-bottom: 40px; }
         .wizard-meta { font-size: 13px; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; font-weight: 600;}
@@ -162,22 +201,20 @@
 
         .selector-grid { display: flex; flex-wrap: wrap; gap: 16px; }
         .option-btn {
-            background: var(--bg-sub); border: 1px solid transparent; padding: 20px; border-radius: 20px;
+            background: var(--bg-sub); border: 1px solid transparent; padding: 20px; border-radius: var(--radius-md);
             cursor: pointer; color: var(--text-dark); display: flex; flex-direction: column; align-items: flex-start;
-            gap: 16px; font-size: 16px; font-weight: 500; transition: all 0.4s var(--ease-curve); width: calc(50% - 8px); text-align: left;
+            gap: 16px; font-size: 16px; font-weight: 500; transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out); width: calc(50% - 8px); text-align: left;
         }
-        .option-btn svg { width: 28px; height: 28px; stroke: var(--text-muted); transition: all 0.4s var(--ease-curve); }
-        button:hover svg { transform: scale(1.05); }
-        button:active svg { transform: scale(0.9); }
-        .option-btn.selected { background: var(--apple-blue-light); border-color: var(--apple-blue); color: var(--apple-blue); }
-        .option-btn.selected svg { stroke: var(--apple-blue); }
+        .option-btn svg { width: 28px; height: 28px; stroke: var(--text-muted); transition: stroke var(--dur-fast) var(--ease-out); }
+        .option-btn.selected { background: var(--accent-wash); border-color: var(--accent); color: var(--accent); }
+        .option-btn.selected svg { stroke: var(--accent); }
 
-        .temp-slider { -webkit-appearance: none; width: 100%; height: 8px; border-radius: 4px; background: var(--line-light); outline: none; margin: 40px 0; }
-        .temp-slider::-webkit-slider-thumb { 
-            -webkit-appearance: none; appearance: none; width: 36px; height: 36px; border-radius: 50%; 
-            background: var(--bg-paper); border: 1px solid var(--line-light); cursor: pointer; transition: transform 0.3s var(--ease-curve); 
+        .temp-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 8px; border-radius: var(--radius-sm); background: var(--line-light); margin: 40px 0; }
+        .temp-slider:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+        .temp-slider::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none; width: 36px; height: 36px; border-radius: var(--radius-pill);
+            background: var(--bg-paper); border: 1px solid var(--line-light); cursor: pointer;
         }
-        .temp-slider::-webkit-slider-thumb:active { transform: scale(0.85); }
         .temp-display { font-size: 64px; font-weight: 700; margin-bottom: 8px; font-variant-numeric: tabular-nums; letter-spacing: -3px;}
         .temp-feeling { font-size: 16px; color: var(--text-muted); display: flex; align-items: center; gap: 8px; font-weight: 500;}
 
@@ -185,23 +222,22 @@
 
         .bottom-tab-bar {
             position: fixed; bottom: 0; left: 0; width: 100%; height: calc(64px + var(--safe-bottom));
-            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            background: var(--glass-bg);
             border-top: 1px solid var(--line-light); display: flex; justify-content: space-around;
             align-items: flex-start; padding-top: 12px; z-index: 100;
         }
         .tab-item {
             display: flex; flex-direction: column; align-items: center; text-decoration: none;
-            color: var(--text-muted); gap: 6px; transition: color 0.4s var(--ease-curve), transform 0.4s var(--ease-curve); width: 20%;
+            color: var(--text-muted); gap: 6px; transition: color var(--dur-fast) var(--ease-out); width: 20%;
         }
         .tab-item.active { color: var(--text-dark); }
-        .tab-item:active { transform: scale(0.9); }
         .tab-item svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
         .tab-item span { font-size: 10px; font-weight: 500; letter-spacing: 0.5px; }
-
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
+
+    <a class="skip-link" href="#main">跳到主要内容</a>
 
     <svg width="0" height="0" style="display:none;">
         <defs>
@@ -233,15 +269,17 @@
                 <div id="live-clock" class="live-clock">加載時間中...</div>
             </div>
             <div class="header-actions">
-                <button onclick="triggerHaptic(); openWizard()" title="New Post" style="background:var(--apple-blue); color:white; border:none; width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; transition: transform 0.4s var(--ease-curve);">
+                <button onclick="triggerHaptic(); openWizard()" title="New Post" aria-label="New Post" style="background:var(--accent); color:white; border:none; width:56px; height:56px; border-radius:var(--radius-pill); display:flex; align-items:center; justify-content:center; cursor:pointer; transition: background-color var(--dur-fast) var(--ease-out);">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="24" height="24"><use href="#icon-pen"/></svg>
                 </button>
             </div>
         </header>
 
-        <div class="main-view" id="feed-container">
-            <div style="color:var(--text-muted); font-size:15px; text-align:left; padding: 40px 0;">Loading moments...</div>
-        </div>
+        <main id="main" class="main-view">
+            <div id="feed-container">
+                <div style="color:var(--text-muted); font-size:15px; text-align:left; padding: 40px 0;">Loading moments...</div>
+            </div>
+        </main>
 
         <nav class="bottom-tab-bar">
             <a href="index.html" class="tab-item" onclick="triggerHaptic()">
@@ -270,7 +308,7 @@
     <!-- 記錄精靈 Wizard Modal -->
     <div class="modal-overlay" id="wizard-modal">
         <div class="modal-sheet">
-            <button onclick="triggerHaptic(); closeModal('wizard-modal')" style="position:absolute; top:calc(var(--safe-top) + 20px); right: 24px; background:var(--bg-sub); border:none; color:var(--text-muted); cursor:pointer; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; transition: all 0.4s var(--ease-curve);">
+            <button onclick="triggerHaptic(); closeModal('wizard-modal')" aria-label="Close" style="position:absolute; top:calc(var(--safe-top) + 20px); right: 24px; background:var(--bg-sub); border:none; color:var(--text-muted); cursor:pointer; width:44px; height:44px; border-radius:var(--radius-pill); display:flex; align-items:center; justify-content:center; transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);">
                 <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor"><use href="#icon-close"/></svg>
             </button>
             
@@ -279,7 +317,7 @@
                     <div class="wizard-meta">Step 1 of 6</div>
                     <div class="wizard-title">What is your nickname? <small>您想叫作什麼暱稱？</small></div>
                 </div>
-                <input type="text" id="nickname-input" class="form-input" style="margin-top:32px;" placeholder="Enter nickname... / 輸入暱稱">
+                <input type="text" id="nickname-input" class="form-input" style="margin-top:32px;" placeholder="Enter nickname... / 輸入暱稱" aria-label="Nickname / 暱稱">
                 <div class="wizard-footer">
                     <button class="btn-primary" onclick="triggerHaptic(); nextStep(2)">Next / 下一步</button>
                 </div>
@@ -296,7 +334,7 @@
                     <button class="option-btn mood-btn" data-val="sad" onclick="triggerHaptic(); selectOption('mood', 'sad', this)"><svg viewBox="0 0 24 24"><use href="#icon-sad"/></svg> Sad</button>
                     <button class="option-btn mood-btn" data-val="custom" onclick="triggerHaptic(); selectOption('mood', 'custom', this)"><svg viewBox="0 0 24 24"><use href="#icon-gear"/></svg> Custom </button>
                 </div>
-                <input type="text" id="custom-mood-input" class="form-input view-hidden" style="margin-top:32px;" placeholder="Describe your mood... / 描述心情">
+                <input type="text" id="custom-mood-input" class="form-input view-hidden" style="margin-top:32px;" placeholder="Describe your mood... / 描述心情" aria-label="Custom mood / 自定義心情">
                 <div class="wizard-footer">
                     <button class="btn-secondary" onclick="triggerHaptic(); nextStep(1)">Back</button>
                     <button class="btn-primary" onclick="triggerHaptic(); nextStep(3)">Next</button>
@@ -316,12 +354,12 @@
                             <span id="temp-text-status">Comfortable / 舒適</span>
                         </div>
                     </div>
-                    <button id="temp-custom-toggle" onclick="triggerHaptic(); toggleCustomTemp()" title="自定義感受" style="background:var(--bg-sub); border:none; color:var(--text-muted); cursor:pointer; width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; transition: all 0.4s var(--ease-curve);">
+                    <button id="temp-custom-toggle" onclick="triggerHaptic(); toggleCustomTemp()" title="自定義感受" aria-label="自定義感受">
                         <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"><use href="#icon-gear"/></svg>
                     </button>
                 </div>
-                <input type="range" class="temp-slider" id="temp-slider" min="-50" max="50" value="20" oninput="triggerHaptic(10); updateTemp()">
-                <input type="text" id="custom-temp-input" class="form-input view-hidden" style="margin-top:24px;" placeholder="Override feeling / 自定義感受">
+                <input type="range" class="temp-slider" id="temp-slider" min="-50" max="50" value="20" oninput="triggerHaptic(10); updateTemp()" aria-label="Temperature / 氣溫">
+                <input type="text" id="custom-temp-input" class="form-input view-hidden" style="margin-top:24px;" placeholder="Override feeling / 自定義感受" aria-label="Custom temperature feeling / 自定義感受">
                 <div class="wizard-footer">
                     <button class="btn-secondary" onclick="triggerHaptic(); nextStep(2)">Back</button>
                     <button class="btn-primary" onclick="triggerHaptic(); nextStep(4)">Next</button>
@@ -339,7 +377,7 @@
                     <button class="option-btn weather-btn" data-val="Rainy" onclick="triggerHaptic(); selectOption('weather', 'Rainy', this)"><svg viewBox="0 0 24 24"><use href="#icon-rain"/></svg> Rainy</button>
                     <button class="option-btn weather-btn" data-val="custom" onclick="triggerHaptic(); selectOption('weather', 'custom', this)"><svg viewBox="0 0 24 24"><use href="#icon-gear"/></svg> Custom</button>
                 </div>
-                <input type="text" id="custom-weather-input" class="form-input view-hidden" style="margin-top:32px;" placeholder="Enter weather...">
+                <input type="text" id="custom-weather-input" class="form-input view-hidden" style="margin-top:32px;" placeholder="Enter weather..." aria-label="Custom weather / 自定義天氣">
                 <div class="wizard-footer">
                     <button class="btn-secondary" onclick="triggerHaptic(); nextStep(3)">Back</button>
                     <button class="btn-primary" onclick="triggerHaptic(); nextStep(5)">Next</button>
@@ -362,7 +400,7 @@
                         <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"><use href="#icon-gear"/></svg> Custom 
                     </button>
                 </div>
-                <input type="text" id="location-input" class="form-input view-hidden" placeholder="Enter custom location / 輸入自定義地點">
+                <input type="text" id="location-input" class="form-input view-hidden" placeholder="Enter custom location / 輸入自定義地點" aria-label="Custom location / 自定義地點">
                 <div class="wizard-footer">
                     <button class="btn-secondary" onclick="triggerHaptic(); nextStep(4)">Back</button>
                     <button class="btn-primary" onclick="triggerHaptic(); nextStep(6)">Next</button>
@@ -376,9 +414,9 @@
                 </div>
                 
                 <div id="story-editor-container" style="display:flex; flex-direction:column; gap:16px; margin-bottom: 24px;">
-                    <input type="text" id="story-main-title" class="form-input" style="font-size: 22px; font-weight: 700; padding: 16px 20px;" placeholder="Main Title / 大標題">
+                    <input type="text" id="story-main-title" class="form-input" style="font-size: 22px; font-weight: 700; padding: 16px 20px;" placeholder="Main Title / 大標題" aria-label="Story main title / 大標題">
                     <div id="story-blocks" style="display:flex; flex-direction:column; gap:16px;">
-                        <textarea class="form-input block-body" style="height:120px; resize:none; font-size:16px; line-height:1.8;" placeholder="What's on your mind? / 分享你的想法..."></textarea>
+                        <textarea class="form-input block-body" style="height:120px; resize:none; font-size:16px; line-height:1.8;" placeholder="What's on your mind? / 分享你的想法..." aria-label="Moment body / 正文"></textarea>
                     </div>
                     <div style="display:flex; flex-wrap:wrap; gap:12px;">
                         <button class="btn-secondary" onclick="triggerHaptic(); addStoryBlock('subtitle')" style="padding: 12px; font-size:14px; width: calc(50% - 6px); border-radius: 12px; margin-bottom:0;">+ Subtitle</button>
@@ -473,19 +511,7 @@
             return el ? el.innerHTML : '';
         }
 
-        /* --- ORIGINAL JS INCREMENTAL UPDATE START ---
-        function renderFeed(data) {
-            const container = document.getElementById('feed-container');
-            container.innerHTML = data.length === 0 ? `<div style="color:var(--text-muted); font-size:15px; text-align:left; padding: 40px 0;">No moments yet. Be the first to post!</div>` : '';
-            
-            data.forEach(entry => {
-                // ... string manipulation logic ...
-                container.innerHTML += `<div class="moment-card">...</div>`;
-            });
-        }
-        --- ORIGINAL JS INCREMENTAL UPDATE END --- */
-
-        // NEW JS REFACTOR (Batched DOM Updating)
+        /* --- NEW JS REFACTOR (Batched DOM Updating) --- */
         function renderFeed(data) {
             const container = document.getElementById('feed-container');
             if (data.length === 0) {
@@ -587,13 +613,13 @@
                 const input = document.createElement('input');
                 input.type = 'text'; input.className = 'form-input block-subtitle';
                 input.style.fontSize = '18px'; input.style.fontWeight = '600'; input.style.padding = '16px 20px';
-                input.placeholder = 'Subtitle / 小標題'; container.appendChild(input);
+                input.placeholder = 'Subtitle / 小標題'; input.setAttribute('aria-label', 'Moment subtitle / 小標題'); container.appendChild(input);
             } else if (type === 'body') {
                 const textarea = document.createElement('textarea');
                 textarea.className = 'form-input block-body';
                 textarea.style.height = '120px'; textarea.style.resize = 'none';
                 textarea.style.fontSize = '16px'; textarea.style.lineHeight = '1.8';
-                textarea.placeholder = 'Body / 正文'; container.appendChild(textarea);
+                textarea.placeholder = 'Body / 正文'; textarea.setAttribute('aria-label', 'Moment body / 正文'); container.appendChild(textarea);
             }
             setTimeout(() => {
                 const sheet = document.querySelector('.modal-sheet');
@@ -610,7 +636,7 @@
             if(mainTitleEl) mainTitleEl.value = '';
             const blocksContainer = document.getElementById('story-blocks');
             if(blocksContainer) {
-                blocksContainer.innerHTML = '<textarea class="form-input block-body" style="height:120px; resize:none; font-size:16px; line-height:1.8;" placeholder="What\'s on your mind? / 分享你的想法..."></textarea>';
+                blocksContainer.innerHTML = '<textarea class="form-input block-body" style="height:120px; resize:none; font-size:16px; line-height:1.8;" placeholder="What\'s on your mind? / 分享你的想法..." aria-label="Moment body / 正文"></textarea>';
             }
             document.getElementById('wizard-modal').classList.add('open');
             nextStep(1); 
@@ -658,8 +684,8 @@
             entryData.temp = val;
             let desc = '';
             const thermIcon = document.getElementById('dynamic-thermometer');
-            if(val < 0) { desc = "Freezing Cold / 嚴寒"; thermIcon.style.color = "#007AFF"; }
-            else if(val < 10) { desc = "Cold / 寒冷"; thermIcon.style.color = "#007AFF"; }
+            if(val < 0) { desc = "Freezing Cold / 嚴寒"; thermIcon.style.color = "var(--accent)"; }
+            else if(val < 10) { desc = "Cold / 寒冷"; thermIcon.style.color = "var(--accent)"; }
             else if(val < 20) { desc = "Cool / 涼爽"; thermIcon.style.color = "#5AC8FA"; }
             else if(val < 28) { desc = "Comfortable / 舒適"; thermIcon.style.color = "var(--text-dark)"; }
             else if(val < 35) { desc = "Hot / 炎熱"; thermIcon.style.color = "#FF9500"; }
