@@ -3,44 +3,94 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
-    <title>My Profile / 個人主頁 · Candlelight Aloka</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Aloka — 个人主页</title>
 
     <style>
         :root {
-            --bg-paper: #ffffff;
-            --bg-sub: #f5f5f7;
-            --text-dark: #1d1d1f; 
-            --text-muted: #86868b; 
-            --line-light: rgba(0, 0, 0, 0.06);
-            --apple-blue: #007AFF;
-            --apple-blue-light: #E5F1FF;
-            --radius: 20px;
+            /* ---- Apple 设计令牌（唯一数值来源） ---- */
+            --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+                "Helvetica Neue", "PingFang TC", "PingFang SC", "Hiragino Sans GB",
+                "Microsoft YaHei", "Noto Sans TC", "Noto Sans SC", Arial, sans-serif;
+
+            --ink-1: #1d1d1f; --ink-2: #424245; --ink-3: #6e6e73; --ink-4: #86868b;
+            --line: rgba(0, 0, 0, 0.10);
+
+            --surface-1: #ffffff; --surface-2: #fbfbfd; --surface-3: #f5f5f7;
+            --surface-invert: #060607; --on-invert-1: #f5f5f7; --on-invert-2: #a1a1a6;
+            --line-invert: rgba(255, 255, 255, 0.16);
+
+            --accent: #0071e3; --accent-hover: #0077ed; --accent-press: #0068cf;
+            --accent-wash: rgba(0, 113, 227, 0.06); --accent-on-dark: #2997ff;
+
+            --error-color: #ff3b30; --success-color: #34c759;
+
+            --radius-xs: 6px; --radius-sm: 10px; --radius-md: 18px;
+            --radius-lg: 28px; --radius-pill: 999px;
+
+            --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
+            --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+            --dur-fast: 200ms; --dur-base: 320ms; --dur-reveal: 640ms;
+            --size-hit: 44px;
+
+            --safe-top: env(safe-area-inset-top, 20px);
             --safe-bottom: env(safe-area-inset-bottom, 20px);
-            --safe-top: env(safe-area-inset-top, 40px); 
-            --ease-curve: cubic-bezier(0.32, 0.72, 0, 1); 
-            --font-en: 'Inter', -apple-system, sans-serif;
-            --font-tc: 'Noto Sans TC', 'PingFang TC', sans-serif;
-            --glass-bg: rgba(245, 245, 247, 0.85);
+
+            /* ---- 旧变量别名（保留，禁止删除） ---- */
+            --bg-paper: var(--surface-1);
+            --bg-sub: var(--surface-3);
+            --text-dark: var(--ink-1);
+            --text-primary: var(--ink-1);
+            --text-secondary: var(--ink-2);
+            --text-muted: var(--ink-3);
+            --line-light: var(--line);
+            --apple-blue: var(--accent);
+            --apple-blue-hover: var(--accent-hover);
+            --apple-blue-light: var(--accent-wash);
+            --radius: var(--radius-md);
+            --ease-curve: var(--ease-out);
+            --font-en: var(--font-sans);
+            --font-tc: var(--font-sans);
+            --glass-bg: rgba(255, 255, 255, 0.78);
         }
+
         [data-theme="dark"] {
-            --bg-paper: #000000; --bg-sub: #1c1c1e; --text-dark: #f5f5f7; --text-muted: #8e8e93;
-            --line-light: rgba(255, 255, 255, 0.1); --apple-blue-light: #0A2948;
-            --glass-bg: rgba(28, 28, 30, 0.85);
+            --bg-paper: #000000; --bg-sub: #1c1c1e;
+            --text-dark: #f5f5f7; --text-muted: #8e8e93;
+            --line-light: rgba(255, 255, 255, 0.12);
+            --apple-blue-light: rgba(41, 151, 255, 0.14);
+            --glass-bg: rgba(28, 28, 30, 0.78);
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        
+
+        html { -webkit-text-size-adjust: 100%; }
+
         body {
-            font-family: var(--font-en), var(--font-tc); background-color: var(--bg-paper); color: var(--text-dark);
-            -webkit-font-smoothing: antialiased; text-align: left; height: 100vh; overflow: hidden;
+            font-family: var(--font-sans); background-color: var(--bg-paper); color: var(--text-dark);
+            -webkit-font-smoothing: antialiased; text-align: left; height: 100dvh; overflow: hidden;
             letter-spacing: 0.01em;
         }
 
-        .view-hidden { display: none !important; }
+        :lang(zh), :lang(zh-TW), :lang(zh-Hant), :lang(zh-CN) { letter-spacing: 0.01em; }
+
+        :focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+        }
+
+        .skip-link { position: absolute; left: -9999px; top: 0; z-index: 30; padding: 12px 16px; background: var(--bg-paper); color: var(--text-dark); border: 1px solid var(--line-light); border-radius: var(--radius-sm); }
+        .skip-link:focus { left: 16px; top: 16px; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        .view-hidden { display: none; }
 
         #app-section {
             display: flex; flex-direction: column; height: 100%; max-width: 100%; 
@@ -53,6 +103,7 @@
 
         .profile-banner-container {
             position: relative; width: 100%; height: 220px; background-color: var(--bg-sub);
+            border-bottom: 1px solid var(--line-light);
         }
         .profile-banner {
             width: 100%; height: 100%; object-fit: cover; display: block;
@@ -71,7 +122,7 @@
         .profile-name { font-size: 28px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.5px; }
         
         .profile-meta { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; flex-wrap: wrap; }
-        .meta-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted); font-weight: 500; letter-spacing: 0.02em; }
+        .meta-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); font-weight: 500; letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
         
         .profile-bio { font-size: 15px; color: var(--text-muted); line-height: 1.6; white-space: pre-wrap; margin-top: 4px; }
 
@@ -89,7 +140,7 @@
             color: var(--text-dark);
             cursor: pointer;
             position: relative;
-            transition: background 0.3s var(--ease-curve);
+            transition: background-color 0.3s var(--ease-curve);
         }
         .list-item:active { background: var(--bg-sub); }
         .list-item:not(:last-child)::after {
@@ -140,27 +191,27 @@
 
         .bottom-tab-bar {
             position: fixed; bottom: 0; left: 0; width: 100%; height: calc(64px + var(--safe-bottom));
-            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            background: var(--glass-bg);
             border-top: 1px solid var(--line-light); display: flex; justify-content: space-around;
             align-items: flex-start; padding-top: 12px; z-index: 100;
         }
         .tab-item {
             display: flex; flex-direction: column; align-items: center; text-decoration: none;
-            color: var(--text-muted); gap: 6px; transition: color 0.4s var(--ease-curve), transform 0.4s var(--ease-curve);
+            color: var(--text-muted); gap: 6px; transition: color 0.4s var(--ease-curve);
             width: 20%;
         }
         .tab-item.active { color: var(--text-dark); }
-        .tab-item:active { transform: scale(0.9); }
+        .tab-item:active { color: var(--accent-press); }
         .tab-item svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
         .tab-item span { font-size: 10px; font-weight: 500; letter-spacing: 0.5px; }
 
         .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px); z-index: 200; display: none; align-items: flex-end; opacity: 0; transition: opacity 0.4s var(--ease-curve);
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4);
+            z-index: 200; display: none; align-items: flex-end; opacity: 0; transition: opacity 0.4s var(--ease-curve);
         }
         .modal-overlay.open { display: flex; opacity: 1; }
         .modal-sheet {
-            background: var(--bg-paper); border-radius: 24px 24px 0 0; width: 100%; max-width: 600px;
+            background: var(--bg-paper); border-radius: var(--radius-md) var(--radius-md) 0 0; width: 100%; max-width: 600px;
             max-height: 90dvh; padding: 32px 32px calc(32px + var(--safe-bottom)); overflow-y: auto; margin: 0 auto;
             transform: translateY(100%); transition: transform 0.5s var(--ease-curve);
         }
@@ -169,38 +220,39 @@
 
         .form-input {
             width: 100%; background: var(--bg-sub); border: 1px solid transparent; padding: 16px 20px;
-            border-radius: 16px; font-size: 15px; outline: none; color: var(--text-dark); margin-bottom: 24px;
+            border-radius: var(--radius-sm); font-size: 15px; color: var(--text-dark); margin-bottom: 24px;
         }
         .form-input:focus { border-color: var(--apple-blue); background: var(--bg-paper); }
         .form-label { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 12px; display: block; }
         
         .tag-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 32px; }
         .tag-option {
-            background: var(--bg-sub); color: var(--text-dark); padding: 10px 18px; border-radius: 14px;
-            font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s var(--ease-curve);
+            background: var(--bg-sub); color: var(--text-dark); padding: 10px 18px; border-radius: var(--radius-sm);
+            font-size: 14px; font-weight: 500; cursor: pointer; transition: background-color 0.3s var(--ease-curve), color 0.3s var(--ease-curve), border-color 0.3s var(--ease-curve);
             border: 1px solid transparent;
         }
-        .tag-option:active { transform: scale(0.95); }
+        .tag-option:active { background-color: var(--accent-wash); }
         .tag-option.selected {
             background: var(--apple-blue-light); color: var(--apple-blue); border-color: var(--apple-blue);
         }
 
         .btn-primary {
-            width: 100%; font-size: 16px; font-weight: 600; padding: 18px; border-radius: 16px;
-            cursor: pointer; color: #ffffff; background: var(--apple-blue); border: none; transition: transform 0.2s;
+            width: 100%; font-size: 16px; font-weight: 600; padding: 18px; border-radius: var(--radius-md);
+            cursor: pointer; color: #ffffff; background: var(--apple-blue); border: none; transition: background-color 0.2s;
         }
-        .btn-primary:active { transform: scale(0.95); }
-        .btn-primary:disabled { opacity: 0.6; transform: none; pointer-events: none; }
+        .btn-primary:active { opacity: 0.85; }
+        .btn-primary:disabled { opacity: 0.6; pointer-events: none; }
 
         .file-preview {
-            margin-bottom: 16px; border-radius: 12px; overflow: hidden; background: var(--bg-sub);
+            margin-bottom: 16px; border-radius: var(--radius-sm); overflow: hidden; background: var(--bg-sub);
         }
         .file-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .avatar-preview { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 16px; background: var(--bg-sub); overflow: hidden; }
-        .banner-preview { width: 100%; height: 120px; margin-bottom: 16px; background: var(--bg-sub); border-radius: 12px; overflow: hidden; }
+        .banner-preview { width: 100%; height: 120px; margin-bottom: 16px; background: var(--bg-sub); border-radius: var(--radius-sm); overflow: hidden; }
     </style>
 </head>
 <body>
+    <a class="skip-link" href="#main">跳到主要内容</a>
 
     <svg width="0" height="0" style="display:none;">
         <defs>
@@ -218,11 +270,12 @@
         </defs>
     </svg>
 
+    <main id="main">
     <div id="app-section">
         <div class="main-view">
             
             <div class="profile-banner-container">
-                <img id="display-banner" src="https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?auto=format&fit=crop&q=80&w=800" class="profile-banner" alt="Background">
+                <img id="display-banner" class="profile-banner" alt="Background">
             </div>
 
             <div class="profile-avatar-row">
@@ -230,7 +283,7 @@
             </div>
 
             <div class="profile-info">
-                <div class="profile-name" id="display-name">Loading... / 加載中...</div>
+                <h1 class="profile-name" id="display-name">Loading... / 加載中...</h1>
                 
                 <div class="profile-meta">
                     <div class="meta-item">
@@ -298,39 +351,40 @@
             </a>
         </nav>
     </div>
+    </main>
 
     <div class="modal-overlay" id="edit-modal">
         <div class="modal-sheet">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
                 <h2 style="font-size:22px; font-weight:700;">Edit Profile / 編輯個人資料</h2>
-                <button onclick="closeEditModal()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; padding:8px;">
+                <button aria-label="关闭" onclick="closeEditModal()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; padding:8px;">
                     <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"><use href="#icon-close"/></svg>
                 </button>
             </div>
 
-            <label class="form-label">Nickname / 暱稱</label>
+            <label class="form-label" for="input-name">Nickname / 暱稱</label>
             <input type="text" id="input-name" class="form-input" placeholder="Your nickname / 你的暱稱">
 
-            <label class="form-label">Location / 地理位置</label>
+            <label class="form-label" for="input-location">Location / 地理位置</label>
             <input type="text" id="input-location" class="form-input" placeholder="City or Region / 所在的城市或地區">
 
-            <label class="form-label">Bio / 個人簡介</label>
+            <label class="form-label" for="input-bio">Bio / 個人簡介</label>
             <textarea id="input-bio" class="form-input" rows="3" placeholder="A brief introduction / 簡單介紹一下自己"></textarea>
 
-            <label class="form-label">Avatar / 頭像</label>
+            <label class="form-label" for="input-avatar-file">Avatar / 頭像</label>
             <div class="avatar-preview" id="avatar-preview">
-                <img id="avatar-preview-img" src="" style="width:100%; height:100%; object-fit:cover; display:none;">
+                <img id="avatar-preview-img" src="" alt="" style="width:100%; height:100%; object-fit:cover; display:none;">
             </div>
             <input type="file" id="input-avatar-file" accept="image/*" class="form-input" style="padding:12px;">
 
-            <label class="form-label">Background / 背景圖片</label>
+            <label class="form-label" for="input-banner-file">Background / 背景圖片</label>
             <div class="banner-preview" id="banner-preview">
-                <img id="banner-preview-img" src="" style="width:100%; height:100%; object-fit:cover; display:none;">
+                <img id="banner-preview-img" src="" alt="" style="width:100%; height:100%; object-fit:cover; display:none;">
             </div>
             <input type="file" id="input-banner-file" accept="image/*" class="form-input" style="padding:12px;">
 
-            <label class="form-label">MBTI (Required) / MBTI (必填)</label>
-            <div class="tag-grid" id="mbti-grid">
+            <label class="form-label" id="label-mbti-grid">MBTI (Required) / MBTI (必填)</label>
+            <div class="tag-grid" id="mbti-grid" aria-labelledby="label-mbti-grid">
                 <div class="tag-option" data-type="mbti" data-val="INTJ" onclick="selectTag('mbti', 'INTJ', this)">INTJ</div>
                 <div class="tag-option" data-type="mbti" data-val="INTP" onclick="selectTag('mbti', 'INTP', this)">INTP</div>
                 <div class="tag-option" data-type="mbti" data-val="ENTJ" onclick="selectTag('mbti', 'ENTJ', this)">ENTJ</div>
@@ -349,8 +403,8 @@
                 <div class="tag-option" data-type="mbti" data-val="ESFP" onclick="selectTag('mbti', 'ESFP', this)">ESFP</div>
             </div>
 
-            <label class="form-label">Zodiac (Required) / 星座 (必填)</label>
-            <div class="tag-grid" id="zodiac-grid">
+            <label class="form-label" id="label-zodiac-grid">Zodiac (Required) / 星座 (必填)</label>
+            <div class="tag-grid" id="zodiac-grid" aria-labelledby="label-zodiac-grid">
                 <div class="tag-option" data-type="zodiac" data-val="Aries" onclick="selectTag('zodiac', 'Aries', this)">Aries / 白羊座</div>
                 <div class="tag-option" data-type="zodiac" data-val="Taurus" onclick="selectTag('zodiac', 'Taurus', this)">Taurus / 金牛座</div>
                 <div class="tag-option" data-type="zodiac" data-val="Gemini" onclick="selectTag('zodiac', 'Gemini', this)">Gemini / 雙子座</div>
@@ -365,7 +419,7 @@
                 <div class="tag-option" data-type="zodiac" data-val="Pisces" onclick="selectTag('zodiac', 'Pisces', this)">Pisces / 雙魚座</div>
             </div>
 
-            <label class="form-label">Custom Tags / 自定義標籤 (逗號分隔，最多8個)</label>
+            <label class="form-label" for="input-custom-tags">Custom Tags / 自定義標籤 (逗號分隔，最多8個)</label>
             <input type="text" id="input-custom-tags" class="form-input" placeholder="e.g. Design, Reading, Coffee / 例如：設計，閱讀，咖啡">
 
             <button class="btn-primary" id="save-btn" onclick="triggerHaptic(); saveProfile()">Save Profile / 儲存資料</button>
