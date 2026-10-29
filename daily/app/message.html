@@ -3,37 +3,62 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
-    <title>Messages · Candlelight Aloka</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Aloka — 消息</title>
 
     <style>
         :root {
-            --bg-paper: #ffffff;
-            --bg-sub: #f5f5f7;
-            --text-dark: #1d1d1f;
-            --text-muted: #86868b;
-            --line-light: rgba(0, 0, 0, 0.06);
-            --apple-blue: #007AFF;
-            --apple-blue-light: #E5F1FF;
-            --radius: 20px;
+            /* ---- Apple 设计令牌（唯一数值来源） ---- */
+            --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+                "Helvetica Neue", "PingFang TC", "PingFang SC", "Hiragino Sans GB",
+                "Microsoft YaHei", "Noto Sans TC", "Noto Sans SC", Arial, sans-serif;
+
+            --ink-1: #1d1d1f; --ink-2: #424245; --ink-3: #6e6e73; --ink-4: #86868b;
+            --line: rgba(0, 0, 0, 0.10);
+
+            --surface-1: #ffffff; --surface-2: #fbfbfd; --surface-3: #f5f5f7;
+            --surface-invert: #060607; --on-invert-1: #f5f5f7; --on-invert-2: #a1a1a6;
+            --line-invert: rgba(255, 255, 255, 0.16);
+
+            --accent: #0071e3; --accent-hover: #0077ed; --accent-press: #0068cf;
+            --accent-wash: rgba(0, 113, 227, 0.06); --accent-on-dark: #2997ff;
+
+            --error-color: #ff3b30; --success-color: #34c759;
+
+            --radius-xs: 6px; --radius-sm: 10px; --radius-md: 18px;
+            --radius-lg: 28px; --radius-pill: 999px;
+
+            --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
+            --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+            --dur-fast: 200ms; --dur-base: 320ms; --dur-reveal: 640ms;
+            --size-hit: 44px;
+
+            --safe-top: env(safe-area-inset-top, 20px);
             --safe-bottom: env(safe-area-inset-bottom, 20px);
-            --safe-top: env(safe-area-inset-top, 40px);
-            --ease-curve: cubic-bezier(0.32, 0.72, 0, 1);
-            --font-en: 'Inter', -apple-system, sans-serif;
-            --font-tc: 'Noto Sans TC', 'PingFang TC', sans-serif;
-            --glass-bg: rgba(245, 245, 247, 0.85);
+
+            /* ---- 旧变量别名（保留，禁止删除） ---- */
+            --bg-paper: var(--surface-1);
+            --bg-sub: var(--surface-3);
+            --text-dark: var(--ink-1);
+            --text-primary: var(--ink-1);
+            --text-secondary: var(--ink-2);
+            --text-muted: var(--ink-3);
+            --line-light: var(--line);
+            --apple-blue: var(--accent);
+            --apple-blue-hover: var(--accent-hover);
+            --apple-blue-light: var(--accent-wash);
+            --radius: var(--radius-md);
+            --ease-curve: var(--ease-out);
+            --font-en: var(--font-sans);
+            --font-tc: var(--font-sans);
+            --glass-bg: rgba(255, 255, 255, 0.78);
         }
+
         [data-theme="dark"] {
-            --bg-paper: #000000;
-            --bg-sub: #1c1c1e;
-            --text-dark: #f5f5f7;
-            --text-muted: #8e8e93;
-            --line-light: rgba(255, 255, 255, 0.1);
-            --apple-blue-light: #0A2948;
-            --glass-bg: rgba(28, 28, 30, 0.85);
+            --bg-paper: #000000; --bg-sub: #1c1c1e;
+            --text-dark: #f5f5f7; --text-muted: #8e8e93;
+            --line-light: rgba(255, 255, 255, 0.12);
+            --apple-blue-light: rgba(41, 151, 255, 0.14);
+            --glass-bg: rgba(28, 28, 30, 0.78);
         }
 
         *,
@@ -44,20 +69,46 @@
             padding: 0;
         }
 
+        html {
+            -webkit-text-size-adjust: 100%;
+        }
+
         body {
-            font-family: var(--font-en);
+            font-family: var(--font-sans);
             background-color: var(--bg-paper);
             color: var(--text-dark);
             -webkit-font-smoothing: antialiased;
             text-align: left;
-            height: 100vh;
+            height: 100dvh;
             /* 動態視口適配將由 JS 處理，避免輸入法彈出遮擋 */
             overflow: hidden;
             letter-spacing: 0.01em;
         }
 
+        :lang(zh), :lang(zh-TW), :lang(zh-Hant), :lang(zh-CN) { letter-spacing: 0.01em; }
+
+        :focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+        }
+
+        .skip-link { position: absolute; left: -9999px; top: 0; z-index: 30; padding: 12px 16px; background: var(--bg-paper); color: var(--text-dark); border: 1px solid var(--line-light); border-radius: var(--radius-sm); }
+        .skip-link:focus { left: 16px; top: 16px; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
         .view-hidden {
-            display: none !important;
+            display: none;
+        }
+        #reply-banner.view-hidden {
+            display: none;
         }
 
         #app-section {
@@ -160,10 +211,11 @@
         }
         .chat-time {
             font-size: 13px;
-            color: var(--text-muted);
+            color: var(--text-secondary);
             font-weight: 500;
             flex-shrink: 0;
             margin-left: 12px;
+            font-variant-numeric: tabular-nums;
         }
         .chat-preview {
             font-size: 15px;
@@ -196,8 +248,6 @@
             width: 100%;
             height: calc(64px + var(--safe-bottom));
             background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border-top: 1px solid var(--line-light);
             display: flex;
             justify-content: space-around;
@@ -223,7 +273,7 @@
             color: var(--text-dark);
         }
         .tab-item:active {
-            transform: scale(0.9);
+            color: var(--accent-press);
         }
         .tab-item svg {
             width: 24px;
@@ -323,7 +373,7 @@
             padding: 12px 18px;
             font-size: 16px;
             line-height: 1.5;
-            border-radius: 20px;
+            border-radius: var(--radius-md);
             position: relative;
             word-wrap: break-word;
             cursor: pointer;
@@ -332,20 +382,20 @@
         .msg-wrapper.received .msg-bubble {
             background-color: var(--bg-sub);
             color: var(--text-dark);
-            border-bottom-left-radius: 4px;
+            border-bottom-left-radius: var(--radius-sm);
         }
         .msg-wrapper.sent .msg-bubble {
             background-color: var(--apple-blue);
             color: #fff;
-            border-bottom-right-radius: 4px;
+            border-bottom-right-radius: var(--radius-sm);
         }
 
         .quoted-msg {
             font-size: 14px;
-            color: var(--text-muted);
+            color: var(--text-secondary);
             background: rgba(0, 0, 0, 0.06);
             padding: 8px 12px;
-            border-radius: 12px;
+            border-radius: var(--radius-sm);
             margin-bottom: 8px;
             border-left: 3px solid var(--apple-blue);
         }
@@ -379,16 +429,14 @@
             justify-content: center;
             cursor: pointer;
             color: var(--text-dark);
-            transition: transform 0.2s var(--ease-curve);
+            transition: background-color 0.2s var(--ease-curve);
         }
         .action-icon-btn:active {
-            transform: scale(0.85);
+            background-color: var(--accent-wash);
         }
 
         .input-wrapper-outer {
             background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border-top: 1px solid var(--line-light);
             display: flex;
             flex-direction: column;
@@ -431,19 +479,18 @@
             flex: 1;
             background: var(--bg-sub);
             border: 1px solid transparent;
-            border-radius: 20px;
+            border-radius: var(--radius-sm);
             padding: 12px 20px;
             font-size: 16px;
-            outline: none;
             color: var(--text-dark);
             max-height: 120px;
             overflow-y: auto;
             resize: none;
-            font-family: var(--font-en);
-            transition: background 0.2s, border-color 0.2s;
+            font-family: var(--font-sans);
+            transition: background-color 0.2s, border-color 0.2s;
         }
         .msg-input:focus {
-            border-color: var(--line-light);
+            border-color: var(--accent);
             background: var(--bg-paper);
         }
 
@@ -458,11 +505,11 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: transform 0.2s var(--ease-curve);
+            transition: background-color 0.2s var(--ease-curve);
             flex-shrink: 0;
         }
         .send-btn:active {
-            transform: scale(0.9);
+            opacity: 0.85;
         }
         .send-btn:disabled {
             opacity: 0.4;
@@ -508,13 +555,7 @@
             height: 28px;
             border-radius: 50%;
             border: 3px solid var(--bg-sub);
-            border-top-color: var(--apple-blue);
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+            border-top-color: var(--accent);
         }
 
         @keyframes fadeUp {
@@ -533,12 +574,13 @@
             width: 4px;
         }
         .msg-input::-webkit-scrollbar-thumb {
-            background: var(--text-muted);
-            border-radius: 4px;
+            background: var(--line-light);
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
+    <a class="skip-link" href="#main">跳到主要内容</a>
 
     <svg width="0" height="0" style="display:none;">
         <defs>
@@ -556,6 +598,7 @@
         </defs>
     </svg>
 
+    <main id="main">
     <div id="app-section">
         <header class="app-header">
             <h1>Messages</h1>
@@ -590,7 +633,7 @@
 
         <div id="chat-room">
             <header class="room-header">
-                <button class="back-btn" onclick="triggerHaptic(); closeChat()">
+                <button class="back-btn" aria-label="返回聊天列表" onclick="triggerHaptic(); closeChat()">
                     <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor"><use href="#icon-back"/></svg>
                 </button>
                 <div class="avatar" style="width: 36px; height: 36px; font-size: 14px;" id="room-avatar"></div>
@@ -602,19 +645,20 @@
             <div class="input-wrapper-outer">
                 <div id="reply-banner" class="reply-banner view-hidden">
                     <div class="reply-text-content" id="reply-text-content"></div>
-                    <button class="close-reply-btn" onclick="cancelReply()">
+                    <button class="close-reply-btn" aria-label="取消回复" onclick="cancelReply()">
                         <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor"><use href="#icon-close"/></svg>
                     </button>
                 </div>
                 <div class="input-area">
-                    <textarea class="msg-input" id="chat-input" rows="1" placeholder="Message..."></textarea>
-                    <button class="send-btn" id="send-btn" onclick="triggerHaptic(); sendMessage()">
+                    <textarea class="msg-input" id="chat-input" rows="1" placeholder="Message..." aria-label="Message / 输入消息"></textarea>
+                    <button class="send-btn" id="send-btn" aria-label="发送" onclick="triggerHaptic(); sendMessage()">
                         <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor"><use href="#icon-send"/></svg>
                     </button>
                 </div>
             </div>
         </div>
     </div>
+    </main>
 
     <script>
         // ============================================================
@@ -1135,7 +1179,7 @@
                 const notice = document.createElement('div');
                 notice.style.cssText =
                     'text-align:center;font-size:13px;color:var(--text-muted);padding:8px;background:var(--bg-sub);border-radius:12px;margin-top:4px;';
-                notice.textContent = '⚠️ 訊息發送失敗，請重試';
+                notice.textContent = '訊息發送失敗，請重試';
                 msgContainer.appendChild(notice);
                 setTimeout(() => notice.remove(), 3000);
             }
