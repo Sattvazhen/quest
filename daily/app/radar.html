@@ -3,43 +3,73 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
-    <title>Radar · Candlelight Aloka</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Aloka — 雷达匹配</title>
 
     <style>
         :root {
-            --bg-paper: #ffffff;
-            --bg-sub: #f5f5f7;
-            --text-dark: #1d1d1f; 
-            --text-muted: #86868b; 
-            --line-light: rgba(0, 0, 0, 0.06);
-            --apple-blue: #007AFF;
-            --apple-blue-light: #E5F1FF;
-            --success-color: #34c759;
-            --radius: 20px;
+            /* ---- Apple 设计令牌（唯一数值来源） ---- */
+            --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+                "Helvetica Neue", "PingFang TC", "PingFang SC", "Hiragino Sans GB",
+                "Microsoft YaHei", "Noto Sans TC", "Noto Sans SC", Arial, sans-serif;
+
+            --ink-1: #1d1d1f; --ink-2: #424245; --ink-3: #6e6e73; --ink-4: #86868b;
+            --line: rgba(0, 0, 0, 0.10);
+
+            --surface-1: #ffffff; --surface-2: #fbfbfd; --surface-3: #f5f5f7;
+            --surface-invert: #060607; --on-invert-1: #f5f5f7; --on-invert-2: #a1a1a6;
+            --line-invert: rgba(255, 255, 255, 0.16);
+
+            --accent: #0071e3; --accent-hover: #0077ed; --accent-press: #0068cf;
+            --accent-wash: rgba(0, 113, 227, 0.06); --accent-on-dark: #2997ff;
+
+            --error-color: #ff3b30; --success-color: #34c759;
+
+            --radius-xs: 6px; --radius-sm: 10px; --radius-md: 18px;
+            --radius-lg: 28px; --radius-pill: 999px;
+
+            --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
+            --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+            --dur-fast: 200ms; --dur-base: 320ms; --dur-reveal: 640ms;
+            --size-hit: 44px;
+
+            --safe-top: env(safe-area-inset-top, 20px);
             --safe-bottom: env(safe-area-inset-bottom, 20px);
-            --safe-top: env(safe-area-inset-top, 40px); 
-            --ease-curve: cubic-bezier(0.32, 0.72, 0, 1); 
-            --font-en: 'Inter', -apple-system, sans-serif;
-            --font-tc: 'Noto Sans TC', 'PingFang TC', sans-serif;
-            --glass-bg: rgba(245, 245, 247, 0.85);
+
+            /* ---- 旧变量别名（保留，禁止删除） ---- */
+            --bg-paper: var(--surface-1);
+            --bg-sub: var(--surface-3);
+            --text-dark: var(--ink-1);
+            --text-primary: var(--ink-1);
+            --text-secondary: var(--ink-2);
+            --text-muted: var(--ink-3);
+            --line-light: var(--line);
+            --apple-blue: var(--accent);
+            --apple-blue-hover: var(--accent-hover);
+            --apple-blue-light: var(--accent-wash);
+            --radius: var(--radius-md);
+            --ease-curve: var(--ease-out);
+            --font-en: var(--font-sans);
+            --font-tc: var(--font-sans);
+            --glass-bg: rgba(255, 255, 255, 0.78);
         }
+
         [data-theme="dark"] {
-            --bg-paper: #000000; --bg-sub: #1c1c1e; --text-dark: #f5f5f7; --text-muted: #8e8e93;
-            --line-light: rgba(255, 255, 255, 0.1); --apple-blue-light: #0A2948;
-            --glass-bg: rgba(28, 28, 30, 0.85);
+            --bg-paper: #000000; --bg-sub: #1c1c1e;
+            --text-dark: #f5f5f7; --text-muted: #8e8e93;
+            --line-light: rgba(255, 255, 255, 0.12);
+            --apple-blue-light: rgba(41, 151, 255, 0.14);
+            --glass-bg: rgba(28, 28, 30, 0.78);
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        
+
+        html { -webkit-text-size-adjust: 100%; }
+
         body {
-            font-family: var(--font-en), var(--font-tc); background-color: var(--bg-sub); color: var(--text-dark);
+            font-family: var(--font-sans); background-color: var(--bg-sub); color: var(--text-dark);
             -webkit-font-smoothing: antialiased; text-align: left; height: 100dvh; overflow: hidden;
             letter-spacing: 0.01em; transition: background-color 0.4s var(--ease-curve), color 0.4s var(--ease-curve);
-            
+
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -47,16 +77,36 @@
             -webkit-touch-callout: none;
         }
 
-        .view-hidden { display: none !important; }
+        :lang(zh), :lang(zh-TW), :lang(zh-Hant), :lang(zh-CN) { letter-spacing: 0.01em; }
+
+        :focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+        }
+
+        .skip-link { position: absolute; left: -9999px; top: 0; z-index: 30; padding: 12px 16px; background: var(--bg-paper); color: var(--text-dark); border: 1px solid var(--line-light); border-radius: var(--radius-sm); }
+        .skip-link:focus { left: 16px; top: 16px; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        .view-hidden { display: none; }
+        #radar-scan-view.view-hidden, #match-container.view-hidden { display: none; }
 
         #app-section {
-            display: flex; flex-direction: column; height: 100%; max-width: 100%; 
+            display: flex; flex-direction: column; height: 100%; max-width: 100%;
             margin: 0 auto; background: var(--bg-sub); position: relative; overflow: hidden;
-            animation: appStageIn 0.8s var(--ease-curve);
+            animation: appStageIn var(--dur-reveal) var(--ease-curve);
         }
         @media (min-width: 600px) { #app-section { max-width: 600px; border-left: 1px solid var(--line-light); border-right: 1px solid var(--line-light); } }
 
-        @keyframes appStageIn { from { opacity: 0; transform: scale(0.98) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        @keyframes appStageIn { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .app-header {
@@ -71,13 +121,11 @@
         .pulse-dot { width: 8px; height: 8px; background-color: var(--success-color); border-radius: 50%; position: relative; transition: background-color 0.3s; }
         .pulse-dot::after {
             content: ''; position: absolute; inset: -4px; border-radius: 50%;
-            border: 2px solid var(--success-color); animation: pulse 2s infinite var(--ease-curve);
+            border: 2px solid var(--success-color); opacity: 0.3;
             transition: border-color 0.3s;
         }
-        .pulse-dot.idle { background-color: var(--text-muted); }
-        .pulse-dot.idle::after { border-color: var(--text-muted); animation: none; opacity: 0.3; }
-
-        @keyframes pulse { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+        .pulse-dot.idle { background-color: transparent; border: 1.5px solid var(--text-muted); }
+        .pulse-dot.idle::after { border-color: var(--text-muted); opacity: 0.3; }
 
         .main-view { 
             flex: 1; overflow-y: auto; padding: 32px; 
@@ -109,21 +157,14 @@
         
         .radar-sweep {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%;
-            background: conic-gradient(from 0deg, transparent 75%, rgba(0, 122, 255, 0.05) 95%, rgba(0, 122, 255, 0.5) 100%);
-            animation: radar-spin 2s linear infinite; transform-origin: 50% 50%;
+            background: conic-gradient(from 0deg, transparent 78%, rgba(0, 113, 227, 0.05) 92%, rgba(0, 113, 227, 0.15) 100%);
         }
-        @keyframes radar-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        
-        .radar-blip { position: absolute; width: 6px; height: 6px; background: var(--apple-blue); border-radius: 50%; opacity: 0; }
-        @keyframes blip-fade {
-            0% { opacity: 0; transform: scale(0.5); box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.4); }
-            20% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px 4px rgba(0, 122, 255, 0.2); }
-            100% { opacity: 0; transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 122, 255, 0); }
-        }
-        
-        .blip-1 { top: 25%; left: 65%; animation: blip-fade 2s infinite 0.8s; }
-        .blip-2 { top: 70%; left: 35%; animation: blip-fade 2s infinite 1.5s; }
-        .blip-3 { top: 40%; left: 20%; animation: blip-fade 2s infinite 0.3s; }
+
+        .radar-blip { position: absolute; width: 6px; height: 6px; background: transparent; border: 1.5px solid var(--apple-blue); border-radius: 50%; opacity: 1; }
+
+        .blip-1 { top: 25%; left: 65%; }
+        .blip-2 { top: 70%; left: 35%; }
+        .blip-3 { top: 40%; left: 20%; }
 
         .scan-log-container { text-align: left; z-index: 10; }
         .scan-subtitle { font-size: 15px; color: var(--text-muted); font-weight: 500; line-height: 1.6; }
@@ -147,15 +188,15 @@
         .sim-score { font-size: 24px; font-weight: 700; color: var(--apple-blue); font-variant-numeric: tabular-nums; letter-spacing: -1px; }
         
         .tags-container { display: flex; flex-wrap: wrap; gap: 8px; }
-        .tag-badge { background: var(--bg-sub); color: var(--text-muted); padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; }
+        .tag-badge { background: var(--bg-sub); color: var(--text-secondary); padding: 6px 12px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; }
         .tag-badge.shared { background: var(--apple-blue-light); color: var(--apple-blue); font-weight: 600; }
 
         .btn-message {
-            width: 100%; font-size: 15px; font-weight: 600; padding: 16px; border-radius: 12px;
-            cursor: pointer; transition: all 0.4s var(--ease-curve); display: flex; justify-content: center; align-items: center; gap: 8px; 
+            width: 100%; font-size: 15px; font-weight: 600; padding: 16px; border-radius: var(--radius-sm);
+            cursor: pointer; transition: background-color 0.4s var(--ease-curve); display: flex; justify-content: center; align-items: center; gap: 8px;
             color: var(--text-dark); background: var(--bg-sub); border: none; margin-top: 8px;
         }
-        .btn-message:active { transform: scale(0.97); background: var(--line-light); }
+        .btn-message:active { background: var(--line-light); }
         .btn-message svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
 
         .empty-state {
@@ -163,7 +204,7 @@
             text-align: left; padding: 20px 0;
         }
         .empty-icon-box {
-            width: 48px; height: 48px; border-radius: 14px; background: var(--bg-paper); border: 1px solid var(--line-light);
+            width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--bg-paper); border: 1px solid var(--line-light);
             display: flex; align-items: center; justify-content: center; color: var(--text-muted); margin-bottom: 8px;
         }
         .empty-icon-box svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
@@ -172,25 +213,26 @@
         
         .btn-secondary {
             background: transparent; border: 1px solid var(--line-light); color: var(--text-dark);
-            padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 600;
-            cursor: pointer; transition: all 0.3s var(--ease-curve); margin-top: 8px;
+            padding: 12px 20px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600;
+            cursor: pointer; transition: background-color 0.3s var(--ease-curve), border-color 0.3s var(--ease-curve); margin-top: 8px;
         }
-        .btn-secondary:active { background: var(--line-light); transform: scale(0.97); }
+        .btn-secondary:active { background: var(--line-light); }
 
         .bottom-tab-bar {
             position: absolute; bottom: 0; left: 0; width: 100%; height: calc(64px + var(--safe-bottom));
-            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            background: var(--glass-bg);
             border-top: 1px solid var(--line-light); display: flex; justify-content: space-around;
             align-items: flex-start; padding-top: 12px; z-index: 100;
         }
-        .tab-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--text-muted); gap: 6px; transition: color 0.4s var(--ease-curve), transform 0.4s var(--ease-curve); width: 20%; }
+        .tab-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--text-muted); gap: 6px; transition: color 0.4s var(--ease-curve); width: 20%; }
         .tab-item.active { color: var(--text-dark); }
-        .tab-item:active { transform: scale(0.9); }
+        .tab-item:active { color: var(--accent-press); }
         .tab-item svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
         .tab-item span { font-size: 10px; font-weight: 500; letter-spacing: 0.5px; }
     </style>
 </head>
 <body>
+    <a class="skip-link" href="#main">跳到主要内容</a>
 
     <svg width="0" height="0" style="display:none;">
         <defs>
@@ -205,6 +247,7 @@
         </defs>
     </svg>
 
+    <main id="main">
     <div id="app-section">
         <header class="app-header">
             <div class="app-header-left">
@@ -259,6 +302,7 @@
             </a>
         </nav>
     </div>
+    </main>
 
     <script>
         const SUPABASE_URL = "https://nhjkhtrgehznhdlqyybs.supabase.co";
